@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:item="http://schemas.android.com/apk/res/com.changhong.smarthome.phone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <com.changhong.smarthome.phone.store.activity.StoreTitleItem
+        android:id="@+id/ordermanager_main_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        item:titlename="@string/ordermanager" >
+    </com.changhong.smarthome.phone.store.activity.StoreTitleItem>
+
+    <RadioGroup
+        android:id="@+id/radiobutton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ordermanager_main_title"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/radiobutton1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/footmenusbg1"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="@string/order_manager_nopay"
+            android:textColor="@drawable/footmenuscolor" />
+
+        <RadioButton
+            android:id="@+id/radiobutton2"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/footmenusbg2"
+            android:button="@null"
+            android:checked="false"
+            android:gravity="center"
+            android:text="@string/order_manager_pay"
+            android:textColor="@drawable/footmenuscolor" />
+    </RadioGroup>
+
+    <!--
+        color="#e8e8e8" View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/radiobutton"
+        android:background="@color/gray" /
+    -->
+
+    <com.changhong.smarthome.phone.store.tools.CustomViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/vp"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/radiobutton" >
+    </com.changhong.smarthome.phone.store.tools.CustomViewPager>
+
+</RelativeLayout>

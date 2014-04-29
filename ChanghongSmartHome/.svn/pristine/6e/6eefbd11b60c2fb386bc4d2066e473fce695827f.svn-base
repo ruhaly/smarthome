@@ -1,0 +1,93 @@
+package com.changhong.smarthome.phone.foundation.bean;
+
+public class Community
+{
+    private String id;
+    
+    private String name;
+    
+    //人员个数
+    private String memberNum;
+    
+    //新成员申请个数
+    private String newMemberNum;
+    
+    //小区图片
+    private String picUrl;
+    
+    //大区
+    private String area;
+    
+    private String address;
+    
+    public String getMemberNum()
+    {
+        return memberNum;
+    }
+    
+    public void setMemberNum(String memberNum)
+    {
+        this.memberNum = memberNum;
+    }
+    
+    public String getNewMemberNum()
+    {
+        return newMemberNum;
+    }
+    
+    public void setNewMemberNum(String newMemberNum)
+    {
+        this.newMemberNum = newMemberNum;
+    }
+    
+    public String getPicUrl()
+    {
+        return picUrl;
+    }
+    
+    public void setPicUrl(String picUrl)
+    {
+        this.picUrl = picUrl;
+    }
+    
+    public String getId()
+    {
+        return id;
+    }
+    
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+    
+    public String getArea()
+    {
+        return area;
+    }
+    
+    public void setArea(String area)
+    {
+        this.area = area;
+    }
+    
+    public String getAddress()
+    {
+        return address;
+    }
+    
+    public void setAddress(String address)
+    {
+        this.address = address;
+    }
+    
+}

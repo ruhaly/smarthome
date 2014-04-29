@@ -1,0 +1,23 @@
+package com.changhong.smarthome.phone.property.entry;
+
+public class ExchangeOBJ {
+	private int peResult;
+	
+	private String exchangeCode;
+	
+	public int getPeResult() {
+		return peResult;
+	}
+
+	public void setPeResult(int peResult) {
+		this.peResult = peResult;
+	}
+
+	public String getExchangeCode() {
+		return exchangeCode;
+	}
+
+	public void setExchangeCode(String exchangeCode) {
+		this.exchangeCode = exchangeCode;
+	}
+}

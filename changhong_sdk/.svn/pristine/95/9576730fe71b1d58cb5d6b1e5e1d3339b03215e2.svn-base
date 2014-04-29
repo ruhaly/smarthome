@@ -1,0 +1,27 @@
+package com.changhong.sdk.baseapi;
+
+public class HttpUrl
+{
+    
+    //张琪荣  http://172.17.184.26:8080/OSS
+    //杨帆 http://172.17.184.41:8081/OSS
+    //邓金祥 http://172.17.184.141:8080/OSS
+    //OOS开发服务器http://172.17.184.94:6666/OSS
+    //外网服务器http://221.226.107.6:8503
+    public static String OSS = "http://221.226.107.6:8503/OSS";//"http://172.17.184.212:9999/OSS";//
+    
+    public static String CBS = "http://221.226.107.6:8503/cbs";
+    
+    public static String SNS = "http://221.226.107.6:8503/SNS";
+    
+    public static String URL_OSS = OSS + "/service";// "http://172.17.184.212:9999/OSS/service";//
+                                                    // "http://172.17.184.212:8080/OSS/service";
+                                                    //    
+    
+    //    public static String URL_PAY_INFOS = OSS + "/service";//
+    //                                                          // "http://192.168.115.88:8080/OSS/service";
+    //    
+    
+    public static String URL_CBS = CBS + "/msg"; // "http://192.168.115.89:8089/cbs/msg";
+    
+}

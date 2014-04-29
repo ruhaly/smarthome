@@ -1,0 +1,93 @@
+package com.changhong.sdk.entity;
+
+import com.google.gson.Gson;
+
+public class BaseAccountInfo
+{
+    //终端用户帐号
+    private String accountId;
+    
+    //终端用户 Id
+    private String userId;
+    
+    //小区编码
+    private String cummintyCode;
+    
+    private String flag;
+    
+    //分别率
+    private String resolution;
+    
+    private String type;
+    
+    public String getAccountId()
+    {
+        return accountId;
+    }
+    
+    public void setAccountId(String accountId)
+    {
+        this.accountId = accountId;
+    }
+    
+    public String getUserId()
+    {
+        return userId;
+    }
+    
+    public void setUserId(String userId)
+    {
+        this.userId = userId;
+    }
+    
+    public String getCummintyCode()
+    {
+        return cummintyCode;
+    }
+    
+    public void setCummintyCode(String cummintyCode)
+    {
+        this.cummintyCode = cummintyCode;
+    }
+    
+    public String getFlag()
+    {
+        return flag;
+    }
+    
+    public void setFlag(String flag)
+    {
+        this.flag = flag;
+    }
+    
+    public String getResolution()
+    {
+        return resolution;
+    }
+    
+    public void setResolution(String resolution)
+    {
+        this.resolution = resolution;
+    }
+    
+    public String getType()
+    {
+        return type;
+    }
+    
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+    
+    /**
+     * 
+     * 获取json字符串
+     * @return
+     */
+    public String getJsonStr()
+    {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+}

@@ -1,0 +1,43 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.app.Dialog;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+
+import com.changhong.smarthome.phone.R;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class ModifyPwdActivity extends BaseActivity
+{
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.modify_pwd_layout);
+        ViewUtils.inject(this);
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    @OnClick(R.id.btnForgetPwd)
+    public void btnForgetPwdClick(View view)
+    {
+        View retrieveView = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.retrieve_pwd_layout, null);
+        Dialog dialog = getDialog(retrieveView, false, R.style.MyDialog);
+        dialog.show();
+    }
+}

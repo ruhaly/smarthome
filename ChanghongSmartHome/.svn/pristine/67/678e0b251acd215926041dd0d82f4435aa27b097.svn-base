@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_Trans"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tip_dialog_bg"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tip_content_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="张三"
+                android:textColor="@color/gray_5f5f5f"
+                android:textSize="@dimen/font_36" />
+
+            <ImageView
+                android:id="@+id/exchangegoodsImg"
+                android:layout_width="200dip"
+                android:layout_height="200dip"
+                android:layout_centerVertical="true"
+                android:background="@drawable/changhong" />
+
+            <TextView
+                android:id="@+id/tvIntegrationScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="兑换当前礼物将花费您1000积分"
+                android:textColor="@color/gray_5f5f5f"
+                android:textSize="@dimen/font_36" />
+
+            <CheckBox
+                android:id="@+id/checkBoxRulesConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/tvIntegrationScore"
+                android:textColor="@color/black"
+                android:text="@string/know_integrationrule" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical" >
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="50dip"
+                android:layout_weight="1"
+                android:background="@color/color_Trans"
+                android:gravity="center"
+                android:text="@string/cancle"
+                android:textColor="@color/gray_5f5f5f"
+                android:textSize="@dimen/font_36" />
+
+            <View
+                android:id="@+id/divide"
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/tip_slide" >
+            </View>
+
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="50dip"
+                android:layout_weight="1"
+                android:background="@color/color_Trans"
+                android:gravity="center"
+                android:text="@string/confirm"
+                android:textColor="@color/red"
+                android:textSize="@dimen/font_36" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

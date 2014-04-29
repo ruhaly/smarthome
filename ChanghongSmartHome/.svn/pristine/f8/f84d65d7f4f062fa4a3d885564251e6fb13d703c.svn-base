@@ -1,0 +1,247 @@
+package com.changhong.smarthome.phone.property.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.os.Message;
+
+import com.changhong.sdk.baseapi.HttpUrl;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.sdk.entity.BaseAccountInfo;
+import com.changhong.sdk.entity.Pager;
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.smarthome.phone.property.entry.ServicesItem;
+import com.changhong.smarthome.phone.property.http.HttpAction;
+import com.changhong.smarthome.phone.property.http.RequestId;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+/**
+ * LoginLogic.java com.pactera.ch.bedframe.logic
+ * 
+ * Function�?TODO
+ * 
+ * ver date author
+ * �?���?���?���?���?���?���?���?���?���?���?���?���?���?���?���?���?��
+ * 2013-12-12 b
+ * 
+ * Copyright (c) 2013, TNT All Rights
+ * Reserved.com.example.changhongwyfw.logic.foundation.logic;
+ * 
+ * import java.io.InputStream; import java.util.HashMap; import java.util.Map;
+ * 
+ * import com.lidroid.xutils.exception.HttpException; import
+ * com.lidroid.xutils.http.HttpHandler; import
+ * com.lidroid.xutils.http.RequestParams; import
+ * com.pactera.ch.foundation.baseapi.JsonParse; import
+ * com.pactera.ch.foundation.entity.User; import
+ * com.pactera.ch.foundation.http.HttpSenderUtils; import
+ * com.pactera.ch.foundation.http.RequestId; import
+ * com.pactera.ch.foundation.httpbean.ServiceResponse;
+ * 
+ * /** ClassName:LoginLogic Function: TODO ADD FUNCTION
+ * 
+ * @author ruhaly
+ * @version
+ * @since Ver 1.1
+ * @Date 2013-12-12 下午2:32:07
+ */
+public class GetTypeLogic extends SuperLogic
+{
+    
+    HttpHandler<String> httpHanlder;
+    
+    private static GetTypeLogic ins;
+    
+    public HashMap map;
+    
+    public static synchronized GetTypeLogic getInstance()
+    {
+        if (null == ins)
+        {
+            ins = new GetTypeLogic();
+        }
+        return ins;
+    }
+    
+    public void getBxType(String eventType, HttpUtils httpUtil)
+    {
+        RequestParams params = new RequestParams();
+        Map serviceInfo = new HashMap();
+        serviceInfo.put("eventType", eventType);
+        fixRequestParams(params,
+                serviceInfo,
+                "ComplainHandler",
+                "sc",
+                "sc",
+                "4100");
+        
+        httpHanlder = HttpSenderUtils.sendMsgImpl("ComplainHandler",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtil,
+                RequestId.TS_TYPE,
+                this,
+                false,
+                HttpUrl.URL_CBS);
+        
+    }
+    public void getTsType(String eventType, HttpUtils httpUtil)
+    {
+        RequestParams params = new RequestParams();
+        Map serviceInfo = new HashMap();
+        serviceInfo.put("eventType", eventType);
+        fixRequestParams(params,
+                serviceInfo,
+                "RepairHandler",
+                "sc",
+                "sc",
+                "4100");
+        
+        httpHanlder = HttpSenderUtils.sendMsgImpl("RepairHandler",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtil,
+                RequestId.BX_TYPE,
+                this,
+                false,
+                HttpUrl.URL_CBS);
+        
+    }
+    
+   
+    @Override
+    public void handleHttpResponse(String response, int rspCode, int requestId)
+    {
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(String response, int requestId,
+            InputStream is)
+    {
+    }
+    
+    private void handlegetBxType(ServiceResponse serviceRes)
+    {
+        if (serviceRes.getBody().getResult().equals("200"))
+        {
+            Message msg = new Message();
+            msg.what = HttpAction.BXTYPE_SUCCESS_MSGWHAT;
+            msg.obj = Josonparse_bxType(serviceRes.getBody().getParamsString());
+            handler.sendMessage(msg);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    private void handlegetTsType(ServiceResponse serviceRes)
+    {
+        if (serviceRes.getBody().getResult().equals("200"))
+        {
+            Message msg = new Message();
+            msg.what = HttpAction.TSTYPE_SUCCESS_MSGWHAT;
+            msg.obj = Josonparse_bxType(serviceRes.getBody().getParamsString());
+            handler.sendMessage(msg);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    public static HashMap Josonparse_bxType(String response)
+    {
+        HashMap map1 = new HashMap();
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        try
+        {
+            
+            JSONObject job = new JSONObject(response);
+            JSONObject jobObject = null;
+           
+           
+            if (null != job)
+            {
+              
+                JSONObject joba = job.optJSONObject("data");
+                JSONArray jbarry= joba.names();
+                for(int i=0;i<jbarry.length();i++){
+                   String name = jbarry.getString(i);
+                   if(joba.optString(name)!=null){
+                   map1.put(name, joba.optString(name));
+                   }
+                   
+                }
+                //jonson(joba);
+            String x="";
+            }
+        }
+        catch (JSONException e)
+        {
+            // wyfwproperty = null;
+            e.printStackTrace();
+        }
+        
+        return map1;
+    }
+    
+
+
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        handler.sendEmptyMessage(SuperLogic.DATA_FORMAT_ERROR_MSGWHAT);
+    }
+    
+    @Override
+    public void clear()
+    {
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is)
+    {
+        switch (requestId)
+        {
+        
+
+            case RequestId.BX_TYPE:
+                handlegetBxType(serviceRes);
+                break;
+            case RequestId.TS_TYPE:
+                handlegetTsType(serviceRes);
+                break;
+            default:
+                break;
+        }
+        
+    }
+    
+    public void stopRequest()
+    {
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+        }
+    }
+    
+}

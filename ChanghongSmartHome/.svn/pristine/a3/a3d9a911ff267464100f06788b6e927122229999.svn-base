@@ -1,0 +1,49 @@
+package com.changhong.smarthome.phone.property.entry;
+
+public class IntegrationChangeItemVO {
+		
+	   /* private String changeName;
+	    
+	    private String changeDate;
+	    
+	    private String changeScore;*/
+	private long id;
+	
+	private String Path;
+	
+	private String activeDate;
+	
+	private long point;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getPath() {
+		return Path;
+	}
+
+	public void setPath(String path) {
+		Path = path;
+	}
+
+	public String getActiveDate() {
+		return activeDate;
+	}
+
+	public void setActiveDate(String activeDate) {
+		this.activeDate = activeDate;
+	}
+
+	public long getPoint() {
+		return point;
+	}
+
+	public void setPoint(long point) {
+		this.point = point;
+	}
+}

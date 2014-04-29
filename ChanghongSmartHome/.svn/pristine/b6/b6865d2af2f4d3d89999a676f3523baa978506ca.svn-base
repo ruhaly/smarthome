@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/pop_sex_width"
+    android:layout_height="wrap_content"
+    android:background="#E2E2E2"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/all"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:layout_gravity="center"
+        android:gravity="center" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dip"
+            android:gravity="center"
+            android:text="@string/all"
+            android:textColor="#616161"
+            android:textSize="@dimen/pub_content_size" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dip"
+        android:background="#BDBDBD" />
+
+    <LinearLayout
+        android:id="@+id/my_swap"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:layout_gravity="center"
+        android:gravity="center" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dip"
+            android:gravity="center"
+            android:text="@string/my_swap"
+            android:textColor="#616161"
+            android:textSize="@dimen/pub_content_size" />
+    </LinearLayout>
+
+</LinearLayout>

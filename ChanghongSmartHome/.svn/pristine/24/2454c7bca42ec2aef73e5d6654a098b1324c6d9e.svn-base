@@ -1,0 +1,31 @@
+package com.changhong.smarthome.phone.cinema.activity;
+
+import android.os.Bundle;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.activity.BaseActivity;
+import com.lidroid.xutils.ViewUtils;
+
+public class MyAccountActivity extends BaseActivity
+{
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.my_account_layout);
+        ViewUtils.inject(this);
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+}

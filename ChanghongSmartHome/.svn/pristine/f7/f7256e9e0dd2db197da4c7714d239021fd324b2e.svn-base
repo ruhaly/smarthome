@@ -1,0 +1,8 @@
+<resources>
+
+    <!-- +++++++++++++++++++720p距离像素 begin++++++++++++++++++++++++ -->
+    <dimen name="px36">36px</dimen>
+	<dimen name="font_size_title">36px</dimen>
+    <!-- +++++++++++++++++++720P距离像素 end++++++++++++++++++++++++ -->
+
+</resources>

@@ -1,0 +1,388 @@
+package com.changhong.smarthome.phone.store.fragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+
+import com.changhong.sdk.fragment.SuperFragment;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.store.activity.PullRefreshListView;
+import com.changhong.smarthome.phone.store.activity.PullRefreshListView.NewScrollerListener;
+import com.changhong.smarthome.phone.store.activity.PullRefreshListView.OnRefreshListener;
+import com.changhong.smarthome.phone.store.adapter.OrderManagerAdapter;
+import com.changhong.smarthome.phone.store.entity.StoreConstant;
+import com.changhong.smarthome.phone.store.logic.OrderNewestLogic;
+import com.changhong.smarthome.phone.store.logic.bean.OrderInfoBean;
+import com.changhong.smarthome.phone.store.logic.bean.PagerBean;
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.HttpUtils;
+
+public class OrderManagerFragment extends SuperFragment
+{
+    
+    private static final String TAG = "OrderManagerFragment";
+    
+    private View view;
+    
+    private OrderNewestLogic orderNewestLogic;
+    
+    private HttpUtils httpUtils;
+    
+    private PullRefreshListView listView;
+    
+    private BitmapUtils mBitmapUtils;
+    
+    private OrderManagerAdapter adapter;
+    
+    private static final int PAGESIZE = 10;
+    
+    /**
+     * 当前页
+     */
+    private int curPageIndex = 1;
+    
+    /**
+     * 是否正在加载更多
+     */
+    private boolean isLoadingMore = false;
+    
+    /**
+     * 是否有数据，能够加载更多
+     */
+    private boolean hasMore = true;
+    
+    /**
+     * 加载模式： 0 第一次 ；1 刷新 ；2 加载更多
+     */
+    private int mode = 0;
+    
+    private List<OrderInfoBean> orderInfoBeans;
+    
+    public OrderManagerFragment()
+    {
+        // TODO Auto-generated constructor stub
+        
+    }
+    
+    private void findOrders()
+    {
+        showProcessDialog(new DialogInterface.OnDismissListener()
+        {
+            @Override
+            public void onDismiss(DialogInterface dialog)
+            {
+                orderNewestLogic.stopRequest();
+            }
+        });
+        
+        PagerBean pagerBean = new PagerBean();
+        pagerBean.setPageId(curPageIndex);
+        pagerBean.setPageSize(PAGESIZE);
+        orderNewestLogic.sendFindOrdersReq("1", pagerBean, mode,httpUtils);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void handleMsg(Message msg)
+    {
+        super.handleMsg(msg);
+        listView.onRefreshComplete();
+        listView.showLoadFinish();
+        isLoadingMore = false;
+        switch (msg.what)
+        {
+            case StoreConstant.GET_FINDORDERS_SUCCESS:
+                if (msg.obj != null)
+                {
+                    List<OrderInfoBean> temp = (List<OrderInfoBean>) msg.obj;
+                    if(temp.size() > 0)
+                    {
+                        orderInfoBeans.clear();
+                        orderInfoBeans.addAll(temp);
+                        adapter.notifyDataSetChanged();
+                    }
+                    else
+                    {
+                        hasMore = false;
+                    }
+                }
+                break;
+//            case DATA_FORMAT_ERROR_MSGWHAT:
+            case StoreConstant.GET_FINDORDERS_FAILED:
+                showToast(getResources().getString(R.string.error_1));
+                break;
+            case StoreConstant.GET_FINDORDERS_GETMORE_SUCCESS:
+                if (msg.obj != null)
+                {
+                    List<OrderInfoBean> temp = (List<OrderInfoBean>) msg.obj;
+                    if(temp.size() > 0)
+                    {
+                        orderInfoBeans.addAll(temp);
+                        adapter.notifyDataSetChanged();
+                    }
+                    else
+                    {
+                        hasMore = false;
+                    }
+                }
+                break;
+            case StoreConstant.GET_FINDORDERS_GETMORE_FAILED:
+                showToast(getResources().getString(R.string.error_1));
+                break;
+        }
+    };
+    
+    /**
+     * 刷新
+     */
+    private void refresh()
+    {
+        curPageIndex = 1;
+        isLoadingMore = true;
+        mode = 1;
+        findOrders();
+    }
+    
+    /**
+     * 加载更多
+     */
+    protected void startToLoadMore()
+    {
+        if(hasMore)
+        {
+            if (!isLoadingMore)
+            {
+                
+                listView.showLoading();
+                curPageIndex = curPageIndex + 1;
+                isLoadingMore = true;
+                mode = 2;
+                Log.d(TAG, "startToLoadMore--->");
+                findOrders();
+            }
+        }
+    }
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        initLogic();
+        super.onCreate(savedInstanceState);
+    }
+    
+    private void initLogic()
+    {
+        orderNewestLogic = OrderNewestLogic.getInstance(getActivity());
+        httpUtils = new HttpUtils();
+        orderNewestLogic.setData(fHandler);
+        orderInfoBeans = new ArrayList<OrderInfoBean>();
+        mBitmapUtils = new BitmapUtils(getActivity());
+    }
+    
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        findOrders();
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
+    }
+    
+    @Override
+    public void onPause()
+    {
+        // TODO Auto-generated method stub
+        super.onPause();
+    }
+    
+    @Override
+    public void onDestroyView()
+    {
+        mBitmapUtils = null;
+        listView = null;
+        Log.d(TAG, "onDestroyView");
+        super.onDestroyView();
+    }
+    
+    @Override
+    public void onDestroy()
+    {
+        Log.d(TAG, "onDestroy");
+        super.onDestroy();
+    }
+    
+    @Override
+    public void onDetach()
+    {
+        // TODO Auto-generated method stub  
+        Log.d(TAG, "onDetach");
+        super.onDetach();
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void updateView(Message msg)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        // TODO Auto-generated method stub
+        
+//        OrderInfoBean orderInfoBean = new OrderInfoBean();
+//        orderInfoBean.setOrderNumber("99999");
+//        orderInfoBean.setAddress("");
+//        orderInfoBean.setPhone("13851664868");
+//        orderInfoBean.setDeliveryAddress("软件的大哦");
+//        orderInfoBean.setOrderTime("2014-4-2 17:50");
+//        orderInfoBean.setOrderMoney(28);
+//        orderInfoBean.setOrderRemark("");
+//        orderInfoBean.setGoodsIcon("");
+//        
+//        orderInfoBean.setGoodsName("成美商家成美商家成美商家成美商家");
+//        orderInfoBean.setGoodsId("1001");
+//        orderInfoBean.setOrderQuantity(1);
+//        orderInfoBean.setGoodsPrice(28);
+//        orderInfoBean.setSpId("1002");
+//        
+//        orderInfoBean.setDesc("新建吹，男女不限，发长不限,新建吹，男女不限，发长不限");
+//        orderInfoBean.setOriginalPrice(60);
+//        orderInfoBean.setSalePrice(28);
+//        orderInfoBean.setRating(4);
+//        orderInfoBean.setType(0);
+//        orderInfoBean.setStatus(1);
+//        orderInfoBeans.add(orderInfoBean);
+//        
+//        OrderInfoBean orderInfoBean1 = new OrderInfoBean();
+//        orderInfoBean1.setOrderNumber("88888");
+//        orderInfoBean1.setAddress("");
+//        orderInfoBean1.setPhone("13851664868");
+//        orderInfoBean1.setDeliveryAddress("南京雨花台");
+//        orderInfoBean1.setOrderTime("2014-4-8 17:50");
+//        orderInfoBean1.setOrderMoney(666);
+//        orderInfoBean1.setOrderRemark("");
+//        orderInfoBean1.setGoodsIcon("");
+//        
+//        orderInfoBean1.setGoodsName("");
+//        orderInfoBean1.setGoodsId("1002");
+//        orderInfoBean1.setOrderQuantity(1);
+//        orderInfoBean1.setGoodsPrice(100);
+//        orderInfoBean1.setSpId("1002");
+//        
+//        orderInfoBean1.setDesc("拼单啦，金龙鱼大豆有5L，金龙鱼大豆有原价88，现价58，量大根优惠");
+//        orderInfoBean1.setOriginalPrice(88);
+//        orderInfoBean1.setSalePrice(58);
+//        orderInfoBean1.setRating(5);
+//        orderInfoBean1.setType(1);
+//        orderInfoBean1.setStatus(2);
+//        
+//        orderInfoBeans.add(orderInfoBean1);
+//        
+//        
+//        OrderInfoBean orderInfoBean2 = new OrderInfoBean();
+//        orderInfoBean2.setOrderNumber("88888");
+//        orderInfoBean2.setAddress("");
+//        orderInfoBean2.setPhone("13851664868");
+//        orderInfoBean2.setDeliveryAddress("南京雨花台");
+//        orderInfoBean2.setOrderTime("2014-4-8 17:50");
+//        orderInfoBean2.setOrderMoney(666);
+//        orderInfoBean2.setOrderRemark("");
+//        orderInfoBean2.setGoodsIcon("");
+//        
+//        orderInfoBean2.setGoodsName("");
+//        orderInfoBean2.setGoodsId("1002");
+//        orderInfoBean2.setOrderQuantity(1);
+//        orderInfoBean2.setGoodsPrice(100);
+//        orderInfoBean2.setSpId("1002");
+//        
+//        orderInfoBean2.setDesc("拼单啦，金龙鱼大豆有5L，原价 88，现价 58，量大根优惠");
+//        orderInfoBean2.setOriginalPrice(88);
+//        orderInfoBean2.setSalePrice(58);
+//        orderInfoBean2.setRating(5);
+//        orderInfoBean2.setType(1);
+//        orderInfoBean2.setStatus(1);
+//        
+//        orderInfoBeans.add(orderInfoBean2);
+    }
+    
+    @Override
+    public View initLayout(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        // TODO Auto-generated method stub
+        view = inflater.inflate(R.layout.ordermamangerfragment,
+                container,
+                false);
+        //刷新
+        listView = (PullRefreshListView) view.findViewById(R.id.listview_id);
+        listView.setOnRefreshListener(new OnRefreshListener()
+        {
+            
+            @Override
+            public void onRefresh()
+            {
+                // TODO Auto-generated method stub
+                refresh();
+            }
+        });
+        //加载更多
+        listView.setNewScrollerListener(new NewScrollerListener()
+        {
+            private boolean isLoadMoreFile = false;
+            
+            @Override
+            public void newScrollChanged(AbsListView view, int scrollState)
+            {
+                // TODO Auto-generated method stub
+                if ((scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING)
+                        && isLoadMoreFile)
+                {
+                    startToLoadMore();
+                }
+            }
+            
+            @Override
+            public void newScroll(AbsListView view, int firstVisibleItem,
+                    int visibleItemCount, int totalItemCount)
+            {
+                // TODO Auto-generated method stub
+                isLoadMoreFile = (firstVisibleItem + visibleItemCount == totalItemCount) ? true
+                        : false;
+            }
+        });
+        adapter = new OrderManagerAdapter(getActivity(), mBitmapUtils,orderInfoBeans);
+        listView.setAdapter(adapter);
+        return view;
+    }
+
+    @Override
+    public void updateView(Intent intent)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+}

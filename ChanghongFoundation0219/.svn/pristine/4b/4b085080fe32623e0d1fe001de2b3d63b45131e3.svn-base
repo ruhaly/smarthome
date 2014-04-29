@@ -1,0 +1,497 @@
+package com.changhong.foundation.baseapi;
+
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import android.annotation.SuppressLint;
+
+import com.changhong.foundation.entity.Ad;
+import com.changhong.foundation.entity.Address;
+import com.changhong.foundation.entity.BillInfo;
+import com.changhong.foundation.entity.Integral;
+import com.changhong.foundation.entity.MessageInfo;
+import com.changhong.foundation.entity.PayInfo;
+import com.changhong.foundation.entity.User;
+import com.changhong.foundation.logic.AccountLogic;
+import com.changhong.foundation.logic.IntegralLogic;
+import com.changhong.sdk.baseapi.BaseJson;
+import com.changhong.sdk.baseapi.NumberUtils;
+import com.changhong.sdk.baseapi.StringUtils;
+
+public class JsonParse extends BaseJson
+{
+    
+    @SuppressLint("NewApi")
+    public static User parseLoginRes(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        User user = new User();
+        try
+        {
+            JSONObject tempJsb = new JSONObject(response);
+            if (null != tempJsb)
+            {
+                JSONObject job = tempJsb.optJSONObject("data");
+                JSONObject userJson = job.optJSONObject("userInfo");
+                user.setBuildingId(userJson.optString("buildingId"));
+                user.setCommuntyId(userJson.optString("communtyId"));
+                user.setCommuntyName(userJson.optString("communtyName"));
+                user.setFamilyAccount(userJson.optString("familyAccount"));
+                user.setHouseNumber(userJson.optString("houseNumber"));
+                user.setMobile(userJson.optString("mobile"));
+                user.setUnitId(userJson.optString("unitId"));
+                user.setAccount(userJson.optString("userAccount"));
+                user.setReallyName(userJson.optString("userName"));
+                user.setNickName(userJson.optString("nickName"));
+                user.setRole(userJson.optString("userType"));
+                user.setUid(userJson.optString("userId"));
+                user.setOrganId(userJson.optString("organId"));
+                user.setHeadUrl(userJson.optString("photo"));
+            }
+        }
+        catch (Exception e)
+        {
+            user = null;
+            e.printStackTrace();
+        }
+        return user;
+    }
+    
+    public static ArrayList<MessageInfo> parseMsgListRes(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<MessageInfo> list = new ArrayList<MessageInfo>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray joa = job.optJSONArray("dataList");
+                for (int i = 0; i < joa.length(); i++)
+                {
+                    jsonObject = joa.optJSONObject(i);
+                    MessageInfo message = new MessageInfo();
+                    message.setId(jsonObject.optInt("msgId"));
+                    message.setDate(jsonObject.optString("onlineTime"));
+                    message.setImg(jsonObject.optString("picURL"));
+                    message.setContent(jsonObject.optString("detail"));
+                    message.setTitle(jsonObject.optString("title"));
+                    message.setMsgtype(jsonObject.optString("msgType"));
+                    message.setOriginaltype(jsonObject.optInt("originalType"));
+                    list.add(message);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<PayInfo> parsePayInfoListRes(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<PayInfo> list = new ArrayList<PayInfo>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONObject j = job.optJSONObject("data");
+                String amount = j.optString("amount");
+                AccountLogic.getInstance().amount = StringUtils.isEmpty(amount) ? "0"
+                        : amount;
+                JSONArray joa = j.optJSONArray("dunningInfoList");
+                for (int i = 0; i < joa.length(); i++)
+                {
+                    jsonObject = joa.optJSONObject(i);
+                    PayInfo pi = new PayInfo();
+                    pi.setId(String.valueOf(jsonObject.optInt("id")));
+                    pi.setMsg(jsonObject.optString("content"));
+                    pi.setType(String.valueOf(jsonObject.optInt("type")));
+                    pi.setMoney(jsonObject.optString("money"));
+                    list.add(pi);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = new ArrayList<PayInfo>();
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<BillInfo> parseRecentBillRes(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<BillInfo> list = new ArrayList<BillInfo>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray joa = job.optJSONObject("data")
+                        .optJSONArray("resultList");
+                for (int i = 0; i < joa.length(); i++)
+                {
+                    jsonObject = joa.optJSONObject(i);
+                    BillInfo bi = new BillInfo();
+                    bi.setId(jsonObject.optString("id"));
+                    bi.setPaymoney(jsonObject.optString("price"));
+                    bi.setConsumerType(jsonObject.optString("consumerType"));
+                    bi.setDate(jsonObject.optString("consumerDate"));
+                    bi.setContent(jsonObject.optString("consumerContent"));
+                    list.add(bi);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = new ArrayList<BillInfo>();
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<BillInfo> parseHistoryBillRes(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<BillInfo> list = new ArrayList<BillInfo>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray joa = job.optJSONObject("data")
+                        .optJSONArray("resultList");
+                for (int i = 0; i < joa.length(); i++)
+                {
+                    jsonObject = joa.optJSONObject(i);
+                    BillInfo bi = new BillInfo();
+                    bi.setMonth(jsonObject.optString("month"));
+                    JSONArray jsonArray = jsonObject.optJSONArray("list");
+                    for (int j = 0; j < jsonArray.length(); j++)
+                    {
+                        BillInfo bi2 = new BillInfo();
+                        JSONObject jobtemp = jsonArray.optJSONObject(j);
+                        bi2.setId(String.valueOf(jobtemp.optInt("id")));
+                        bi2.setPaymoney(String.valueOf(jobtemp.optInt("price")));
+                        bi2.setConsumerType(jobtemp.optString("consumerType"));
+                        bi2.setDate(jobtemp.optString("consumerDate"));
+                        bi2.setContent(jobtemp.optString("consumerContent"));
+                        bi.getList().add(bi2);
+                    }
+                    list.add(bi);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = new ArrayList<BillInfo>();
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<Ad> parseAdList(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<Ad> list = new ArrayList<Ad>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray jsonArray = job.optJSONArray("dataList");
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+                    jsonObject = jsonArray.optJSONObject(i);
+                    Ad ad = new Ad();
+                    ad.setAdId(jsonObject.optInt("adId"));
+                    ad.setTitle(jsonObject.optString("title"));
+                    ad.setType(jsonObject.optInt("type"));
+                    ad.setContent(jsonObject.optString("content"));
+                    ad.setLink(jsonObject.optString("link"));
+                    ad.setUrl(jsonObject.optString("url"));
+                    ad.setAdDesc(jsonObject.optString("adDesc"));
+                    list.add(ad);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<Integral> parseIntegralListRes(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<Integral> list = new ArrayList<Integral>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                IntegralLogic.getInstance().startTime = job.optString("startTime");
+                IntegralLogic.getInstance().endTime = job.optString("endTime");
+                JSONArray joa = job.optJSONArray("dataList");
+                for (int i = 0; i < joa.length(); i++)
+                {
+                    jsonObject = joa.optJSONObject(i);
+                    Integral integral = new Integral();
+                    integral.setId(jsonObject.optInt("id"));
+                    integral.setName(jsonObject.optString("name"));
+                    integral.setDesc(jsonObject.optString("desc"));
+                    integral.setPic(jsonObject.optString("picURL"));
+                    integral.setIntegral(jsonObject.optInt("score"));
+                    list.add(integral);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<Address> parseProvinceList(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<Address> list = new ArrayList<Address>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray jsonArray = job.optJSONArray("provinceList");
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+                    jsonObject = jsonArray.optJSONObject(i);
+                    Address address = new Address();
+                    address.setId(jsonObject.optString("provinceId"));
+                    address.setName(jsonObject.optString("provinceName"));
+                    list.add(address);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<Address> parseCityList(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<Address> list = new ArrayList<Address>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray jsonArray = job.optJSONArray("cityList");
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+                    jsonObject = jsonArray.optJSONObject(i);
+                    Address address = new Address();
+                    address.setId(jsonObject.optString("cityId"));
+                    address.setName(jsonObject.optString("cityName"));
+                    list.add(address);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<Address> parseCommunityList(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<Address> list = new ArrayList<Address>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray jsonArray = job.optJSONArray("orgList");
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+                    jsonObject = jsonArray.optJSONObject(i);
+                    Address address = new Address();
+                    address.setId(jsonObject.optString("organizationno"));
+                    address.setName(jsonObject.optString("organizationname"));
+                    list.add(address);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<Address> parseZutuanList(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<Address> list = new ArrayList<Address>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray jsonArray = job.optJSONArray("groupList");
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+                    jsonObject = jsonArray.optJSONObject(i);
+                    Address address = new Address();
+                    address.setId(jsonObject.optString("groupId"));
+                    address.setName(jsonObject.optString("groupName"));
+                    list.add(address);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<Address> parseBuildingList(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<Address> list = new ArrayList<Address>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray jsonArray = job.optJSONArray("buildingList");
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+                    jsonObject = jsonArray.optJSONObject(i);
+                    Address address = new Address();
+                    address.setId(jsonObject.optString("buildingId"));
+                    address.setName(jsonObject.optString("buildingName"));
+                    String unitSum = jsonObject.optString("unitSum");
+                    if (!StringUtils.isEmpty(unitSum))
+                    {
+                        for (int j = 1; j <= Integer.valueOf(unitSum); j++)
+                        {
+                            Address unit = new Address();
+                            unit.setId(j + "");
+                            unit.setName(NumberUtils.numberArab2CN(j) + "单元");
+                            address.getUnitList().add(unit);
+                        }
+                    }
+                    
+                    list.add(address);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public static ArrayList<Address> parseDoorplateList(String response)
+    {
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<Address> list = new ArrayList<Address>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray jsonArray = job.optJSONArray("houseList");
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+                    jsonObject = jsonArray.optJSONObject(i);
+                    Address address = new Address();
+                    address.setId(jsonObject.optString("houseId"));
+                    address.setName(jsonObject.optString("houseName"));
+                    list.add(address);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+}

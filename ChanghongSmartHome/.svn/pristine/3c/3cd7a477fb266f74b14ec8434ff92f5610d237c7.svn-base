@@ -1,0 +1,107 @@
+package com.changhong.smarthome.phone.foundation.fragment;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
+import com.changhong.sdk.fragment.SuperFragment;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.property.PropertyMainActivity;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class ProManageFragment extends SuperFragment
+{
+    
+    private View convertView;
+    
+    //报修
+    private RelativeLayout frameRepair;
+    
+    //投诉意见箱
+    private RelativeLayout frameSuggestionBox;
+    
+    //报修标识
+    public static String BXBZ = "frameRepair";
+    
+    //投诉标识
+    public static String TSBZ = "frameSuggestionBox";
+    
+    @ViewInject(R.id.frame01)
+    private LinearLayout frame01;
+    
+    @Override
+    public void updateView(Message msg)
+    {
+    }
+    
+    @Override
+    public void updateView(Intent intent)
+    {
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public View initLayout(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        convertView = inflater.inflate(R.layout.promanage_layout,
+                container,
+                false);
+        ViewUtils.inject(this, convertView);
+        return convertView;
+    }
+    
+    /**
+     * 
+     * 报修
+     * [功能详细描述]
+     * @param view
+     */
+    @OnClick(R.id.frameRepair)
+    public void frameRepairClick(View view)
+    {
+        Intent intent = new Intent();
+        intent.putExtra("bz", BXBZ);
+        intent.setClass(getActivity(), PropertyMainActivity.class);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.anim_enter,
+                R.anim.anim_exit);
+    }
+    
+    /**
+     * 
+     * 意见箱
+     * [功能详细描述]
+     * @param view
+     */
+    @OnClick(R.id.frameSuggestionBox)
+    public void frameSuggestionBoxClick(View view)
+    {
+        Intent intent = new Intent();
+        intent.putExtra("bz", TSBZ);
+        intent.setClass(getActivity(), PropertyMainActivity.class);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.anim_enter,
+                R.anim.anim_exit);
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+}

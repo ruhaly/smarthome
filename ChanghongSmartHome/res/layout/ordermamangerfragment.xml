@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ordermanager_list_bg" >
+
+    <com.changhong.smarthome.phone.store.activity.PullRefreshListView
+        android:id="@+id/listview_id"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="0dip"
+        android:cacheColorHint="#00000000"
+        android:listSelector="#00000000"
+        android:dividerHeight="8dip" 
+        android:background="@android:color/transparent"
+        android:divider="@null"
+        android:fadingEdge="none"
+        android:gravity="center" >
+    </com.changhong.smarthome.phone.store.activity.PullRefreshListView>
+
+</RelativeLayout>

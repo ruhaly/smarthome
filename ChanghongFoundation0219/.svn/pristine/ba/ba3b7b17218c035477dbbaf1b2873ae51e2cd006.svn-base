@@ -1,0 +1,56 @@
+/**
+ * 
+ * 类名称： Constant.java 
+ * 作者： hlr 
+ * 创建时间： 2012-5-7 下午4:06:28 
+ * 版权声明 ： Copyright(C) 2008-2010 RichPeak
+ *
+ */
+package com.changhong.foundation.baseapi;
+
+/**
+ * 
+ * 
+ * 项目名称：CH_foundation 类名称：Constant 类描述： 创建人：b 创建时间：2014年1月14日 上午9:39:40 修改人：b
+ * 修改时间：2014年1月14日 上午9:39:40 修改备注：
+ * 
+ * @version
+ * 
+ */
+public class Constant
+{
+    
+    public static final String TAG = "ch_foundation";
+    
+    // 是否成功登陆过的 key
+    public static final String LOGGED_ON = "logged_on";
+    
+    public static final String AUTO_LOGIN = "auto_login";
+    
+    public static final String PROVINCE = "0";
+    
+    public static final String CITY = "1";
+    
+    public static final String COMMUNITY = "2";
+    
+    public static final String ZUTUAN = "3";
+    
+    public static final String BUILDING = "4";
+    
+    public static final String UNIT = "5";
+    
+    public static final String DOORPLATE = "6";
+    
+    public static final String TYPE_REGISTER_VALICEDE = "1";
+    
+    public static final String TYPE_FORGET_PWD_VALICEDE = "2";
+    
+    //终端类型
+    public static final int TERMINAL_TYPE = 1;
+    
+    //终端类型0:手机
+    //    1:TV
+    //    2:PAD    
+    public static final String CLIENTTYPE = "0";
+    
+}

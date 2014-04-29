@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#EEEEEE"
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center_vertical"
+    android:paddingLeft="13.3dip"
+    android:paddingRight="13.3dip" >
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="@dimen/icon_height"
+        android:layout_height="@dimen/icon_height"
+        android:layout_marginLeft="6.7dip"
+        android:layout_marginRight="8dip"
+        android:scaleType="fitXY"
+        android:src="@drawable/login_new_image" />
+
+    <LinearLayout
+        android:id="@+id/content_ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:layout_toRightOf="@+id/iv_icon"
+        android:background="@drawable/content_bg"
+        android:orientation="vertical"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="12dip" >
+
+            <TextView
+                android:id="@+id/tv_nick_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxWidth="@dimen/max_width"
+                android:singleLine="true"
+                android:text="来自交换空间"
+                android:textColor="@color/list_content_text_color"
+                android:textSize="@dimen/list_date_size" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tv_nick_name"
+                android:layout_marginLeft="10dip"
+                android:layout_toRightOf="@+id/tv_nick_name"
+                android:text="2014-01-01"
+                android:textColor="@color/list_time_text_color"
+                android:textSize="@dimen/list_date_size" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dip"
+            android:layout_marginLeft="10dip"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="今天，是我30岁生日，先祝自己生日快乐"
+            android:textColor="@color/list_content_text_color"
+            android:textSize="@dimen/list_content_size" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/msg_reply_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/content_ll"
+        android:layout_marginTop="10dip"
+        android:text="@string/msg_reply" />
+
+    <LinearLayout
+        android:id="@+id/msg_reply_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/content_ll"
+        android:layout_below="@+id/msg_reply_btn"
+        android:layout_marginLeft="10dip"
+        android:orientation="vertical"
+        android:visibility="gone" >
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/exitLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/title_top" >
+
+    <TextView
+        android:id="@+id/titletext"
+        style="@style/title_center_style"
+        android:text="@string/cinema" />
+
+    <RelativeLayout
+        android:id="@+id/exitRelative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/exitLayout"
+        android:layout_centerVertical="true" >
+
+        <ImageView
+            android:id="@+id/exitImg1"
+            style="@style/title_left_style" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" >
+
+        <ImageView
+            android:id="@+id/exitImg2"
+            style="@style/title_right_style"
+            android:background="@drawable/search_bar_icon_search" />
+    </RelativeLayout>
+
+</RelativeLayout>

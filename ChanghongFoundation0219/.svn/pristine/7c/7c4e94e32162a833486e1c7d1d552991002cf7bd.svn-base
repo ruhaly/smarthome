@@ -1,0 +1,25 @@
+package com.changhong.foundation.baseapi;
+
+public class HttpUrl
+{
+    
+    //张琪荣  http://172.17.184.26:8080/OSS
+    //杨帆 http://172.17.184.51:8081/OSS
+    //邓金祥 http://172.17.184.241.:25535/OSS
+    public static String OSS = "http://172.17.184.241:25535/OSS";//"http://172.17.184.212:9999/OSS";//"http://172.17.184.45:8080/OSS";//
+    
+    public static String CBS = "http://172.17.184.214:7777/cbs";
+    
+    public static String SNS = "http://172.17.184.212:9999/SNS";
+    
+    public static String URL_OSS = OSS + "/service";// "http://172.17.184.212:9999/OSS/service";//
+                                                    // "http://172.17.184.212:8080/OSS/service";
+                                                    //    
+    
+    //    public static String URL_PAY_INFOS = OSS + "/service";//
+    //                                                          // "http://192.168.115.88:8080/OSS/service";
+    //    
+    
+    public static String URL_CBS = CBS + "/msg"; // "http://192.168.115.89:8089/cbs/msg";
+    
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tab_bar" >
+
+        <ImageView
+            android:id="@+id/community_back_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/back"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/community_manage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:text="@string/community_manage"
+            android:textColor="@color/color_5f5f5f"
+            android:textSize="@dimen/font_size_title" >
+        </TextView>
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/community_gridview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="12dp"
+        android:horizontalSpacing="14dp"
+        android:numColumns="2"
+        android:verticalSpacing="10dp"
+        android:listSelector="@color/cacheColorHint" >
+    </GridView>
+
+</LinearLayout>

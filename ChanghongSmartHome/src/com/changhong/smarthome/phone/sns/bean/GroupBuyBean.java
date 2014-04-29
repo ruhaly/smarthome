@@ -1,0 +1,252 @@
+package com.changhong.smarthome.phone.sns.bean;
+
+import java.util.List;
+
+/**
+ * <功能详细描述>
+ * 
+ * @author wanghonghong
+ * @version [版本号, 2014-3-28]
+ * @see [相关类/方法]
+ * @since [产品/模块版本]
+ */
+public class GroupBuyBean
+{
+    /**
+     * 跟单人数
+     */
+    private String followPeopleNum;
+    
+    /**
+     * 剩余时间
+     */
+    private String surplusTime;
+    
+    /**
+     * 促销价
+     */
+    private String promotionalPrice;
+    
+    /**
+     * 原始价格
+     */
+    private String orignalPrice;
+    
+    /**
+     * 团购单内容
+     */
+    private String content;
+    
+    /**
+     * 活动时间
+     */
+    private String activityTime;
+    
+    /**
+     * 发起商家
+     */
+    private String launchBusiness;
+    
+    /**
+     * 联系电话
+     */
+    private String contactTel;
+    
+    /**
+     * 图片地址
+     */
+    private String picUrl;
+    
+    /**
+     * 是否是热门团购
+     */
+    private boolean isHot;
+    
+    /**
+     * 发起拼单的account
+     */
+    private String accountId;
+    
+    /**
+     * 社区
+     */
+    private String community;
+    
+    /**
+     * 是否是我发布的团购
+     */
+    private boolean isMy;
+    
+    /**
+     * 是否是团购结束
+     */
+    private boolean isOver;
+    
+    /**
+     * 团购列表的总个数
+     */
+    private int totalNum;
+    
+    private List<GroupBuyBean> groupBuyBeans;
+    
+    public String getFollowPeopleNum()
+    {
+        return followPeopleNum;
+    }
+    
+    public void setFollowPeopleNum(String followPeopleNum)
+    {
+        this.followPeopleNum = followPeopleNum;
+    }
+    
+    public String getSurplusTime()
+    {
+        return surplusTime;
+    }
+    
+    public void setSurplusTime(String surplusTime)
+    {
+        this.surplusTime = surplusTime;
+    }
+    
+    public String getPromotionalPrice()
+    {
+        return promotionalPrice;
+    }
+    
+    public void setPromotionalPrice(String promotionalPrice)
+    {
+        this.promotionalPrice = promotionalPrice;
+    }
+    
+    public String getOrignalPrice()
+    {
+        return orignalPrice;
+    }
+    
+    public void setOrignalPrice(String orignalPrice)
+    {
+        this.orignalPrice = orignalPrice;
+    }
+    
+    public String getContent()
+    {
+        return content;
+    }
+    
+    public void setContent(String content)
+    {
+        this.content = content;
+    }
+    
+    public String getActivityTime()
+    {
+        return activityTime;
+    }
+    
+    public void setActivityTime(String activityTime)
+    {
+        this.activityTime = activityTime;
+    }
+    
+    public String getLaunchBusiness()
+    {
+        return launchBusiness;
+    }
+    
+    public void setLaunchBusiness(String launchBusiness)
+    {
+        this.launchBusiness = launchBusiness;
+    }
+    
+    public String getContactTel()
+    {
+        return contactTel;
+    }
+    
+    public void setContactTel(String contactTel)
+    {
+        this.contactTel = contactTel;
+    }
+    
+    public String getPicUrl()
+    {
+        return picUrl;
+    }
+    
+    public void setPicUrl(String picUrl)
+    {
+        this.picUrl = picUrl;
+    }
+    
+    public boolean isHot()
+    {
+        return isHot;
+    }
+    
+    public void setHot(boolean isHot)
+    {
+        this.isHot = isHot;
+    }
+    
+    public void setMy(boolean isMy)
+    {
+        this.isMy = isMy;
+    }
+    
+    public boolean isMy()
+    {
+        return isMy;
+    }
+    
+    public void setTotalNum(int totalNum)
+    {
+        this.totalNum = totalNum;
+    }
+    
+    public int getTotalNum()
+    {
+        return totalNum;
+    }
+    
+    public void setGroupBuyBeans(List<GroupBuyBean> groupBuyBeans)
+    {
+        this.groupBuyBeans = groupBuyBeans;
+    }
+    
+    public List<GroupBuyBean> getGroupBuyBeans()
+    {
+        return groupBuyBeans;
+    }
+    
+    public void setOver(boolean isOver)
+    {
+        this.isOver = isOver;
+    }
+    
+    public boolean isOver()
+    {
+        return isOver;
+    }
+    
+    public void setCommunity(String community)
+    {
+        this.community = community;
+    }
+    
+    public String getCommunity()
+    {
+        return community;
+    }
+    
+    public void setAccountId(String accountId)
+    {
+        this.accountId = accountId;
+    }
+    
+    public String getAccountId()
+    {
+        return accountId;
+    }
+    
+}

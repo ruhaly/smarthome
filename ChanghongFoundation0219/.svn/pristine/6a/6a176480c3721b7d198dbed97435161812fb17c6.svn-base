@@ -1,0 +1,111 @@
+/**
+ * Message.java
+ * com.pactera.ch_bedframe.entity
+ *
+ * Function： TODO 
+ *
+ *   ver     date      		author
+ * ──────────────────────────────────
+ *   		 2013-12-3 		b
+ *
+ * Copyright (c) 2013, TNT All Rights Reserved.
+ */
+
+package com.changhong.foundation.entity;
+
+/**
+ * ClassName:Message Function: TODO ADD FUNCTION
+ * 
+ * @author ruhaly
+ * @version
+ * @since Ver 1.1
+ * @Date 2013-12-3 下午5:31:55
+ */
+public class MessageInfo
+{
+    
+    private int id;
+    
+    private String img;
+    
+    private String content;
+    
+    private String date;
+    
+    private String title;
+    
+    private String msgtype;
+    
+    private int originaltype;
+    
+    public int getOriginaltype()
+    {
+        return originaltype;
+    }
+    
+    public void setOriginaltype(int originaltype)
+    {
+        this.originaltype = originaltype;
+    }
+    
+    public String getTitle()
+    {
+        return title;
+    }
+    
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+    
+    public int getId()
+    {
+        return id;
+    }
+    
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+    
+    public String getImg()
+    {
+        return img;
+    }
+    
+    public void setImg(String img)
+    {
+        this.img = img;
+    }
+    
+    public String getContent()
+    {
+        return content;
+    }
+    
+    public void setContent(String content)
+    {
+        this.content = content;
+    }
+    
+    public String getDate()
+    {
+        return date;
+    }
+    
+    public void setDate(String date)
+    {
+        this.date = date;
+    }
+    
+    public String getMsgtype()
+    {
+        return msgtype;
+    }
+    
+    public void setMsgtype(String msgtype)
+    {
+        this.msgtype = msgtype;
+    }
+    
+}

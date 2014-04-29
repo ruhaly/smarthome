@@ -1,0 +1,101 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#b0000000" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="300dip"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dip"
+        android:background="@drawable/popupbg" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="15dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="20dip" >
+
+            <TextView
+                android:id="@+id/ts_tile1"
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_marginBottom="5dip"
+                android:background="@drawable/popuptitlebg"
+                android:gravity="center"
+                android:text="投诉事项"
+                android:textColor="@color/title_text_black"
+                android:textSize="36px" />
+
+            <EditText
+                android:id="@+id/ts_popupe"
+                android:layout_width="fill_parent"
+                android:layout_height="100dip"
+                android:layout_below="@id/ts_tile1"
+                android:layout_marginBottom="1dip"
+                android:background="@drawable/popupcontentbg"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="top"
+                android:hint="请输入投诉事项（必填）"
+                android:maxLength="70"
+                android:minLines="3"
+                android:textColorHint="@color/title_text_gay" />
+
+            <LinearLayout
+                android:id="@+id/hm_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ts_popupe" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="投诉人手机号:"
+                    android:textColor="@color/title_text_black"
+                    android:textSize="36px" />
+
+                <EditText
+                    android:id="@+id/ts_hm"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="号码用来回访（必填）"
+                    android:maxLength="11"
+                    android:numeric="integer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hm_layout" >
+
+                <TextView
+                    android:id="@+id/ts_popupclose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/popupbg"
+                    android:gravity="center"
+                    android:text="取消"
+                    android:textColor="@color/title_text_red"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:id="@+id/ts_popupq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/popupbg"
+                    android:gravity="center"
+                    android:text="确定"
+                    android:textColor="@color/title_text_black"
+                    android:textSize="36px" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

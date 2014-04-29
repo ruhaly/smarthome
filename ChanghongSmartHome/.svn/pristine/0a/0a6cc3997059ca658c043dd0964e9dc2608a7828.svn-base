@@ -1,0 +1,515 @@
+package com.changhong.smarthome.phone.cinema.fragment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.sdk.fragment.SuperFragment;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.ChildCinemaActivity;
+import com.changhong.smarthome.phone.cinema.HotCinemaActivity;
+import com.changhong.smarthome.phone.cinema.SearchActivity;
+import com.changhong.smarthome.phone.cinema.entry.CinemaTitle;
+import com.changhong.smarthome.phone.cinema.entry.Pager;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.logic.GetCinemaTitleLogic;
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.HttpUtils;
+
+public class ContentFragment extends SuperFragment implements OnClickListener
+{
+    
+    private RelativeLayout hotRelative;// ���ŵ�Ӱ
+    
+    private RelativeLayout childRelative;// ��ͯƵ��
+    
+    private RelativeLayout oldRelative;// ����Ƶ��
+    
+    private RelativeLayout sitcomRelative;// l���
+    
+    private RelativeLayout varietyRelative;// ����Ƶ��
+    
+    private RelativeLayout sharingRelative;// ������Ƶ����
+    
+    private RelativeLayout other1Relative;// ����Ƶ��
+    
+    private RelativeLayout other2Relative;
+    
+    private RelativeLayout other3Relative;
+    
+    private RelativeLayout other4Relative;
+    
+    private RelativeLayout other5Relative;
+    
+    private RelativeLayout other6Relative;
+    
+    private RelativeLayout exitRelative;
+    
+    private GetCinemaTitleLogic getCinemaTitleLogic;// ���������ݲ�
+    
+    private HttpUtils httpUtil;
+    
+    ImageView exitImg1;
+    
+    ImageView exitImg2;
+    
+    private ImageView hotImageView;
+    
+    private TextView hotTextView1;
+    
+    private TextView hotTextView2;
+    
+    private ImageView childImageView;
+    
+    private TextView childTextView1;
+    
+    private TextView childTextView2;
+    
+    private ImageView oldImageView;
+    
+    private TextView oldTextView1;
+    
+    private TextView oldTextView2;
+    
+    private ImageView sitcomImageView;
+    
+    private TextView sitcomTextView1;
+    
+    private TextView sitcomTextView2;
+    
+    private ImageView varietyImageView;
+    
+    private TextView varietyTextView1;
+    
+    private TextView varietyTextView2;
+    
+    private ImageView sharingImageView;
+    
+    private TextView sharingTextView1;
+    
+    private TextView sharingTextView2;
+    
+    private Map map;
+    
+    private View v;
+    
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        /* outState.putInt("mColorRes", mColorRes); */
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        Intent intent = new Intent();
+        
+        //intent.putExtra("titleLogo", v.getId());
+        int columnId = 1000;
+        int queryType = 3;
+        String titleLogo = "";
+        if (map.get(v.getId()) != null)
+        {
+            columnId = getCinemaTitleLogic.cinemaTitleList.get((Integer) map.get(v.getId()))
+                    .getId();
+            queryType = getCinemaTitleLogic.cinemaTitleList.get((Integer) map.get(v.getId()))
+                    .getQueryType();
+            titleLogo = getCinemaTitleLogic.cinemaTitleList.get((Integer) map.get(v.getId()))
+                    .getColumnName();
+        }
+        ;
+        
+        if (queryType == 2)
+        {
+            intent.putExtra("columnId", columnId);
+            intent.putExtra("queryType", queryType);
+            intent.putExtra("titleLogo", titleLogo);
+            intent.setClass(getActivity(), HotCinemaActivity.class);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.anim_enter,
+                    R.anim.anim_exit);
+            
+        }
+        else if (queryType == 1)
+        {
+            intent.putExtra("columnId", columnId);
+            intent.putExtra("queryType", queryType);
+            intent.putExtra("titleLogo", titleLogo);
+            intent.setClass(getActivity(), ChildCinemaActivity.class);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.anim_enter,
+                    R.anim.anim_exit);
+            
+        }
+        else if (v.getId() == R.id.exitImg1||v.getId()==R.id.exitRelative)
+        {
+            this.getActivity().finish();
+        }
+        else if (v.getId() == R.id.exitImg2)
+        {
+            
+            intent.setClass(getActivity(), SearchActivity.class);
+            startActivity(intent);
+        }
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        if (null != GetCinemaTitleLogic.getInstance())
+        {
+            getCinemaTitleLogic = GetCinemaTitleLogic.getInstance();
+        }
+        
+    }
+    
+    @Override
+    public View initLayout(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    
+    {
+        v = inflater.inflate(R.layout.right_content, container, false);
+        exitImg1 = (ImageView) v.findViewById(R.id.exitImg1);
+        exitImg2 = (ImageView) v.findViewById(R.id.exitImg2);
+        hotRelative = (RelativeLayout) v.findViewById(R.id.hotRelative);
+        childRelative = (RelativeLayout) v.findViewById(R.id.childRelative);
+        oldRelative = (RelativeLayout) v.findViewById(R.id.oldRelative);
+        sitcomRelative = (RelativeLayout) v.findViewById(R.id.sitcomRelative);
+        varietyRelative = (RelativeLayout) v.findViewById(R.id.varietyRelative);
+        sharingRelative = (RelativeLayout) v.findViewById(R.id.sharingRelative);
+        other1Relative = (RelativeLayout) v.findViewById(R.id.other1Relative);
+        other2Relative = (RelativeLayout) v.findViewById(R.id.other2Relative);
+        other3Relative = (RelativeLayout) v.findViewById(R.id.other3Relative);
+        other4Relative = (RelativeLayout) v.findViewById(R.id.other4Relative);
+        other5Relative = (RelativeLayout) v.findViewById(R.id.other5Relative);
+        other6Relative = (RelativeLayout) v.findViewById(R.id.other6Relative);
+        
+        hotImageView = (ImageView) v.findViewById(R.id.hotImageView);
+        hotTextView1 = (TextView) v.findViewById(R.id.hotTextView1);
+        hotTextView2 = (TextView) v.findViewById(R.id.hotTextView2);
+        
+        childImageView = (ImageView) v.findViewById(R.id.childImageView);
+        childTextView1 = (TextView) v.findViewById(R.id.childTextView1);
+        childTextView2 = (TextView) v.findViewById(R.id.childTextView2);
+        
+        oldImageView = (ImageView) v.findViewById(R.id.oldImageView);
+        oldTextView1 = (TextView) v.findViewById(R.id.oldTextView1);
+        oldTextView2 = (TextView) v.findViewById(R.id.oldTextView2);
+        
+        sitcomImageView = (ImageView) v.findViewById(R.id.sitcomImageView);
+        sitcomTextView1 = (TextView) v.findViewById(R.id.sitcomTextView1);
+        sitcomTextView2 = (TextView) v.findViewById(R.id.sitcomTextView2);
+        
+        varietyImageView = (ImageView) v.findViewById(R.id.varietyImageView);
+        varietyTextView1 = (TextView) v.findViewById(R.id.varietyTextView1);
+        varietyTextView2 = (TextView) v.findViewById(R.id.varietyTextView2);
+        
+        sharingImageView = (ImageView) v.findViewById(R.id.sharingImageView);
+        sharingTextView1 = (TextView) v.findViewById(R.id.sharingTextView1);
+        sharingTextView2 = (TextView) v.findViewById(R.id.sharingTextView2);
+        exitRelative = (RelativeLayout) v.findViewById(R.id.exitRelative);
+        
+        exitRelative.setOnClickListener(this);
+        
+        hotRelative.setOnClickListener(this);
+        childRelative.setOnClickListener(this);
+        oldRelative.setOnClickListener(this);
+        sitcomRelative.setOnClickListener(this);
+        varietyRelative.setOnClickListener(this);
+        sharingRelative.setOnClickListener(this);
+        other1Relative.setOnClickListener(this);
+        other2Relative.setOnClickListener(this);
+        other3Relative.setOnClickListener(this);
+        other4Relative.setOnClickListener(this);
+        other5Relative.setOnClickListener(this);
+        other6Relative.setOnClickListener(this);
+        exitImg1.setOnClickListener(this);
+        exitImg2.setOnClickListener(this);
+        
+        map = new HashMap();
+        httpUtil = new HttpUtils();
+        showProcessDialog(dismiss);
+        getCinemaTitleLogic.setData(fHandler);
+        Pager pager = new Pager();
+        pager.setPageId(1);
+        pager.setPageSize(20);
+        getCinemaTitleLogic.requestGetCinemaTitleList(pager, httpUtil);
+        
+        return v;
+    }
+    
+    //������ʻص�
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case HttpAction.CINEMATITLE_SUCCESS_GET:
+                
+                initDataCinemaTitle();
+                break;
+        }
+        super.handleMsg(msg);
+        
+    }
+    
+    private void initDataCinemaTitle()
+    {
+        BitmapUtils bitmapUtilsHead = new BitmapUtils(
+                getActivity().getBaseContext());
+        bitmapUtilsHead.configDefaultLoadingImage(R.drawable.msg);
+        bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.msg);
+        bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+        ArrayList<CinemaTitle> getCinemaTitleList = getCinemaTitleLogic.cinemaTitleList;
+        
+        for (int i = 0; i < getCinemaTitleList.size(); i++)
+        {
+            if (i == 0)
+            {
+                bitmapUtilsHead.display(hotImageView, getCinemaTitleList.get(i)
+                        .getPicUrl());
+                hotTextView1.setText(getCinemaTitleList.get(i).getColumnName());
+                hotTextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                        .getUpdateCount()));
+                map.put(R.id.hotRelative, 0);
+            }
+            else if (i == 1)
+            {
+                bitmapUtilsHead.display(childImageView,
+                        getCinemaTitleList.get(i).getPicUrl());
+                childTextView1.setText(getCinemaTitleList.get(i)
+                        .getColumnName());
+                childTextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                        .getUpdateCount()));
+                map.put(R.id.childRelative, 1);
+            }
+            else if (i == 2)
+            {
+                bitmapUtilsHead.display(oldImageView, getCinemaTitleList.get(i)
+                        .getPicUrl());
+                oldTextView1.setText(getCinemaTitleList.get(i).getColumnName());
+                oldTextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                        .getUpdateCount()));
+                map.put(R.id.oldRelative, 2);
+            }
+            else if (i == 3)
+            {
+                bitmapUtilsHead.display(sitcomImageView,
+                        getCinemaTitleList.get(i).getPicUrl());
+                sitcomTextView1.setText(getCinemaTitleList.get(i)
+                        .getColumnName());
+                sitcomTextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                        .getUpdateCount()));
+                map.put(R.id.sitcomRelative, 3);
+            }
+            else if (i == 4)
+            {
+                bitmapUtilsHead.display(varietyImageView,
+                        getCinemaTitleList.get(i).getPicUrl());
+                varietyTextView1.setText(getCinemaTitleList.get(i)
+                        .getColumnName());
+                varietyTextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                        .getUpdateCount()));
+                map.put(R.id.varietyRelative, 4);
+            }
+            else if (i == 5)
+            {
+                bitmapUtilsHead.display(sharingImageView,
+                        getCinemaTitleList.get(i).getPicUrl());
+                sharingTextView1.setText(getCinemaTitleList.get(i)
+                        .getColumnName());
+                sharingTextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                        .getUpdateCount()));
+                map.put(R.id.sharingRelative, 5);
+            }
+            else if (i > 5)
+            {
+                LinearLayout other1 = (LinearLayout) v.findViewById(R.id.other1);
+                LinearLayout other2 = (LinearLayout) v.findViewById(R.id.other2);
+                LinearLayout other3 = (LinearLayout) v.findViewById(R.id.other3);
+                
+                if (i == 6)
+                {
+                    
+                   
+                    ImageView other1ImageView = (ImageView) v.findViewById(R.id.other1ImageView);
+                    TextView other1TextView1 = (TextView) v.findViewById(R.id.other1TextView1);
+                    TextView other1TextView2 = (TextView) v.findViewById(R.id.other1TextView2);
+                    
+                    bitmapUtilsHead.display(other1ImageView,
+                            getCinemaTitleList.get(i).getPicUrl());
+                    other1TextView1.setText(getCinemaTitleList.get(i)
+                            .getColumnName());
+                    other1TextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                            .getUpdateCount()));
+                    map.put(R.id.other1Relative, 6);
+                    other1.setVisibility(View.VISIBLE);
+                    other1Relative.setVisibility(View.VISIBLE);
+                    other2Relative.setVisibility(View.INVISIBLE);
+                    
+                }
+                if (i == 7)
+                {
+                  
+                    ImageView other2ImageView = (ImageView) v.findViewById(R.id.other2ImageView);
+                    TextView other2TextView1 = (TextView) v.findViewById(R.id.other2TextView1);
+                    TextView other2TextView2 = (TextView) v.findViewById(R.id.other2TextView2);
+                    
+                    bitmapUtilsHead.display(other2ImageView,
+                            getCinemaTitleList.get(i).getPicUrl());
+                    other2TextView1.setText(getCinemaTitleList.get(i)
+                            .getColumnName());
+                    other2TextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                            .getUpdateCount()));
+                    map.put(R.id.other2Relative, 7);
+                    other1.setVisibility(View.VISIBLE);
+                    other2Relative.setVisibility(View.VISIBLE);
+                }
+                if (i == 8)
+                {
+                  
+                    ImageView other3ImageView = (ImageView) v.findViewById(R.id.other3ImageView);
+                    TextView other3TextView1 = (TextView) v.findViewById(R.id.other3TextView1);
+                    TextView other3TextView2 = (TextView) v.findViewById(R.id.other3TextView2);
+                    
+                    bitmapUtilsHead.display(other3ImageView,
+                            getCinemaTitleList.get(i).getPicUrl());
+                    other3TextView1.setText(getCinemaTitleList.get(i)
+                            .getColumnName());
+                    other3TextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                            .getUpdateCount()));
+                    map.put(R.id.other3Relative, 8);
+                    other2.setVisibility(View.VISIBLE);
+                    other3Relative.setVisibility(View.VISIBLE);
+                    other4Relative.setVisibility(View.INVISIBLE);
+                }
+                if (i == 9)
+                {
+                  
+                    ImageView other4ImageView = (ImageView) v.findViewById(R.id.other4ImageView);
+                    TextView other4TextView1 = (TextView) v.findViewById(R.id.other4TextView1);
+                    TextView other4TextView2 = (TextView) v.findViewById(R.id.other4TextView2);
+                    
+                    bitmapUtilsHead.display(other4ImageView,
+                            getCinemaTitleList.get(i).getPicUrl());
+                    other4TextView1.setText(getCinemaTitleList.get(i)
+                            .getColumnName());
+                    other4TextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                            .getUpdateCount()));
+                    map.put(R.id.other4Relative, 9);
+                    other2.setVisibility(View.VISIBLE);
+                    other4Relative.setVisibility(View.VISIBLE);
+                }
+                if (i == 10)
+                {
+                   
+                    ImageView other5ImageView = (ImageView) v.findViewById(R.id.other5ImageView);
+                    TextView other5TextView1 = (TextView) v.findViewById(R.id.other5TextView1);
+                    TextView other5TextView2 = (TextView) v.findViewById(R.id.other5TextView2);
+                    
+                    bitmapUtilsHead.display(other5ImageView,
+                            getCinemaTitleList.get(i).getPicUrl());
+                    other5TextView1.setText(getCinemaTitleList.get(i)
+                            .getColumnName());
+                    other5TextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                            .getUpdateCount()));
+                    map.put(R.id.other5Relative, 10);
+                    other3.setVisibility(View.VISIBLE);
+                    other5Relative.setVisibility(View.VISIBLE);
+                    other6Relative.setVisibility(View.INVISIBLE);
+                }
+                if (i == 11)
+                {
+                    
+                    ImageView other6ImageView = (ImageView) v.findViewById(R.id.other6ImageView);
+                    TextView other6TextView1 = (TextView) v.findViewById(R.id.other6TextView1);
+                    TextView other6TextView2 = (TextView) v.findViewById(R.id.other6TextView2);
+                    
+                    bitmapUtilsHead.display(other6ImageView,
+                            getCinemaTitleList.get(i).getPicUrl());
+                    other6TextView1.setText(getCinemaTitleList.get(i)
+                            .getColumnName());
+                    other6TextView2.setText(getUpdate(getCinemaTitleList.get(i)
+                            .getUpdateCount()));
+                    map.put(R.id.other6Relative, 11);
+                    other3.setVisibility(View.VISIBLE);
+                    other6Relative.setVisibility(View.VISIBLE);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    //�ṩ��·����Dialog  
+    DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            getCinemaTitleLogic.stopRequest();
+        }
+    };
+    
+    public String getUpdate(int num)
+    {
+        return "(更新" + num + "部)";
+    }
+    
+    public String get111Line(String text)
+    {
+        String textnew = "";
+        for (int i = 0; i < text.length(); i++)
+        {
+            textnew += text.substring(i, i + 1) + "\n";
+            
+        }
+        return textnew.substring(0, textnew.length());
+    }
+    
+    public String get22Line(String text)
+    {
+        String textnew = "";
+        for (int i = 0; i < text.length(); i++)
+        {
+            if (i == 0 || i % 2 == 0)
+            {
+                textnew += text.substring(i, i + 2) + "\n";
+            }
+            
+        }
+        return textnew.substring(0, textnew.length() - 1);
+    }
+    
+    @Override
+    public void updateView(Message msg)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void updateView(Intent intent)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+}

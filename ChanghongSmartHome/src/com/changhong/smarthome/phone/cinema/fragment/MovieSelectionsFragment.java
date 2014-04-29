@@ -1,0 +1,288 @@
+package com.changhong.smarthome.phone.cinema.fragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.changhong.sdk.baseapi.CHUtils;
+import com.changhong.sdk.fragment.SuperFragment;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.adapter.MovieSelectionsAdapter;
+import com.changhong.smarthome.phone.cinema.adapter.PaymethodAdapter;
+import com.changhong.smarthome.phone.cinema.callback.IHttpRequestCallback;
+import com.changhong.smarthome.phone.cinema.entry.MediaOrderVO;
+import com.changhong.smarthome.phone.cinema.entry.PriceVO;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.logic.GetMovieSelectionsLogic;
+import com.changhong.smarthome.phone.sns.activity.ConfirmOrderActivity;
+import com.google.gson.Gson;
+import com.lidroid.xutils.HttpUtils;
+
+/**
+* @ClassName: MovieSelectionsFragment
+* @author yang_jun
+* @date Apr 18, 2014 11:11:23 AM  
+* @Description: 电影集数
+*/
+public class MovieSelectionsFragment extends SuperFragment implements
+        OnClickListener
+{
+    private static final String TAG = "MovieSelectionsFragment";
+    
+    private View view;
+    
+    private Context context;
+    
+    private Button selectButton;
+    
+    private OnMyButtonClickListener mListener;
+    
+    private String playUrl;
+    
+    private String seqNum;
+    
+    private GetMovieSelectionsLogic getMovieSelectionsLogic;
+    
+    private MovieSelectionsAdapter movieSelectionsAdapter;
+    
+    private HttpUtils httpUtil;
+    
+    private GridView gridviews;
+    private MediaOrderVO mediaOrderInfo;
+    private long contentId;
+    
+    public interface OnMyButtonClickListener
+    {
+        public void onMyButtonClick(String seqNum, String playUrl,MediaOrderVO mediaOrderInfo);
+    }
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case HttpAction.MOVIESELECTS_SUCCESS_GET:
+                
+                initDataMovieSelects();
+                break;
+            //MEDIA_ORDER_INFO_SUCCESS_GET
+            case HttpAction.MEDIA_ORDER_INFO_SUCCESS_GET:
+                
+                break;
+            case HttpAction.NewOrderData_SUCCESS_GET:
+                break;
+            default:
+                break;
+        }
+        super.handleMsg(msg);
+    }
+    
+    private void initDataMovieSelects()
+    {
+        movieSelectionsAdapter = new MovieSelectionsAdapter(getActivity(),
+                getMovieSelectionsLogic.movieSelectsList);
+        gridviews.setAdapter(movieSelectionsAdapter);
+        gridviews.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                
+                getMovieSelectionsLogic.addMoviePlayTimes(contentId,
+                        getMovieSelectionsLogic.movieSelectsList.get(position)
+                                .getMediaId(),
+                        httpUtil);
+                playUrl = getMovieSelectionsLogic.movieSelectsList.get(position)
+                        .getPlayUrl();
+                seqNum = getMovieSelectionsLogic.movieSelectsList.get(position)
+                        .getSeqNum() + "";
+                mListener.onMyButtonClick(seqNum, playUrl,mediaOrderInfo);
+            }
+            
+        });
+    }
+    
+    private void requestOrderInfo(long contentId)
+    {
+        //查询用户是否订阅过
+        getMovieSelectionsLogic.requestVideoOrderSituation(contentId,
+                new IHttpRequestCallback()
+                {
+                    @Override
+                    public void callback(String resp)
+                    {
+                        try
+                        {
+                            MediaOrderVO mediaOrderVO = new Gson().fromJson(resp,
+                                    MediaOrderVO.class);
+                            handleOrderInfo(mediaOrderVO);
+                            
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    
+    /**
+     * 处理返回的用户点播信息
+     * 弹出付费对话框或者播放
+     */
+    private void handleOrderInfo(MediaOrderVO mediaOrderVO)
+    {
+        
+        mediaOrderInfo = mediaOrderVO;
+    }
+    
+    private void requestNewOrder(long contentId, long id_pay, String name_pay,
+            float money_pay)
+    {
+        getMovieSelectionsLogic.requestVideoNewOrder(contentId,
+                id_pay,
+                name_pay,
+                money_pay);
+    }
+    
+   
+    
+    
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+    }
+    
+    @Override
+    public void initData()
+    {
+        if (null != GetMovieSelectionsLogic.getInstance())
+        {
+            getMovieSelectionsLogic = GetMovieSelectionsLogic.getInstance();
+            
+        }
+        
+    }
+    
+    @Override
+    public View initLayout(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        contentId = this.getArguments().getLong("contentId");
+        
+        view = inflater.inflate(R.layout.movieselctions, container, false);
+        gridviews = (GridView) view.findViewById(R.id.gridviews);
+        
+        httpUtil = new HttpUtils();
+        // showProcessDialog(dismiss);
+        getMovieSelectionsLogic.setData(fHandler);
+        getMovieSelectionsLogic.requestGetMovieSelectsList(contentId, httpUtil);
+        requestOrderInfo(contentId);
+        /*selectButton = (Button) view.findViewById(R.id.selectc);
+        selectButton.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                seqNum = "1";
+                mListener.onMyButtonClick(seqNum);
+            }
+        });*/
+        return view;
+    }
+    
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        try
+        {
+            mListener = (OnMyButtonClickListener) activity;
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(activity.toString()
+                    + "must implement OnMyButtonClickListener");
+        }
+    }
+    
+    DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            getMovieSelectionsLogic.stopRequest();
+        }
+    };
+    
+    @Override
+    public void updateView(Message msg)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void updateView(Intent intent)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public Dialog getDialog(View view, boolean hasTheme, int theme)
+    {
+        Dialog dialog = null;
+        if (hasTheme)
+        {
+            dialog = new Dialog(getActivity());
+        }
+        else
+        {
+            dialog = new Dialog(getActivity(), theme);
+        }
+        dialog.setContentView(view);
+        dialog.setCanceledOnTouchOutside(false);
+        /*
+         * 将对话框的大小按屏幕大小的百分比设置
+         */
+        WindowManager.LayoutParams p = dialog.getWindow().getAttributes(); // 获取对话框当前的参数值
+        p.width = (int) (CHUtils.getScreenWidth(getActivity()) * 0.9); // 宽度设置为屏幕的0.6
+        dialog.getWindow().setAttributes(p);
+        return dialog;
+    }
+}

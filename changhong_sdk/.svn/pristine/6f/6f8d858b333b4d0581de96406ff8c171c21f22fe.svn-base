@@ -1,0 +1,180 @@
+/*
+ * Pactera Technologies Co., Ltd. Copyright 2013, All rights reserved.
+ * 文件名  :Body.java
+ * 创建人  :张旭荣
+ * 创建时间:2013-12-6
+ */
+
+package com.changhong.sdk.httpbean;
+
+import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.changhong.sdk.baseapi.StringUtils;
+
+/**
+ * [简要描述]:
+ * 
+ * @author 张旭荣
+ * @version 1.0, 2013-12-6
+ */
+public abstract class Body
+{
+    protected String action;
+    
+    protected JSONObject params;
+    
+    /**
+     * Gets the value of the action property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getAction()
+    {
+        return action;
+    }
+    
+    /**
+     * Sets the value of the action property.
+     * 
+     * @param value
+     *            allowed object is {@link String }
+     */
+    public void setAction(String value)
+    {
+        this.action = value;
+    }
+    
+    /**
+     * 返回params属性
+     * 
+     * @return params属性
+     */
+    public JSONObject getParams()
+    {
+        return params;
+    }
+    
+    /**
+     * 设置params属性
+     * 
+     * @param params
+     *            params属性
+     */
+    public void setParams(JSONObject params)
+    {
+        this.params = params;
+    }
+    
+    /**
+     * 设置params属性
+     * 
+     * @param params
+     *            params属性
+     */
+    public void setParams(String value)
+    {
+        if (StringUtils.isNotEmpty(value))
+        {
+            try
+            {
+                this.params = new JSONObject(value);// JSONObject.fromObject(value.trim());
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * 设置map属性
+     * 
+     * @param map
+     *            map属性
+     */
+    @SuppressWarnings("rawtypes")
+    public void setParams(Map map)
+    {
+        this.params = new JSONObject(map);// JSONObject.fromObject(map);
+    }
+    
+    /**
+     * [简要描述]:
+     * 
+     * @author 张旭荣
+     * @param key
+     * @return
+     */
+    public String getParam(String key)
+    {
+        if (null != params)
+        {
+            try
+            {
+                return params.getString(key);
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * [简要描述]:
+     * 
+     * @author 张旭荣
+     * @param key
+     * @param value
+     */
+    public void setParam(String key, Object value)
+    {
+        if (null == params)
+        {
+            params = new JSONObject();
+        }
+        
+        try
+        {
+            params.put(key, value);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * 返回params属性
+     * 
+     * @return params属性
+     */
+    public String getParamsString()
+    {
+        if (null != params)
+        {
+            return params.toString();
+        }
+        return null;
+    }
+    
+    /**
+     * 返回params属性
+     * 
+     * @return params属性
+     */
+    // public Object getParamsBean(Class<Object> clazz) {
+    // if (null != params) {
+    // try {
+    // return JSONObject.toBean(params, clazz);
+    // } catch (JSONException e) {
+    // e.printStackTrace();
+    // }
+    // }
+    // return null;
+    // }
+}

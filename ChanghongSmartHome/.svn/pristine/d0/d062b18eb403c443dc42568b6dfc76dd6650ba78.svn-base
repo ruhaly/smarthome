@@ -1,0 +1,486 @@
+package com.changhong.smarthome.phone.cinema;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.activity.SlideSuperActivity;
+import com.changhong.smarthome.phone.cinema.adapter.HotCinemaAdapter;
+import com.changhong.smarthome.phone.cinema.adapter.PopupAdapter;
+import com.changhong.smarthome.phone.cinema.callback.IHttpRequestCallback;
+import com.changhong.smarthome.phone.cinema.callback.PopupCallback;
+import com.changhong.smarthome.phone.cinema.entry.Cinema;
+import com.changhong.smarthome.phone.cinema.entry.MediaOrderVO;
+import com.changhong.smarthome.phone.cinema.entry.Pager;
+import com.changhong.smarthome.phone.cinema.entry.PriceVO;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.logic.BillLogic;
+import com.changhong.smarthome.phone.cinema.logic.GetCinemaDetailLogic;
+import com.changhong.smarthome.phone.cinema.logic.GetMediaPlayLogic;
+import com.changhong.smarthome.phone.cinema.view.PayPopupwindow;
+import com.google.gson.Gson;
+import com.lidroid.xutils.HttpUtils;
+
+public class HotCinemaActivity extends SlideSuperActivity implements
+        OnClickListener
+{
+    
+    private static boolean test = false;
+    
+    private GridView gridviews;
+    
+    private TextView titletext;
+    
+    private TextView linetext;
+    
+    private ImageView exitImg1;
+    
+    private ImageView exitImg2;
+    
+    private Button buttonUpload;
+    
+    private Button buttonShare;
+    
+    private ImageView lineImg;
+    
+    private PopupWindow popupWindow;
+    
+    private View popupWindow_view;
+    
+    private ListView popup_listview;
+    
+    private int popupheight;
+    
+    private GetCinemaDetailLogic getCinemaDetailLogic;// ���������ݲ�
+    
+    private GetMediaPlayLogic mediaPlayLogic;
+    
+    private RelativeLayout exitRelative;
+    
+    private HotCinemaAdapter hotAdapter;
+    
+    /**
+     * isAlpha ���أ������ж��ǵ��뵭���Ǵ����ҵĲ���
+     * */
+    private boolean isAlpha = false;
+    
+    private boolean isUpDown = false;
+    
+    private HttpUtils httpUtil;
+    
+    private Pager pager;
+    
+    private int columnId;
+    
+    private RelativeLayout lineLayout1;
+    
+    private String titleLogo;
+    
+    //������ʻص�
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case HttpAction.CINEMADETAIL_SUCCESS_GET:
+                initDataCinemaDetail();
+                break;
+            case HttpAction.NewOrderData_SUCCESS_GET:
+                break;
+        }
+        super.handleMsg(msg);
+        
+    }
+    
+    /**
+     * @param mediaOrderVO
+     */
+    private void showPaymentPage(MediaOrderVO mediaOrderVO)
+    {
+        List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+        
+        if(mediaOrderVO.getPriceList()==null){
+            return;
+        }
+        Iterator it = mediaOrderVO.getPriceList().iterator();
+        while (it.hasNext())
+        {
+            PriceVO vo = (PriceVO) it.next();
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", vo.getId());
+            map.put("strategyName", vo.getStrategyName());
+            map.put("money", vo.getMoney());
+            data.add(map);
+        }
+        
+        PayPopupwindow payPopup = new PayPopupwindow(this, data, mediaOrderVO.getContentId());
+        payPopup.show(new PopupCallback()
+        {
+            @Override
+            public void callback(int contentId, int id_pay, String name_pay,
+                    float money_pay)
+            {
+                requestNewOrder(contentId,id_pay,name_pay,money_pay);                 
+            }
+        });
+    }
+    
+    private void initDataCinemaDetail()
+    {
+        hotAdapter = new HotCinemaAdapter(this,
+                getCinemaDetailLogic.cinemaDetailList);
+        /*final HotCinemaAdapter hotAdapter = new HotCinemaAdapter(this,
+                BillLogic.getInstance().cinemaList);*/
+        gridviews.setAdapter(hotAdapter);
+        
+        gridviews.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                
+                if (test)
+                {
+                    
+                }
+                else
+                {
+                    requestOrderInfo(position);
+                }
+                
+            }
+        });
+        
+    }
+    
+    private void startPlay(int position)
+    {
+        Intent intent_play = new Intent(HotCinemaActivity.this,
+                PlayerDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("cinema", (Cinema) hotAdapter.getItem(position));
+        bundle.putString("titleLogo", titleLogo);
+        intent_play.putExtras(bundle);
+        startActivity(intent_play);
+    }
+    
+    private void requestOrderInfo(final int position)
+    {
+        //查询用户是否订阅过
+        Cinema c = (Cinema) hotAdapter.getItem(position);
+        mediaPlayLogic.requestVideoOrderSituation(c.getId(),
+                new IHttpRequestCallback()
+                {
+                    @Override
+                    public void callback(String resp)
+                    {
+                        try
+                        {
+                            MediaOrderVO mediaOrderVO = new Gson().fromJson(resp,
+                                    MediaOrderVO.class);
+                            handleOrderInfo(mediaOrderVO, position);
+                            
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                    }
+                });
+    }
+    
+    /**
+     * 处理返回的用户点播信息
+     * 弹出付费对话框或者播放
+     */
+    private void handleOrderInfo(MediaOrderVO mediaOrderVO, int position)
+    {
+        if (mediaOrderVO == null)
+        {
+            return;
+        }
+        if (mediaOrderVO.getMpResult() == 0)//已付费，直接看
+        {
+            startPlay(position);
+        }
+        else if (mediaOrderVO.getMpResult() == 1)//为付费，弹出对话框
+        {
+            if(mediaOrderVO.getPriceList()!=null){
+                showPaymentPage(mediaOrderVO);
+            }else{
+                showToast("sorry,this video cannot be played now");
+            }
+            
+            
+        }
+        
+    }
+    
+    private void requestNewOrder(long contentId, long id_pay,String name_pay,float money_pay)
+    {
+        mediaPlayLogic.requestVideoNewOrder(contentId, id_pay, name_pay, money_pay);
+    }
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.hotcinema);
+        initId();
+        
+        //8Ŀid
+        columnId = this.getIntent().getIntExtra("columnId", 0);
+        
+        int queryType = this.getIntent().getIntExtra("queryType", 3);
+        
+        titleLogo = this.getIntent().getStringExtra("titleLogo");
+        titletext.setText(titleLogo);
+        
+        gridviews = (GridView) findViewById(R.id.gridviews);
+        
+        httpUtil = new HttpUtils();
+        showProcessDialog(dismiss);
+        getCinemaDetailLogic.setData(mHandler);
+        mediaPlayLogic.setData(mHandler);
+        pager = new Pager();
+        pager.setPageId(1);
+        pager.setPageSize(20);
+        getCinemaDetailLogic.requestGetCinemaDetailList(columnId,
+                "8",
+                pager,
+                httpUtil);
+        
+    }
+    
+    private void initId()
+    {
+        
+        titletext = (TextView) findViewById(R.id.titletext);
+        exitImg1 = (ImageView) findViewById(R.id.exitImg1);
+        exitImg2 = (ImageView) findViewById(R.id.exitImg2);
+        
+        lineImg = (ImageView) findViewById(R.id.lineImg);
+        linetext = (TextView) findViewById(R.id.linetext);//ѡ�еı���8
+        lineLayout1 = (RelativeLayout) findViewById(R.id.lineLayout1);
+        
+        exitRelative = (RelativeLayout) findViewById(R.id.exitRelative);
+        exitRelative.setOnClickListener(this);
+        exitImg1.setOnClickListener(this);//�˳�activity
+        exitImg2.setOnClickListener(this);//��ѯҳ��
+        lineImg.setOnClickListener(this);//ѡ�����˵�
+        lineLayout1.setOnClickListener(this);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // getMenuInflater().inflate(R.menu.activity_cinema_start, menu);
+        return true;
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        if (v.getId() == R.id.exitRelative || v.getId() == R.id.exitImg1)
+        {
+            finish();
+        }
+        else if (v.getId() == R.id.exitImg2)
+        {
+            Intent intent = new Intent();
+            intent.setClass(HotCinemaActivity.this, SearchActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.anim_enter, R.anim.anim_exit);
+        }
+        else if (v.getId() == R.id.lineImg || v.getId() == R.id.lineLayout1)
+        {
+            isUpDown = false;
+            isAlpha = true;
+            
+            /*  int[] location = new int[2];
+              lineLayout.getLocationOnScreen(location);  
+              
+              popupWindow.showAtLocation(lineLayout,
+                      location[0] + v.getWidth(),
+                      location[1]);*/
+            if (popupWindow != null && popupWindow.isShowing())
+            {
+                lineImg.setBackgroundResource(R.drawable.drawable_expand_close);
+            }
+            else
+            {
+                lineImg.setBackgroundResource(R.drawable.drawable_expand_open);
+            }
+            getPopupWindow();
+            popupWindow.setOutsideTouchable(false);
+            popupWindow.setFocusable(true);
+            popupWindow.showAsDropDown(lineLayout1);
+        }
+        
+    }
+    
+    public void getPopupWindow()
+    {
+        // ���˵popupwindow�Ѿ������ó�4���ٴε����ʧ
+        if (null != popupWindow)
+        {
+            popupWindow.dismiss();
+            Log.d("11", "null != popupWindow");
+        }
+        else
+        {
+            initPopupWindow();
+            Log.d("11", "initPopupWindow");
+        }
+    }
+    
+    /**
+     * ��ʼ��popupWindow
+     * */
+    public void initPopupWindow()
+    {
+        // �����Դ�ļ�
+        popupWindow_view = getLayoutInflater().inflate(R.layout.pop_layout,
+                null);
+        // ����PopupWindowʵ��,200,150�ֱ��ǿ�Ⱥ͸߶ȣ����һ������Ƿ���轹�㣬������view�ĵ��û��Ч��
+        
+        popup_listview = (ListView) popupWindow_view.findViewById(R.id.popup_listview);
+        PopupAdapter popupAdapter = new PopupAdapter(this,
+                BillLogic.getInstance().titleList_complex);
+        popup_listview.setAdapter(popupAdapter);
+        
+        popup_listview.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                // ����⸺ֵ
+                linetext.setText(BillLogic.getInstance().titleList_complex.get(position)
+                        .getTitle_name());
+                showProcessDialog(dismiss);
+                getCinemaDetailLogic.requestGetCinemaDetailList(columnId,
+                        BillLogic.getInstance().titleList_complex.get(position)
+                                .getTitle_id(),
+                        pager,
+                        httpUtil);
+                
+                // popupWindow��ʧ
+                if (popupWindow != null && popupWindow.isShowing())
+                {
+                    
+                    popupWindow.dismiss();
+                    popupWindow = null;
+                    Log.d("onItemClick", "onItemClick");
+                }
+                
+            }
+        });
+        
+        ViewTreeObserver vto = popup_listview.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
+        {
+            public boolean onPreDraw()
+            {
+                popupheight = popup_listview.getMeasuredHeight();
+                
+                return true;
+            }
+        });
+        popupWindow = new PopupWindow(popupWindow_view, 200,
+                LayoutParams.WRAP_CONTENT, true);
+        // ���ö���Ч��
+        if (!isUpDown)
+        {
+            
+            popupWindow.setAnimationStyle(R.style.AnimationFade);
+        }
+        
+        // popupWindow.setFocusable(true); 
+        // popupwindow�����ļ���
+        popupWindow_view.setOnTouchListener(new View.OnTouchListener()
+        {
+            
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                // ����Ѿ���������ʾ�ٴε������ʧ
+                if (popupWindow != null && popupWindow.isShowing())
+                {
+                    
+                    popupWindow.dismiss();
+                    popupWindow = null;
+                    Log.d("onTouchPopup", "onTouch");
+                }
+                
+                return false;
+            }
+        });
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        if (null != GetCinemaDetailLogic.getInstance())
+        {
+            getCinemaDetailLogic = GetCinemaDetailLogic.getInstance();
+        }
+        
+        if (null != GetMediaPlayLogic.getInstance())
+        {
+            mediaPlayLogic = GetMediaPlayLogic.getInstance();
+        }
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    //�ṩ��·����Dialog  
+    DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            getCinemaDetailLogic.stopRequest();
+        }
+    };
+    
+}

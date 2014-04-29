@@ -1,0 +1,21 @@
+package com.changhong.smarthome.phone.foundation.bean;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.changhong.sdk.entity.User;
+
+public class Relation
+{
+    //新成员
+    public User user;
+    
+    //新成员个数
+    public String newCount;
+    
+    //根据日期分类
+    //    public List<List<User>> userList = new ArrayList<List<User>>();
+    
+    public List<User> userList = new ArrayList<User>();
+    
+}

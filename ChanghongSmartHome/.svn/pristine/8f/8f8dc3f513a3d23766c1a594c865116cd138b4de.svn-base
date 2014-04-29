@@ -1,0 +1,106 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-4-1 上午10:51:36 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.cinema.adapter;
+
+import java.util.ArrayList;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.entry.Cinema;
+import com.changhong.smarthome.phone.cinema.entry.MyVideoShareVO;
+import com.lidroid.xutils.BitmapUtils;
+
+/**
+* @ClassName: MyVideoShareAdapter
+* @author yang_jun
+* @Description: 我分享的视频
+*/
+public class MyVideoShareAdapter extends BaseAdapter
+{
+    
+    // ListView listView;
+    LayoutInflater m_inflater;
+    
+    Context context;
+    
+    MyVideoShareVO vo;
+    
+    public MyVideoShareAdapter(Context context, MyVideoShareVO vo)
+    {
+        
+        m_inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.vo = vo;
+    }
+    
+    @Override
+    public int getCount()
+    { // ȡ�ø���
+        return vo.getMediaPerShareList().size();
+    }
+    
+    @Override
+    public Object getItem(int position)
+    { // ȡ��ÿһ�����Ϣ
+        return vo.getMediaPerShareList().get(position);
+    }
+    
+    @Override
+    public long getItemId(int position)
+    { // ȡ��ָ�����ID
+        return position;
+    }
+    
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        ViewHolderMyvideo viewholder;
+        BitmapUtils bitmapUtilsHead = new BitmapUtils(context);
+        bitmapUtilsHead.configDefaultLoadingImage(R.drawable.msg);
+        bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.msg);
+        bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+        if (convertView == null)
+        {
+            viewholder = new ViewHolderMyvideo();
+            convertView = m_inflater.inflate(R.layout.myvideoshareitem,
+                    parent,
+                    false);
+            viewholder.childtext = (TextView) convertView.findViewById(R.id.childtext);
+            
+            viewholder.childimage = (ImageView) convertView.findViewById(R.id.childimage);
+            convertView.setTag(viewholder);
+            
+        }
+        else
+        {
+            viewholder = (ViewHolderMyvideo) convertView.getTag();
+        }
+        viewholder.childtext.setText(vo.getMediaPerShareList().get(position).getFileName());
+        
+        bitmapUtilsHead.display(viewholder.childimage, vo.getMediaPerShareList().get(position).getMediaURL());
+        
+        // viewholder.filecontentProvider.setText(contentProviders[position]);
+        return convertView;
+    }
+    
+    class ViewHolderMyvideo
+    {
+        ImageView childimage;
+        
+        TextView childtext;
+        
+    }
+}

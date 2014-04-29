@@ -1,0 +1,36 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-3-21 下午5:11:44 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.cinema.entry;
+
+import com.changhong.sdk.entity.BaseAccountInfo;
+
+/**
+ *查询用户是否点播过 实体类
+ */
+public class MediaOrderVO
+{
+    private BaseAccountInfo accountInfo;
+    private int contentId;
+    public BaseAccountInfo getAccountInfo()
+    {
+        return accountInfo;
+    }
+    public void setAccountInfo(BaseAccountInfo accountInfo)
+    {
+        this.accountInfo = accountInfo;
+    }
+    public int getContentId()
+    {
+        return contentId;
+    }
+    public void setContentId(int contentId)
+    {
+        this.contentId = contentId;
+    }
+    
+}

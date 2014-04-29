@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/view_community_item_text_margin_bottom"
+            android:layout_marginLeft="@dimen/view_community_item_text_margin_left"
+            android:layout_marginTop="@dimen/view_community_item_text_margin_top"
+            android:textColor="@color/color_5f5f5f"
+            android:textSize="@dimen/font_size_title" />
+
+        <TextView
+            android:id="@+id/tvArear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvName"
+            android:layout_below="@+id/tvName"
+            android:layout_marginBottom="@dimen/view_community_item_text_02_margin_bottom"
+            android:text="TextView"
+            android:textColor="@color/color_5f5f5f"
+            android:textSize="@dimen/font_community_item_text_02_size_title" />
+
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvArear"
+            android:layout_toRightOf="@+id/tvArear"
+            android:text="TextView"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/color_5f5f5f"
+            android:textSize="@dimen/font_community_item_text_02_size_title" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,79 @@
+package com.changhong.smarthome.phone.cinema.entry;
+
+import java.io.Serializable;
+
+
+/**
+* @ClassName: Cinema
+* @author yang_jun
+* @date Apr 18, 2014 11:09:50 AM  
+* @Description: cinema 
+*/
+public class Cinema implements Serializable
+{
+    
+    private long id;
+    
+    private String price;
+    
+    private String picUrl;
+    
+    private String contentName;
+    
+    private String contentScore;
+    
+    
+    
+    public long getId()
+    {
+        return id;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
+    }
+
+    public String getPrice()
+    {
+        return price;
+    }
+    
+    public void setPrice(String price)
+    {
+        this.price = price;
+    }
+    
+    public String getPicUrl()
+    {
+        return picUrl;
+    }
+    
+    public void setPicUrl(String picUrl)
+    {
+        this.picUrl = picUrl;
+    }
+    
+    public String getContentName()
+    {
+        return contentName;
+    }
+    
+    public void setContentName(String contentName)
+    {
+        this.contentName = contentName;
+    }
+
+    public String getContentScore()
+    {
+        return contentScore;
+    }
+
+    public void setContentScore(String contentScore)
+    {
+        this.contentScore = contentScore;
+    }
+    
+
+    
+}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tab_bar" >
+
+          <ImageView
+            android:id="@+id/back_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:background="@drawable/back"
+            android:clickable="true" />
+        <TextView
+            android:id="@+id/suggestion_two_dimensioncode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:text="@string/erweima_saomiao"
+            android:textSize="@dimen/title_size" 
+            >
+        </TextView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg" >
+
+        <TextView
+            android:id="@+id/dimension_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:text="@string/dimension_edit"
+            android:textColor="#767676"
+            android:textSize="@dimen/title_size" />
+
+        <RelativeLayout
+            android:layout_width="230dp"
+            android:layout_height="230dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/dimension_edit"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/write_feedbak" >
+            <ImageView 
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/bg"
+               />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

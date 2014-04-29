@@ -1,0 +1,142 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#b0000000" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:layout_centerInParent="true"
+        >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+
+            android:id="@+id/mainRela"
+            android:layout_margin="10dip"
+            android:background="@drawable/popupbg" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                 >
+
+                <TextView
+                    android:id="@+id/bx_tile1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dip"
+                    android:layout_marginBottom="5dip"
+                    android:background="@drawable/popuptitlebg"
+                    android:gravity="center"
+                    android:text="报修事项"
+                    android:textColor="@color/title_text_black"
+                    android:textSize="36px" />
+
+                <EditText
+                    android:id="@+id/bx_popupe"
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dip"
+                    android:layout_below="@id/bx_tile1"
+                    android:layout_marginBottom="1dip"
+                    android:background="@drawable/popupcontentbg"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="top"
+                    android:hint="请输入报修事项（必填）"
+                    android:maxLength="70"
+                    android:minLines="3"
+                    android:textColorHint="@color/title_text_gay" />
+
+                <LinearLayout
+                    android:id="@+id/hm_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/bx_popupe" >
+
+                    <EditText
+                        android:id="@+id/bx_hm"
+                        android:layout_width="fill_parent"
+                        android:layout_height="30dip"
+                        android:background="@drawable/popupcontentbg"
+                        android:layout_marginTop="5dip"
+                        android:hint="请输入电话号码（必填）"
+                        android:maxLength="11"
+                        android:numeric="integer" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/pic_ll"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hm_layout"
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/pic_bg"
+                    android:padding="10dip" >
+
+                    <ImageView
+                        android:id="@+id/iv_add_1"
+                        android:layout_width="60dip"
+                        android:layout_height="60dip"
+                        android:layout_marginRight="10dip"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/add_image" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/pic_video"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/pic_ll"
+                    android:layout_marginBottom="17.3dip"
+                    android:layout_marginTop="5dip"
+                    android:background="@drawable/pic_bg"
+                    android:padding="10dip" >
+
+                    <ImageView
+                        android:id="@+id/iv_video_1"
+                        android:layout_width="60dip"
+                        android:layout_height="60dip"
+                        android:layout_marginRight="10dip"
+                        android:scaleType="fitXY"
+                        android:background="@drawable/add_image" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/pic_video"
+                    android:layout_marginTop="5dip" >
+
+                    <TextView
+                        android:id="@+id/bx_popupclose"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dip"
+                        android:layout_weight="1"
+                        android:background="@drawable/popupbg"
+                        android:gravity="center"
+                        android:text="取消"
+                        android:textColor="@color/title_text_red"
+                        android:textSize="36px" />
+
+                    <TextView
+                        android:id="@+id/bx_popupq"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dip"
+                        android:layout_weight="1"
+                        android:background="@drawable/popupbg"
+                        android:gravity="center"
+                        android:text="确定"
+                        android:textColor="@color/title_text_black"
+                        android:textSize="36px" />
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

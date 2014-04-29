@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/exitLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="48dip"
+    android:background="@drawable/title_top" >
+<!-- 积分兑换 头部 -->
+    <TextView
+        android:id="@+id/intergrationtitletext"
+        style="@style/TextViewTitleStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:layout_centerInParent="true"
+        android:text="@string/integeation_exchange" />
+
+    <RelativeLayout
+        android:id="@+id/exitRelative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/exitLayout"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="13dip" >
+
+        <ImageView
+            android:id="@+id/exitImg1"
+            android:layout_width="30dip"
+            android:layout_height="20dip"
+            android:layout_centerVertical="true"
+            android:background="@drawable/drawable_expand_finish" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dip" >
+          <TextView
+              android:id="@+id/exitImg2"
+            style="@style/TextViewTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dip"
+            android:gravity="top"
+            android:text="@string/my_exchange" />
+        
+    </RelativeLayout>
+</RelativeLayout>

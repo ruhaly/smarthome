@@ -1,0 +1,251 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-3-26 上午11:17:44 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.property.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.baidu.location.BDLocation;
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.sdk.baseapi.CHUtils;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.property.adapter.IntegrationExchangeAdapter;
+import com.changhong.smarthome.phone.property.entry.ExchangeVO;
+import com.changhong.smarthome.phone.property.entry.IntegrationVO;
+import com.changhong.smarthome.phone.property.logic.IntegrationLogic;
+
+public class IntergrationActivity extends SuperActivity implements
+        OnClickListener
+{
+    boolean test = true;
+    
+    LinearLayout myintegrationLayout;
+    
+    private GridView gridViews;
+    
+    private ImageView exitImg1;
+    
+    private TextView tvMyintegration;
+    
+    private TextView tvtime;
+    
+    TextView myExchange;
+    
+    private IntegrationExchangeAdapter adapter;
+    
+    private IntegrationLogic logic;
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.integration_main);
+        initWidgets();
+        
+        if (test)
+        {
+            IntegrationVO vo = getSimulateData();
+            adapter = new IntegrationExchangeAdapter(IntergrationActivity.this,
+                    vo.getExchangeList());
+        }
+        else
+        {
+            adapter = new IntegrationExchangeAdapter(IntergrationActivity.this,
+                    logic.respVO.getExchangeList());
+        }
+        gridViews.setAdapter(adapter);
+        
+        gridViews.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                showExchangeDialog(new CallBack()
+                {
+                    
+                    @Override
+                    public void update(BDLocation location)
+                    {
+                        
+                    }
+                    
+                    @Override
+                    public void update()
+                    {
+                        //sendRequest
+                        showExchangeOKDialog();
+                    }
+                });
+            }
+        });
+        
+    }
+    
+    private void showExchangeDialog(
+            final com.changhong.smarthome.phone.foundation.bean.CallBack callback)
+    {
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.integraionexchangeconfirm, null);
+        TextView tvUserName = (TextView) view.findViewById(R.id.tvUserName);
+        Button btnCancel = (Button) view.findViewById(R.id.btnCancel);
+        Button btnConfirm = (Button) view.findViewById(R.id.btnConfirm);
+        btnConfirm.setText("确定");
+        btnCancel.setText("取消");
+        View divideView = view.findViewById(R.id.divide);
+        final Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        dialog.show();
+        btnCancel.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+            }
+        });
+        
+        btnConfirm.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                callback.update();
+            }
+        });
+    }
+    
+    private void showExchangeOKDialog()
+    {
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.integraionexchangeok, null);
+        final Dialog dialog = new Dialog(this, R.style.MyDialog);
+        dialog.setContentView(view);
+        dialog.setCanceledOnTouchOutside(true);
+        /*
+         * 将对话框的大小按屏幕大小的百分比设置
+         */
+        WindowManager.LayoutParams p = dialog.getWindow().getAttributes(); // 获取对话框当前的参数值
+        p.width = (int) (CHUtils.getScreenWidth(getBaseContext()) * 0.9); // 宽度设置为屏幕的0.6
+        dialog.getWindow().setAttributes(p);
+        dialog.show();
+        
+    }
+    
+    private IntegrationVO getSimulateData()
+    {
+        IntegrationVO vo = new IntegrationVO();
+        List<ExchangeVO> exchangeList = new ArrayList<ExchangeVO>();
+        ExchangeVO exchangeVO = new ExchangeVO();
+        vo.setDate("2014.3.27");
+        vo.setScore(1000);
+        
+        for (int i = 0; i < 12; i++)
+        {
+            exchangeVO.setExchangeName("黄静脆皮鸡");
+            exchangeVO.setNeedScore("1000");
+            exchangeVO.setPicUrl("http://image.baidu.com/channel/topic#12330");
+            exchangeList.add(exchangeVO);
+        }
+        vo.setExchangeList(exchangeList);
+        
+        return vo;
+        
+    }
+    
+    /**
+     * showDialog 显示正在兑换物品的对话框
+     */
+    
+    private void initWidgets()
+    {
+        gridViews = (GridView) findViewById(R.id.gridviews);
+        tvMyintegration = (TextView) findViewById(R.id.myintergrationscore);
+        tvtime = (TextView) findViewById(R.id.todaytime);
+        myExchange = (TextView) findViewById(R.id.exitImg2);
+        myintegrationLayout = (LinearLayout) findViewById(R.id.myintergrationtop);
+        exitImg1 = (ImageView) findViewById(R.id.exitImg1);
+        
+        exitImg1.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                finish();
+            }
+        });
+        
+        myintegrationLayout.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                Log.i(TAG, "---------myintegrationLayout was clicked");
+                Intent intent = new Intent(IntergrationActivity.this,
+                        IntegrationDetailActivity.class);
+                startActivity(intent);
+            }
+        });
+        
+        myExchange.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(IntergrationActivity.this,
+                        MyIntegrationExchangeActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+    
+  
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+}

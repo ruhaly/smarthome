@@ -1,0 +1,26 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-3-31 下午4:50:58 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.property.entry;
+
+import java.util.List;
+
+/**
+ *用户积分变化情况的详细信息
+ */
+public class IntegrationDetailVO
+{
+    private String score;
+    private List<IntegrationChangeItemVO> integrationChangeList;
+    
+}
+
+class IntegrationChangeItemVO{
+    private String changeName;
+    private String changeDate;
+    private String changeScore;
+}

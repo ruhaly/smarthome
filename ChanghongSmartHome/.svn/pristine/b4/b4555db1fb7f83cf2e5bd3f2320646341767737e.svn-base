@@ -1,0 +1,275 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import java.util.Collections;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.baidu.location.BDLocation;
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.sdk.widget.sortlistview.PinyinComparator;
+import com.changhong.sdk.widget.sortlistview.SideBar;
+import com.changhong.sdk.widget.sortlistview.SideBar.OnTouchingLetterChangedListener;
+import com.changhong.sdk.widget.sortlistview.SortModel;
+import com.changhong.smarthome.phone.MainActivity;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.adapter.SortAdapter;
+import com.changhong.smarthome.phone.foundation.baseapi.LocationUtils;
+import com.changhong.smarthome.phone.foundation.baseapi.MsgWhat;
+import com.changhong.smarthome.phone.foundation.bean.Address;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.logic.CitySelectLogic;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+
+public class CitySelectActivity extends SuperActivity
+{
+    @ViewInject(R.id.sortListView)
+    private ListView sortListView;
+    
+    @ViewInject(R.id.sidrbar)
+    private SideBar sideBar;
+    
+    @ViewInject(R.id.dialog)
+    private TextView dialog;
+    
+    private SortAdapter adapter;
+    
+    private CitySelectLogic csLogic;
+    
+    /**
+     * 根据拼音来排列ListView里面的数据类
+     */
+    private PinyinComparator pinyinComparator;
+    
+    private HttpUtils httpUtils;
+    
+    @Override
+    public void initData()
+    {
+        csLogic = CitySelectLogic.getInstance();
+        
+        pinyinComparator = new PinyinComparator();
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+    }
+    
+    /**
+     * 
+     * 定位 
+     * [功能详细描述]
+     */
+    public void locate()
+    {
+        LocationUtils.startLocate(getApplicationContext(), new CallBack()
+        {
+            
+            @Override
+            public void update(BDLocation location)
+            {
+                if (null != location)
+                {
+                    // 根据a-z进行排序源数据
+                    if (csLogic.cityList.size() > 0)
+                    {
+                        if (!StringUtils.isEmpty(location.getCity()))
+                        {
+                            if (csLogic.cityList.get(0)
+                                    .getSortLetters()
+                                    .startsWith("定位城市"))
+                            {
+                                csLogic.cityList.get(0)
+                                        .setName(location.getCity());
+                            }
+                            else
+                            {
+                                csLogic.cityList.add(0, new Address("11",
+                                        location.getCity(), "定位城市"));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        csLogic.cityList.add(0,
+                                new Address("11", location.getCity(), "定位城市"));
+                    }
+                    initAdapter();
+                }
+            }
+            
+            @Override
+            public void update()
+            {
+                
+            }
+        });
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.city_sort_layout);
+        ViewUtils.inject(this);
+        sideBar.setTextView(dialog);
+        initAdapter();
+        locate();
+        requestCity();
+        
+    }
+    
+    DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            csLogic.stopRequest();
+        }
+    };
+    
+    public void requestCity()
+    {
+        showProcessDialog(dismiss);
+        httpUtils = new HttpUtils();
+        csLogic.setData(mHandler);
+        csLogic.requestCity(httpUtils);
+    }
+    
+    public void initAdapter()
+    {
+        if (null == adapter)
+        {
+            
+            csLogic.cityList.add(new Address("1", "北京市", "B"));
+            csLogic.cityList.add(new Address("2", "上海市", "S"));
+            csLogic.cityList.add(new Address("4", "天津市", "T"));
+            csLogic.cityList.add(new Address("5", "厦门市", "X"));
+            csLogic.cityList.add(new Address("6", "深圳市", "S"));
+            csLogic.cityList.add(new Address("7", "南通市", "N"));
+            Collections.sort(csLogic.cityList, pinyinComparator);
+            csLogic.cityList.add(0, new Address("11", "正在定位...", "定位城市"));
+            adapter = new SortAdapter(this, csLogic.cityList);
+            sortListView.setAdapter(adapter);
+            //设置右侧触摸监听
+            sideBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener()
+            {
+                
+                @Override
+                public void onTouchingLetterChanged(String s)
+                {
+                    //该字母首次出现的位置
+                    int position = adapter.getPositionForSection(s.charAt(0));
+                    if (position != -1)
+                    {
+                        sortListView.setSelection(position);
+                    }
+                    
+                }
+            });
+            
+            sortListView.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id)
+                {
+                    //这里要利用adapter.getItem(position)来获取当前position所对应的对象
+                    Toast.makeText(getApplication(),
+                            ((SortModel) adapter.getItem(position)).getName(),
+                            Toast.LENGTH_SHORT).show();
+                    csLogic.address = adapter.getItem(position);
+                    if (csLogic.address.getName().startsWith("正在定位"))
+                    {
+                        return;
+                    }
+                    if (getIntent().getBooleanExtra("fromMainActivity", false))
+                    {
+                        setResult(com.changhong.sdk.baseapi.Constant.CITY_SELECT);
+                        finish();
+                    }
+                    else
+                    {
+                        startActivity(new Intent(getBaseContext(),
+                                MainActivity.class), true);
+                    }
+                }
+            });
+        }
+        else
+        {
+            adapter.updateListView(csLogic.cityList);
+        }
+        
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case MsgWhat.MSGWHAT_GET_PROVINCE_SUCCESS:
+            {
+                // 根据a-z进行排序源数据
+                Collections.sort(csLogic.cityList, pinyinComparator);
+                csLogic.cityList.add(0, new Address("1", "北京市", "热门城市"));
+                csLogic.cityList.add(0, new Address("2", "上海市", "热门城市"));
+                csLogic.cityList.add(0, new Address("3", "无锡市", "热门城市"));
+                csLogic.cityList.add(0, new Address("4", "天津市", "热门城市"));
+                csLogic.cityList.add(0, new Address("5", "厦门市", "热门城市"));
+                csLogic.cityList.add(0, new Address("6", "深圳市", "热门城市"));
+                csLogic.cityList.add(0, new Address("7", "南通市", "热门城市"));
+                csLogic.cityList.add(0, new Address("8", "南京市", "热门城市"));
+                csLogic.cityList.add(0, new Address("9", "如皋市", "热门城市"));
+                csLogic.cityList.add(0, new Address("10", "苏州市", "热门城市"));
+                csLogic.cityList.add(0, new Address("11", "正在定位...", "定位城市"));
+                initAdapter();
+                break;
+            }
+            
+            default:
+                break;
+        }
+        super.handleMsg(msg);
+    }
+    
+    @Override
+    public void clearData()
+    {
+        csLogic.clear();
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            if (getIntent().getBooleanExtra("fromMainActivity", false))
+            {
+                finish();
+                setResult(com.changhong.sdk.baseapi.Constant.CITY_SELECT);
+            }
+            else
+            {
+                showLogoutDialog();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+        
+    }
+}

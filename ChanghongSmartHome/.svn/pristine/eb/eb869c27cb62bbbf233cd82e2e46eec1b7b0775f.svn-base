@@ -1,0 +1,373 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.sdk.baseapi.BitMapUtil;
+import com.changhong.sdk.baseapi.Constant;
+import com.changhong.sdk.baseapi.HttpUrl;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.baseapi.UserUtils;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
+import com.lidroid.xutils.bitmap.callback.BitmapLoadCallBack;
+import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+/**
+ * 
+ * 个人信息界面
+ * [功能详细描述]
+ * @author hanliangru
+ * @version [智慧社区-终端底座, 2014年4月18日]
+ */
+public class PersonInfoActivity extends BaseActivity
+{
+    @ViewInject(R.id.etNickName)
+    private EditText etNickName;
+    
+    @ViewInject(R.id.tvCommonAddress)
+    private TextView tvCommonAddress;
+    
+    @ViewInject(R.id.cbSex)
+    private CheckBox cbSex;
+    
+    @ViewInject(R.id.imgHead)
+    private ImageView imgHead;
+    
+    private BitmapUtils bitmaputils;
+    
+    private static final File PHOTO_DIR = new File(
+            Environment.getExternalStorageDirectory() + "/DCIM/Camera");
+    
+    private File mCurrentPhotoFile;//
+    
+    private String fileName;// 图片名称
+    
+    private Bitmap bitMap;
+    
+    private String filePath = "";
+    
+    /**
+     * SharedPreference中存储照相机文件名对应的key值
+     */
+    public static final String CAMERA_FILE_NAME_KEY = "cameraName";
+    
+    /**
+     * 存储照相机拍摄照片名称的SharedPreference文件名
+     */
+    public static final String SP_CAMERA_INFO_FILE_NAME = "camera_info";
+    
+    //
+    /*用来标识请求照相功能的activity*/
+    private static final int CAMERA_WITH_DATA = 1001;
+    
+    /*用来标识请求gallery的activity*/
+    private static final int PHOTO_PICKED_WITH_DATA = 1002;
+    
+    //裁剪图片
+    private static final int CROP_PICTURE = 1003;
+    
+    private static final int HEAD_WIDTH = 120;
+    
+    private HttpUtils httpUtils;
+    
+    private LoginLogic logic;
+    
+    private String sex;
+    
+    @Override
+    public void initData()
+    {
+        logic = LoginLogic.getInstance();
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.person_info_layout);
+        ViewUtils.inject(this);
+        bitmaputils = new BitmapUtils(getBaseContext());
+        bitmaputils.configDefaultLoadingImage(R.drawable.header);
+        bitmaputils.configDefaultLoadFailedImage(R.drawable.header);
+        bitmaputils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+        updateView();
+    }
+    
+    public void updateView()
+    {
+        if (Constant.MAN.equals(UserUtils.getUser().getSex()))
+        {
+            cbSex.setChecked(true);
+        }
+        else
+        {
+            cbSex.setChecked(false);
+        }
+        
+        etNickName.setText(UserUtils.getUser().getNickName());
+        tvCommonAddress.setText(UserUtils.getUser().getCommunityAddress());
+        if (!StringUtils.isEmpty(UserUtils.getUser().getHeadUrl()))
+        {
+            bitmaputils.display(imgHead,
+                    HttpUrl.OSS + UserUtils.getUser().getHeadUrl(),
+                    new BitmapLoadCallBack<View>()
+                    {
+                        
+                        @Override
+                        public void onLoadCompleted(View container, String uri,
+                                Bitmap bitmap, BitmapDisplayConfig config,
+                                BitmapLoadFrom from)
+                        {
+                            updateHead(BitMapUtil.toRoundCorner(bitmap, 90));
+                        }
+                        
+                        @Override
+                        public void onLoadFailed(View container, String uri,
+                                Drawable drawable)
+                        {
+                            imgHead.setImageDrawable(drawable);
+                        }
+                    });
+        }
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    @OnClick(R.id.frameHead)
+    public void frameHeadClick(View view)
+    {
+        
+        showUpdateHeadChooseDialog(new CallBack()
+        {
+            
+            @Override
+            public void update(Object object)
+            {
+                if (0 == (Integer) object)
+                {
+                    //拍照
+                    doTakePhoto();
+                }
+                else
+                {
+                    //本地相册
+                    doSelectImageFromLoacal();
+                }
+            }
+        });
+        
+    }
+    
+    /**       
+     * 拍照获取图片       
+     *        
+     */
+    private void doTakePhoto()
+    {
+        
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED))
+        {
+            // 判断是否有SD卡
+            //如果想自定义存放地址 将下面的放开
+            if (!PHOTO_DIR.exists())
+            {
+                PHOTO_DIR.mkdirs();// 创建照片的存储目录
+            }
+            fileName = getPhotoFileName();
+            mCurrentPhotoFile = new File(PHOTO_DIR, fileName);// 给新照的照片文件命名
+            Intent cIntent = getTakePickIntent(mCurrentPhotoFile);
+            startActivityForResult(cIntent, CAMERA_WITH_DATA);
+        }
+    }
+    
+    /**       
+     * 从本地手机中选择图片       
+     */
+    private void doSelectImageFromLoacal()
+    {
+        Intent localIntent = new Intent();
+        localIntent.setType("image/*");
+        localIntent.setAction("android.intent.action.GET_CONTENT");
+        Intent localIntent2 = Intent.createChooser(localIntent, "选择图片");
+        startActivityForResult(localIntent2, PHOTO_PICKED_WITH_DATA);
+    }
+    
+    private Intent getTakePickIntent(File f)
+    {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //f：你要存放文件的地址
+        //注意：这里有一点要注意的，如果你设置了intent的MediaStore.EXTRA_OUTPUT参数，
+        //那么在OnActivityResult里面获取到的intent为null，反之如果没有设置的时候，intent是有数据。
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        return intent;
+    }
+    
+    // 用当前时间给取得的图片命名
+    private String getPhotoFileName()
+    {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "'IMG'_yyyyMMdd_HHmmss");
+        
+        String photoName = dateFormat.format(date) + ".jpg";
+        return photoName;
+    }
+    
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        super.onSaveInstanceState(savedInstanceState);
+        //防止三星等手机拍照销毁当前Activity，保存拍的照片
+        savedInstanceState.putParcelable("bitMap", bitMap);
+        savedInstanceState.putString("filePath", filePath);
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            case CAMERA_WITH_DATA:
+            {
+                Uri uri = Uri.fromFile(mCurrentPhotoFile);
+                cropImage(uri, HEAD_WIDTH, HEAD_WIDTH, CROP_PICTURE);
+                break;
+            }
+            case PHOTO_PICKED_WITH_DATA:
+            {
+                if (null != data)
+                {
+                    Uri uri = data.getData();
+                    cropImage(uri, HEAD_WIDTH, HEAD_WIDTH, CROP_PICTURE);
+                }
+                break;
+            }
+            case CROP_PICTURE:
+            {
+                if (null != data)
+                {
+                    //从intent中获取图片
+                    final Bitmap headBitmap = (Bitmap) data.getExtras()
+                            .get("data");
+                    if (headBitmap == null)
+                    {
+                        return;
+                    }
+                    updateHead(headBitmap);
+                }
+                break;
+            }
+            
+            default:
+                break;
+        }
+    }
+    
+    public void updateHead(Bitmap headBitmap)
+    {
+        bitMap = headBitmap;
+        imgHead.setImageBitmap(headBitmap);//(BitMapUtil.toRoundCorner(headBitmap, 90));
+    }
+    
+    //截取图片
+    public void cropImage(Uri uri, int outputX, int outputY, int requestCode)
+    {
+        //裁剪图片意图
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        //裁剪框的比例，1：1
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        //裁剪后输出图片的尺寸大小
+        intent.putExtra("outputX", outputX);
+        intent.putExtra("outputY", outputY);
+        //设置是否允许拉伸
+        intent.putExtra("scale", true);
+        //图片格式
+        intent.putExtra("outputFormat", "JPEG");
+        //        intent.putExtra("noFaceDetection", true);
+        // 如果要在给定的uri中获取图片，则必须设置为true，如果设置为false，那么便不会在给定的uri中获取到裁剪的图片
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, requestCode);
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case MSGWHAT_MODIFY_PERSONINFO_SUCCESS:
+            {
+                showToast(getString(R.string.modify_person_info_success));
+                getUser().setNickName(etNickName.getText().toString());
+                getUser().setSex(sex);
+                break;
+            }
+            
+            default:
+                break;
+        }
+        super.handleMsg(msg);
+    }
+    
+    @OnClick(R.id.btnConfirm)
+    public void btnConfirmClick(View view)
+    {
+        //        showProcessDialog(dismiss);
+        //        httpUtils = new HttpUtils();
+        //        logic.setData(mHandler);
+        //        sex = cbSex.isChecked() ? Constant.MAN : Constant.WOMAN;
+        //        String imgHead = null == bitMap ? ""
+        //                : Base64.encode(BitMapUtil.getBitmapData(bitMap));
+        //        logic.requestModifyPersonInfo(imgHead,
+        //                etNickName.getText().toString(),
+        //                sex,
+        //                httpUtils);
+        
+    }
+    
+    DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            logic.stopRequest();
+        }
+    };
+    
+}

@@ -1,0 +1,903 @@
+package com.changhong.smarthome.phone;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Message;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.changhong.sdk.baseapi.CHUtils;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.sdk.fragment.SuperFragment;
+import com.changhong.sdk.widget.CustomViewPager;
+import com.changhong.smarthome.phone.foundation.activity.BaseActivity;
+import com.changhong.smarthome.phone.foundation.activity.PrivateLetterActivity;
+import com.changhong.smarthome.phone.foundation.activity.RegisterActivity;
+import com.changhong.smarthome.phone.foundation.baseapi.UserUtils;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.bean.Community;
+import com.changhong.smarthome.phone.foundation.bean.MyDialogBean;
+import com.changhong.smarthome.phone.foundation.fragment.MineFragment;
+import com.changhong.smarthome.phone.foundation.fragment.ProManageFragment;
+import com.changhong.smarthome.phone.foundation.fragment.SmartFragment;
+import com.changhong.smarthome.phone.foundation.fragment.WeLifeFragment;
+import com.changhong.smarthome.phone.foundation.logic.CommunityLogic;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+import com.changhong.smarthome.phone.sns.Constant;
+import com.changhong.smarthome.phone.sns.bean.DynamicBean;
+import com.changhong.smarthome.phone.sns.logic.IntShareLogic;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.bitmap.BitmapCommonUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+/**
+ * 
+ * 主界面
+ * [功能详细描述]
+ * @author hanliangru
+ * @version [智慧社区-终端底座, 2014年4月18日]
+ */
+public class MainActivity extends BaseActivity
+{
+    
+    @ViewInject(R.id.customViewPager)
+    private CustomViewPager customViewPager;
+    
+    @ViewInject(R.id.tvProManage)
+    private TextView tvProManage;
+    
+    @ViewInject(R.id.tvWeLife)
+    private TextView tvWeLife;
+    
+    @ViewInject(R.id.tvSmart)
+    private TextView tvSmart;
+    
+    @ViewInject(R.id.tvMine)
+    private TextView tvMine;
+    
+    @ViewInject(R.id.tvCommunity)
+    private TextView tvCommunity;
+    
+    private Adapter adapter;
+    
+    private int lastViewId = 0;
+    
+    private int lastViewIdTemp = 0;
+    
+    //私信
+    @ViewInject(R.id.btn_msg)
+    private ImageView btnMsg;
+    
+    private HttpUtils httpUtils;
+    
+    private IntShareLogic snsLogic;
+    
+    private static int MODE = MODE_PRIVATE;//定义访问模式为私有模式
+    
+    private static final String PREFERENCE_NAME = "private_letter";//设置保存时的文件的名称
+    
+    private LoginLogic logic;
+    
+    private HttpUtils httpUtil;
+    
+    private MyDialogBean dialogBean;
+    
+    private List<SuperFragment> listFragment = new ArrayList<SuperFragment>();
+    
+    private CommunityLogic cLogic;
+    
+    //登录完成后的回调
+    private CallBack callBack = new CallBack()
+    {
+        
+        @Override
+        public void update(Object object)
+        {
+            updateView();
+        }
+    };
+    
+    public void changeTitle(int viewId)
+    {
+        if (R.id.tvMine == viewId)
+        {
+            findViewById(R.id.framePersonInfo).setVisibility(View.VISIBLE);
+            findViewById(R.id.frameCommunitySelect).setVisibility(View.GONE);
+        }
+        else
+        {
+            findViewById(R.id.framePersonInfo).setVisibility(View.GONE);
+            findViewById(R.id.frameCommunitySelect).setVisibility(View.VISIBLE);
+        }
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.main_layout);
+        ViewUtils.inject(this);
+        tvCommunity.setText(logic.curCommunity.getName());
+        tvProManage.setOnClickListener(this);
+        tvSmart.setOnClickListener(this);
+        tvWeLife.setOnClickListener(this);
+        tvMine.setOnClickListener(this);
+        btnMsg.setOnClickListener(this);
+        setLayout(tvProManage);
+        setLayout(tvWeLife);
+        setLayout(tvSmart);
+        setLayout(tvMine);
+        initAdapter();
+        //SNS
+        create();
+        //        User u = UserUtils.getUser();
+        //        Constant.UserId = u.getUid();
+        //        Constant.URL_SNS = HttpUrl.SNS + Constant.URL_service;
+        //        Constant.URL_iconUrl = HttpUrl.SNS.substring(0,
+        //                HttpUrl.SNS.length() - 4) + Constant.icon;
+        //        Constant.COMMUNITYID = u.getCommuntyId();
+        //        Constant.TEL = u.getMobile();
+        //        Constant.TELNAME = u.getNickName();
+        snsLogic = new IntShareLogic();
+        installThreeApk();
+    }
+    
+    @OnClick(R.id.frameCommunitySelect)
+    public void frameCommunitySelectClick(View view)
+    {
+        if (logic.communityList.size() > 0)
+        {
+            showChangeCommunityDialog(logic.communityList, new CallBack()
+            {
+                @Override
+                public void update(Object object)
+                {
+                    changeCommunity((Community) object);
+                    logic.curCommunity = (Community) object;
+                    tvCommunity.setText(((Community) object).getName());
+                }
+            }, findViewById(R.id.imgXiala));
+        }
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        super.onClick(v);
+        switch (v.getId())
+        {
+            case R.id.tvProManage:
+            {
+                customViewPager.setCurrentItem(0);
+                //                changeViewPager(0);
+                break;
+            }
+            case R.id.tvWeLife:
+            {
+                customViewPager.setCurrentItem(1);
+                break;
+            }
+            case R.id.tvSmart:
+            {
+                customViewPager.setCurrentItem(2);
+                break;
+            }
+            case R.id.tvMine:
+            {
+                customViewPager.setCurrentItem(3);
+                break;
+            }
+            case R.id.btn_msg:
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, PrivateLetterActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    public void initAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter(getSupportFragmentManager());
+            customViewPager.setAdapter(adapter);
+            customViewPager.setScrollable(true);
+            customViewPager.setOnPageChangeListener(new OnPageChangeListener()
+            {
+                
+                @Override
+                public void onPageSelected(int position)
+                {
+                    changeViewPager(position);
+                }
+                
+                @Override
+                public void onPageScrolled(int position, float positionOffset,
+                        int positionOffsetPixels)
+                {
+                    
+                }
+                
+                @Override
+                public void onPageScrollStateChanged(int state)
+                {
+                    
+                }
+            });
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    /**
+     * 
+     * 点击tab切换viewpager
+     * [功能详细描述]
+     * @param viewId
+     */
+    public void changeViewPager(int index)
+    {
+        switch (lastViewId)
+        {
+            case 0:
+            {
+                findViewById(R.id.tvProManage).setBackgroundResource(R.drawable.wg_def);
+                break;
+            }
+            case 1:
+            {
+                findViewById(R.id.tvWeLife).setBackgroundResource(R.drawable.welife_def);
+                break;
+            }
+            case 2:
+            {
+                findViewById(R.id.tvSmart).setBackgroundResource(R.drawable.smart_def);
+                break;
+            }
+            case 3:
+            {
+                findViewById(R.id.tvMine).setBackgroundResource(R.drawable.mine_def);
+                break;
+            }
+            default:
+                break;
+        }
+        switch (index)
+        {
+            case 0:
+            {
+                findViewById(R.id.tvProManage).setBackgroundResource(R.drawable.wg_press);
+                break;
+            }
+            case 1:
+            {
+                findViewById(R.id.tvWeLife).setBackgroundResource(R.drawable.weilife_press);
+                break;
+            }
+            case 2:
+            {
+                findViewById(R.id.tvSmart).setBackgroundResource(R.drawable.smart_press);
+                break;
+            }
+            case 3:
+            {
+                findViewById(R.id.tvMine).setBackgroundResource(R.drawable.mine_press);
+                break;
+            }
+            default:
+                break;
+        }
+        customViewPager.setCurrentItem(index, true);
+        lastViewIdTemp = lastViewId;
+        lastViewId = index;
+        changeTitle(index);
+        if (index == 3)
+        {
+            if (!CHApplication.LOGIN)
+            {
+                tvLoginClick(null);
+                return;
+            }
+        }
+        
+        //通过切换界面更新数据
+        Message msg = new Message();
+        msg.what = com.changhong.sdk.baseapi.Constant.UPDATE_VIEW;
+        adapter.getItem(index).updateView(msg);
+        
+    }
+    
+    public void checkIsLogin()
+    {
+        if (!CHApplication.LOGIN)
+        {
+            showLoginDialog();
+        }
+    }
+    
+    public android.content.DialogInterface.OnClickListener ok = new android.content.DialogInterface.OnClickListener()
+    {
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            tvLoginClick(null);
+        }
+    };
+    
+    public void showLoginDialog()
+    {
+        showAlertDialog(0,
+                getString(R.string.tip),
+                getString(R.string.is_logout),
+                null,
+                ok,
+                DEFAULT_BTN,
+                null,
+                true,
+                true);
+    }
+    
+    /**
+     * 获取动态类型
+     */
+    private void getDynamicType()
+    {
+        httpUtils = new HttpUtils();
+        snsLogic.setData(mHandler);
+        snsLogic.requestGetDynamicType(httpUtils);
+        
+    }
+    
+    /**
+     * 创建SharedPreferences
+     */
+    private void create()
+    {
+        if (null == getSharedPreferences(PREFERENCE_NAME, MODE))
+        {
+            SharedPreferences sharedpreferences = this.getSharedPreferences(PREFERENCE_NAME,
+                    MODE);//通过getSharedPreferences(String name,int mode)得到SharedPreferences接口。该方法的第一个参数是文件名称，第二个参数是操作模式
+            SharedPreferences.Editor editor = sharedpreferences.edit();//调用SharedPreferences.Editor方法对SharedPreferences进行修改
+            //用户Id
+            editor.putString("UserId", UserUtils.getUser().getUid());//往editor对象塞值
+            //当前私信个数
+            editor.putInt("num", 0);
+            //当前是否有新私信
+            editor.putBoolean("statue", false);
+            editor.commit();
+        }
+        
+    }
+    
+    /**
+     * 保存数据
+     * @param num
+     * @param statue
+     */
+    private void save(int num, boolean statue)
+    {
+        SharedPreferences sPreferences = getSharedPreferences(PREFERENCE_NAME,
+                MODE);
+        SharedPreferences.Editor editor = sPreferences.edit();//调用SharedPreferences.Editor方法对SharedPreferences进行修改
+        //用户Id
+        editor.putString("UserId", UserUtils.getUser().getUid());//往editor对象塞值
+        //当前私信个数
+        editor.putInt("num", num);
+        //当前是否有新私信
+        editor.putBoolean("statue", statue);
+        editor.commit();
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    public void setLayout(View view)
+    {
+        int width = CHUtils.getScreenWidth(getBaseContext()) / 4;
+        view.setLayoutParams(new LinearLayout.LayoutParams(width,
+                LinearLayout.LayoutParams.MATCH_PARENT));
+    }
+    
+    class Adapter extends FragmentPagerAdapter
+    {
+        public Adapter(FragmentManager fm)
+        {
+            super(fm);
+            SuperFragment proManageFragment = new ProManageFragment();
+            SuperFragment weiLifeFragment = new WeLifeFragment();
+            SuperFragment smartFragment = new SmartFragment();
+            SuperFragment mineFragment = new MineFragment();
+            listFragment.add(proManageFragment);
+            listFragment.add(weiLifeFragment);
+            listFragment.add(smartFragment);
+            listFragment.add(mineFragment);
+            
+        }
+        
+        @Override
+        public SuperFragment getItem(int arg0)
+        {
+            return listFragment.get(arg0);
+        }
+        
+        @Override
+        public int getCount()
+        {
+            return listFragment.size();
+        }
+        
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object)
+        {
+            
+        }
+        
+        @Override
+        public void destroyItem(View container, int position, Object object)
+        {
+            
+        }
+        
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case Constant.GET_DYNAMIC_TYPE_SUCCESS:
+                DynamicBean dBean = (DynamicBean) msg.obj;
+                int num = dBean.getPrivateLetterNum();
+                String userId = getSharedPreferences(PREFERENCE_NAME, MODE).getString("UserId",
+                        UserUtils.getUser().getUid());
+                int privateNum = getSharedPreferences(PREFERENCE_NAME, MODE).getInt("num",
+                        0);
+                boolean statue = getSharedPreferences(PREFERENCE_NAME, MODE).getBoolean("statue",
+                        false);
+                Log.d(TAG, "num--->" + num + "  ,privateNum-->" + privateNum
+                        + "  ,statue--->" + statue);
+                if (UserUtils.getUser() != null
+                        && UserUtils.getUser().getUid() != null
+                        && UserUtils.getUser().getUid().equals(userId))
+                {
+                    if (!statue)
+                    {
+                        if (num > privateNum)
+                        {
+                            statue = true;
+                            btnMsg.setBackgroundResource(R.drawable.new_msg);
+                        }
+                        else
+                        {
+                            statue = false;
+                            btnMsg.setImageResource(R.drawable.private_letter);
+                        }
+                    }
+                    save(num, statue);
+                }
+                break;
+            case Constant.GET_DYNAMIC_TYPE_FAILED:
+                //                if (null != progressDialog)
+                //                {
+                //                    progressDialog.dismiss();
+                //                    progressDialog = null;
+                //                }
+                break;
+            case MSGWHAT_LOGIN_SUCCESS:
+            {
+                showToast(getString(R.string.login_success));
+                if (null != dialogBean && dialogBean.getDialog().isShowing())
+                {
+                    dialogBean.getDialog().dismiss();
+                }
+                CHApplication.LOGIN = true;
+                dialogBean.update();
+                saveData();
+                //通知4个界面更新数据
+                for (SuperFragment sf : listFragment)
+                {
+                    Message message = new Message();
+                    message.what = com.changhong.sdk.baseapi.Constant.UPDATE_VIEW_DATA;
+                    sf.updateView(message);
+                }
+                //                showAuthenticationDialog();
+                break;
+            }
+            case MSGWHAT_PWD_ERROR:
+            {
+                showToast(getString(R.string.pwd_error));
+                break;
+            }
+            case MSGWHAT_USER_NOT_EXIST:
+            {
+                showToast(getString(R.string.user_not_exit));
+                break;
+            }
+            case MSGWHAT_USER_NOT_ACTIVATE:
+            {
+                showToast(getString(R.string.user_not_activate));
+                break;
+            }
+            case MSGWHAT_GET_COMMUNITY_SUCCESS:
+            {
+                if (com.changhong.sdk.baseapi.Constant.NOT_EXIST.equals(getUser().getIsExist()))
+                {
+                    //弹出授权认证框
+                    showAuthenticationDialog();
+                }
+                break;
+            }
+        }
+        super.handleMsg(msg);
+    }
+    
+    private void saveData()
+    {
+        saveUser(logic.user);
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if (CHApplication.LOGIN)
+        {
+            //            getDynamicType();
+        }
+        
+        String userId = getSharedPreferences(PREFERENCE_NAME, MODE).getString("UserId",
+                UserUtils.getUser().getUid());
+        boolean statue = getSharedPreferences(PREFERENCE_NAME, MODE).getBoolean("statue",
+                false);
+        if (null != UserUtils.getUser().getUid())
+        {
+            if (UserUtils.getUser().getUid().equals(userId))
+            {
+                if (statue)
+                {
+                    btnMsg.setImageResource(R.drawable.new_msg);
+                }
+                else
+                {
+                    btnMsg.setBackgroundResource(R.drawable.private_letter);
+                }
+            }
+        }
+        
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            showLogoutDialog();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+        
+    }
+    
+    /**
+     * 
+     * 登录成功后更新界面
+     * [功能详细描述]
+     */
+    public void updateView()
+    {
+        if (CHApplication.LOGIN)
+        {
+            findViewById(R.id.tvLogin).setVisibility(View.GONE);
+        }
+        
+        TextView tv = new TextView(getBaseContext());
+        tv.setBackgroundColor(getResources().getColor(R.color.color_White));
+        tv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT));
+        tv.setPadding(0, 50, 0, 50);
+        tv.setGravity(Gravity.CENTER);
+        tv.setTextColor(getResources().getColor(R.color.black));
+        tv.setText("您好，"
+                + (StringUtils.isEmpty(logic.user.getReallyName()) ? logic.user.getUid()
+                        : logic.user.getReallyName()) + ",欢迎回家！");
+        final Dialog dialog = getDialog(tv, false, R.style.MyDialog);
+        dialog.show();
+        mHandler.postDelayed(new Runnable()
+        {
+            
+            @Override
+            public void run()
+            {
+                if (null != dialog && dialog.isShowing())
+                {
+                    dialog.dismiss();
+                }
+            }
+        }, 2000);
+    }
+    
+    @OnClick(R.id.tvLogin)
+    public void tvLoginClick(View view)
+    {
+        dialogBean = getLoginDialog(callBack, new OnDismissListener()
+        {
+            
+            @Override
+            public void onDismiss(DialogInterface dialog)
+            {
+                if (!CHApplication.LOGIN
+                        && customViewPager.getCurrentItem() == 3)
+                {
+                    changeViewPager(lastViewIdTemp);
+                }
+            }
+        });
+        dialogBean.getDialog().show();
+        dialogBean.getBtLogin().setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                if (StringUtils.isEmpty(dialogBean.getEtAccount()
+                        .getText()
+                        .toString())
+                        || StringUtils.isEmpty(dialogBean.getEtPwd()
+                                .getText()
+                                .toString()))
+                {
+                    showToast(getString(R.string.please_input_all));
+                    return;
+                }
+                toLogin(dialogBean);
+            }
+        });
+        dialogBean.getTvRegister30().setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getBaseContext(),
+                        RegisterActivity.class));
+                dialogBean.getDialog().dismiss();
+            }
+        });
+        dialogBean.getTvForgetPwd().setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                dialogBean.getDialog().dismiss();
+                showRetrievePwdDialog();
+            }
+        });
+    }
+    
+    /**
+     * 
+     * 找回密码框
+     * [功能详细描述]
+     */
+    public void showRetrievePwdDialog()
+    {
+        View retrieveView = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.retrieve_pwd_layout, null);
+        final Dialog dialog = getDialog(retrieveView, false, R.style.MyDialog);
+        Button btnConfirm = (Button) retrieveView.findViewById(R.id.btnConfirm);
+        btnConfirm.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                showRetrievePwdNextDialog();
+            }
+        });
+        dialog.show();
+    }
+    
+    /**
+     * 
+     * 忘记密码下一步
+     * [功能详细描述]
+     */
+    public void showRetrievePwdNextDialog()
+    {
+        View retrieveView = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.retrieve_pwd_next_layout, null);
+        Button btnConfirm = (Button) retrieveView.findViewById(R.id.btnConfirm);
+        final Dialog dialog = getDialog(retrieveView, false, R.style.MyDialog);
+        btnConfirm.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+    
+    DialogInterface.OnDismissListener loginDismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            logic.stopRequest();
+        }
+    };
+    
+    /**
+     * 
+     * 调用登陆接口
+     * [功能详细描述]
+     * @param dialogBean
+     */
+    public void toLogin(MyDialogBean dialogBean)
+    {
+        showProcessDialog(loginDismiss);
+        httpUtil = new HttpUtils();
+        logic.setData(mHandler);
+        logic.requestLogin(dialogBean.getEtAccount()
+                .getText()
+                .toString()
+                .trim(),
+                dialogBean.getEtPwd().getText().toString().trim(),
+                httpUtil);
+    }
+    
+    /**
+     * 
+     * 显示   认证框
+     * [功能详细描述]
+     */
+    public void showAuthenticationDialog()
+    {
+        if (com.changhong.sdk.baseapi.Constant.NOT_EXIST.equals(logic.user.getIsExist()))
+        {
+            View view = LayoutInflater.from(getBaseContext())
+                    .inflate(R.layout.authentication_layout, null);
+            final Dialog dialog = getDialog(view, false, R.style.MyDialog);
+            Button btnConfirm = (Button) view.findViewById(R.id.btnConfirm);
+            btnConfirm.setOnClickListener(new OnClickListener()
+            {
+                
+                @Override
+                public void onClick(View v)
+                {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
+    }
+    
+    /**
+     * 
+     * 切换小区
+     * [功能详细描述]
+     */
+    public void changeCommunity(Community community)
+    {
+        showProcessDialog(dismiss);
+        httpUtils = new HttpUtils();
+        logic.setData(mHandler);
+        cLogic.requestChangeCommunity(getUser().getUid(),
+                community.getCommunityId(),
+                httpUtils);
+    }
+    
+    DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            cLogic.stopRequest();
+        }
+    };
+    
+    @Override
+    public void initData()
+    {
+        logic = LoginLogic.getInstance();
+        cLogic = CommunityLogic.getInstance();
+        
+        threeApkMap.put("com.chiqfridge", "freezer");
+        threeApkMap.put("com.changhong.mscreensynergy", "tv");
+        threeApkMap.put("com.changhong.acsmart.air.page1", "aircondition");
+        
+        threeApkMainActivityMap.put("com.chiqfridge", "com.chiqfridge.activitys.LoginActivity");
+        threeApkMainActivityMap.put("com.changhong.mscreensynergy", "com.changhong.mscreensynergy.mainui.MainActivity");
+        threeApkMainActivityMap.put("com.changhong.acsmart.air.page1", "com.changhong.acsmart.air.page1.BootActivity");
+    }
+    
+    //    添加第三方apk
+    
+    public static final String[] threeApkPkg = { "com.chiqfridge",
+            "com.changhong.mscreensynergy", "com.changhong.acsmart.air.page1" };
+    
+    //key 包名 value apk名字
+    public static Map<String, String> threeApkMap = new HashMap<String, String>();
+    
+    //key 包名 value apk主界面绝对路径
+    public static Map<String, String> threeApkMainActivityMap = new HashMap<String, String>();
+    
+    public void installThreeApk()
+    {
+        for (final String pkg : threeApkMap.keySet())
+        {
+            if (!(CHUtils.checkIsExit(getBaseContext(), pkg)))
+            {
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        installThreeApk(threeApkMap.get(pkg));
+                    }
+                });
+            }
+        }
+    }
+    
+    /**
+     * 
+     * 安装
+     * [功能详细描述]
+     * @param apkName
+     */
+    private void installThreeApk(String apkName)
+    {
+        String sourceName = apkName + ".mp3";
+        String targetName = "/" + apkName + ".apk";
+        String path = BitmapCommonUtils.getDiskCacheDir(getBaseContext(),
+                "smarthome");
+        if (CHUtils.copyApkFromAssets(getBaseContext(),
+                sourceName,
+                path,
+                targetName))
+        {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(Uri.parse("file://" + path + targetName),
+                    "application/vnd.android.package-archive");
+            startActivity(intent);
+        }
+        
+    }
+}

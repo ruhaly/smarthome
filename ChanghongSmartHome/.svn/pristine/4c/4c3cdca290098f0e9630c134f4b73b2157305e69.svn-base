@@ -1,0 +1,101 @@
+package com.changhong.smarthome.phone.cinema;
+
+
+import io.vov.vitamio.utils.Log;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.Menu;
+
+import com.changhong.sdk.baseapi.AppLog;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.activity.BaseActivity;
+import com.changhong.smarthome.phone.cinema.fragment.ContentFragment;
+import com.changhong.smarthome.phone.cinema.fragment.TitleFragment;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.logic.BillLogic;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+
+public class MainActivity extends BaseActivity
+{
+    private Fragment mContent;
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        /*   if (savedInstanceState != null){
+        	mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
+           }
+        if (mContent == null){
+        	mContent = new ContentFragment();	
+        }*/
+        //��ȡ�����4�Ĳ���
+        Log.i("---------cinema-MainACtivity started");
+        Intent intent = this.getIntent();
+        String userId = intent.getStringExtra("userId");
+        String account = intent.getStringExtra("account");
+        
+        
+        String url = intent.getStringExtra("cbsUrl");
+        //showToast(name+"ling");
+        if (account == null || account.equals(""))
+        {
+            account = "yhx";
+        }
+        if (userId == null || userId.equals(""))
+        {
+            userId = "yhx";
+        }
+        if (url == null || url.equals(""))
+        {
+            
+            //url = "http://221.226.107.6:8503/cbs/msg";
+  
+            //url = "http://172.17.184.215:8503/cbs/msg";
+          
+            url= "http://172.17.184.214:7777/cbs/msg";
+            
+//            url="http://172.17.184.135:8080/cbs/msg";//qinzhao
+        }
+        else
+        {
+            url = url + "/msg";
+        }
+       
+        HttpAction.url = url;
+        AppLog.out("CinemaStartActivity", "HttpAction.url="+HttpAction.url, AppLog.LEVEL_INFO);
+        String communityCode = intent.getStringExtra("communtyId");
+        BillLogic.accountInfo.setAccountId(account);
+        BillLogic.accountInfo.setUserId(userId);
+        BillLogic.accountInfo.setCommunityCode(communityCode);
+        BillLogic.accountInfo.setFlag(1);//�ն˱�ʶ1�ֻ�2 TV 3 PAD
+        BillLogic.accountInfo.setResolution("720p");
+        BillLogic.accountInfo.setType("SONY");
+        
+        //overridePendingTransition(R.anim.anim_enter, R.anim.anim_exit);
+        // set the Above View
+        
+        setContentView(R.layout.content_frame);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, new ContentFragment())
+                .commit();
+        // set the Behind View
+        setBehindContentView(R.layout.menu_frame);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.menu_frame, new TitleFragment())
+                .commit();
+        
+        // customize the SlidingMenu
+        getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.activity_cinema_start, menu);
+        return true;
+    }
+
+    
+}

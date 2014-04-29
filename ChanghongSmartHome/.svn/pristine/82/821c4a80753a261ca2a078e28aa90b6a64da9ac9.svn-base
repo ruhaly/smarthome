@@ -1,0 +1,39 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
+import com.changhong.smarthome.phone.R;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class MyAccountActivity extends BaseActivity
+{
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.my_account_layout);
+        ViewUtils.inject(this);
+    }
+    
+    @OnClick(R.id.frameAccount)
+    public void frameAccountClick(View view)
+    {
+        startActivity(new Intent(getBaseContext(), ModifyAccountActivity.class));
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+}

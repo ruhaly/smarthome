@@ -1,0 +1,5 @@
+package com.changhong.smarthome.phone.YellowPages.http;
+
+public class HttpAction {
+	public static final int YELLOWPAGE_LINE_SUCCESS_GET =100;
+}

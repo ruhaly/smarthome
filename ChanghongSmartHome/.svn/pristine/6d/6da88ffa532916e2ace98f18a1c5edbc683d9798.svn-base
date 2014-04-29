@@ -1,0 +1,143 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+
+import com.changhong.smarthome.phone.R;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class RegisterActivity extends BaseActivity
+{
+    
+    @ViewInject(R.id.frameRegister01)
+    private LinearLayout frameRegister01;
+    
+    @ViewInject(R.id.frameRegister02)
+    private LinearLayout frameRegister02;
+    
+    @ViewInject(R.id.etPhone)
+    private EditText etPhone;
+    
+    @ViewInject(R.id.etValicode)
+    private EditText etValicode;
+    
+    @ViewInject(R.id.btnGetValicode)
+    private Button btnGetValicode;
+    
+    @ViewInject(R.id.cbAcceptAgreement)
+    private CheckBox cbAcceptAgreement;
+    
+    @ViewInject(R.id.etPwd)
+    private EditText etPwd;
+    
+    @ViewInject(R.id.rgSalutation)
+    private RadioGroup rgSalutation;
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.register_layout);
+        ViewUtils.inject(this);
+    }
+    
+    public void changeStep(int type)
+    {
+        if (1 == type)
+        {
+            frameRegister01.setVisibility(View.VISIBLE);
+            frameRegister02.setVisibility(View.GONE);
+        }
+        else
+        {
+            frameRegister01.setVisibility(View.GONE);
+            frameRegister02.setVisibility(View.VISIBLE);
+        }
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            if (frameRegister02.getVisibility() == View.VISIBLE)
+            {
+                changeStep(1);
+                return true;
+            }
+        }
+        
+        return super.onKeyDown(keyCode, event);
+    }
+    
+    @OnClick(R.id.btnStartRegister)
+    public void btnStartRegisterClick(View view)
+    {
+        if (!checkStep01IsEmpty())
+        {
+            changeStep(2);
+        }
+    }
+    
+    /**
+     * 
+     * 检查第一步的参数
+     * [功能详细描述]
+     * @return
+     */
+    public boolean checkStep01IsEmpty()
+    {
+        if (checkEditTextIsEmpty())
+        {
+            return true;
+        }
+        if (!cbAcceptAgreement.isChecked())
+        {
+            showToast(getString(R.string.please_accept_agreement));
+            return true;
+        }
+        return false;
+    }
+    
+    @OnClick(R.id.btnRegisterOver)
+    public void btnRegisterOverClick(View view)
+    {
+        
+    }
+    
+    @OnClick(R.id.imgDelete)
+    public void imgDeleteClick(View view)
+    {
+        etPwd.setText("");
+    }
+    
+    /**
+     * 
+     * 注册
+     * [功能详细描述]
+     */
+    public void toRegister()
+    {
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+}

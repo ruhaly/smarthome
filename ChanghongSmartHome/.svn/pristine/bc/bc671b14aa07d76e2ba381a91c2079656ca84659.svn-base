@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/view_mine_bg_margin_left"
+                android:layout_marginRight="@dimen/view_mine_bg_margin_left"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/framePersonInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/view_mine_bg_item_height_01"
+                    android:gravity="center_vertical" >
+
+                    <com.changhong.sdk.widget.RoundImageView
+                        android:id="@+id/imageView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/header" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical" >
+
+                        <TextView
+                            android:id="@+id/tvNickName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:textColor="@color/gray01"
+                            android:textSize="@dimen/font_36"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@+id/tvNickName"
+                            android:text="@string/account"
+                            android:textColor="@color/gray01"
+                            android:textSize="@dimen/font_24"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tvAccount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:textColor="@color/color_767676"
+                            android:textSize="@dimen/font_size_title" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/jiantou_you_gray2" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/divider" />
+
+                <LinearLayout
+                    android:id="@+id/frameAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/view_mine_bg_item_height_02"
+                    android:gravity="center_vertical" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/view_mine_bg_item_icon_margin_rigth"
+                        android:src="@drawable/icon_id" />
+
+                    <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/account"
+                        android:textColor="@color/color_767676"
+                        android:textSize="@dimen/font_size_title" />
+
+                    <ImageView
+                        android:id="@+id/ImageView01"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/jiantou_you_gray2" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/divider" />
+
+                <LinearLayout
+                    android:id="@+id/frameOrderManage"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/view_mine_bg_item_height_02"
+                    android:gravity="center_vertical" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/view_mine_bg_item_icon_margin_rigth"
+                        android:src="@drawable/icon_order" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/my_order"
+                        android:textColor="@color/color_767676"
+                        android:textSize="@dimen/font_size_title" />
+
+                    <ImageView
+                        android:id="@+id/ImageView02"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/jiantou_you_gray2" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/divider" />
+
+                <LinearLayout
+                    android:id="@+id/frameMemberManage"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/view_mine_bg_item_height_02"
+                    android:gravity="center_vertical" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/view_mine_bg_item_icon_margin_rigth"
+                        android:src="@drawable/icon_member" />
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/member_manage"
+                        android:textColor="@color/color_767676"
+                        android:textSize="@dimen/font_size_title" />
+
+                    <ImageView
+                        android:id="@+id/ImageView08"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/jiantou_you_gray2" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/divider" />
+
+                <LinearLayout
+                    android:id="@+id/frameCommunityManage"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/view_mine_bg_item_height_02"
+                    android:gravity="center_vertical" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/view_mine_bg_item_icon_margin_rigth"
+                        android:src="@drawable/icon_community" />
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/community_manage"
+                        android:textColor="@color/color_767676"
+                        android:textSize="@dimen/font_size_title" />
+
+                    <ImageView
+                        android:id="@+id/ImageView03"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/jiantou_you_gray2" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/divider" />
+
+                <LinearLayout
+                    android:id="@+id/frameErWeiMa"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/view_mine_bg_item_height_02"
+                    android:gravity="center_vertical" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/view_mine_bg_item_icon_margin_rigth"
+                        android:src="@drawable/icon_erweima" />
+
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/erweima_saomiao"
+                        android:textColor="@color/color_767676"
+                        android:textSize="@dimen/font_size_title" />
+
+                    <ImageView
+                        android:id="@+id/ImageView04"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/jiantou_you_gray2" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/divider" />
+
+                <LinearLayout
+                    android:id="@+id/frameAppManage"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/view_mine_bg_item_height_02"
+                    android:gravity="center_vertical" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/view_mine_bg_item_icon_margin_rigth"
+                        android:src="@drawable/icon_application" />
+
+                    <TextView
+                        android:id="@+id/textView7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/app_manage"
+                        android:textColor="@color/color_767676"
+                        android:textSize="@dimen/font_size_title" />
+
+                    <ImageView
+                        android:id="@+id/ImageView05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/jiantou_you_gray2" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/divider" />
+
+                <LinearLayout
+                    android:id="@+id/frameSetting"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/view_mine_bg_item_height_02"
+                    android:gravity="center_vertical" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/view_mine_bg_item_icon_margin_rigth"
+                        android:src="@drawable/icon_setting" />
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/setting"
+                        android:textColor="@color/color_767676"
+                        android:textSize="@dimen/font_size_title" />
+
+                    <ImageView
+                        android:id="@+id/ImageView06"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/jiantou_you_gray2" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/divider" />
+
+                <LinearLayout
+                    android:id="@+id/frameSuggestionFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/view_mine_bg_item_height_02"
+                    android:gravity="center_vertical" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/view_mine_bg_item_icon_margin_rigth"
+                        android:src="@drawable/icon_suggestion" />
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/suggestion_feedback"
+                        android:textColor="@color/color_767676"
+                        android:textSize="@dimen/font_size_title" />
+
+                    <ImageView
+                        android:id="@+id/ImageView07"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/jiantou_you_gray2" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

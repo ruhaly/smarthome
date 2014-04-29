@@ -1,0 +1,346 @@
+package com.changhong.foundation.fragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.changhong.foundation.R;
+import com.changhong.foundation.baseapi.DbUtils;
+import com.changhong.foundation.baseapi.DownloadUtils;
+import com.changhong.foundation.logic.DownloadLogic;
+import com.changhong.foundation.logic.LoginLogic;
+import com.changhong.sdk.entity.BusinessInfo;
+import com.changhong.sdk.fragment.SuperFragment;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+
+public class NoInstalledFragment extends SuperFragment
+{
+    
+    public LoginLogic logic;
+    
+    public Adapter adapter;
+    
+    public List<BusinessInfo> biList = new ArrayList<BusinessInfo>();
+    
+    public static final String TAG = "NoInstalledFragment";
+    
+    @ViewInject(R.id.listView)
+    public ListView listView;
+    
+    private View convertView;
+    
+    //    private DownloadLogic dlLogic;
+    
+    @Override
+    public void initData()
+    {
+        //        dlLogic = DownloadLogic.getInstance();
+        logic = LoginLogic.getInstance();
+        List<BusinessInfo> list = DbUtils.queryBusinessInfoList(getActivity().getBaseContext(),
+                null,
+                null, null);
+        if (null != list && list.size() > 0)
+        {
+            if (null != logic.user.list && logic.user.list.size() > 0)
+            {
+                biList.clear();
+                for (int i = 0; i < logic.user.list.size(); i++)
+                {
+                    boolean has = false;
+                    for (int j = 0; j < list.size(); j++)
+                    {
+                        if (logic.user.list.get(i)
+                                .getPackageName()
+                                .equals(list.get(j).getPackageName()))
+                        {
+                            has = true;
+                            return;
+                        }
+                    }
+                    if (!has)
+                    {
+                        biList.add(logic.user.list.get(i));
+                    }
+                }
+            }
+        }
+        else
+        {
+            biList.clear();
+            biList.addAll(logic.user.list);
+        }
+    }
+    
+    @Override
+    public View initLayout(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        convertView = inflater.inflate(R.layout.app_layout, container, false);
+        ViewUtils.inject(this, convertView);
+        initAdapter();
+        return convertView;
+    }
+    
+    public void initAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter();
+            listView.setAdapter(adapter);
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        
+    }
+    
+    @Override
+    public void updateView(Message msg)
+    {
+        
+    }
+    
+    class Adapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return biList.size();
+        }
+        
+        @Override
+        public BusinessInfo getItem(int position)
+        {
+            return biList.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            
+            ViewHolder holder = null;
+            
+            if (convertView == null)
+            {
+                convertView = LayoutInflater.from(getActivity().getBaseContext())
+                        .inflate(R.layout.app_item_layout, parent, false);
+                holder = new ViewHolder();
+                holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+                holder.tvSize = (TextView) convertView.findViewById(R.id.tvSize);
+                holder.imgUpdate = (Button) convertView.findViewById(R.id.imgUpdate);
+                holder.imgDown = (Button) convertView.findViewById(R.id.imgDown);
+                holder.imgUninstall = (Button) convertView.findViewById(R.id.imgUninstall);
+                convertView.setTag(holder);
+            }
+            else
+            {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.imgDown.setTag(position);
+            holder.imgDown.setVisibility(View.VISIBLE);
+            holder.imgDown.setOnClickListener(new OnClickListener()
+            {
+                
+                @Override
+                public void onClick(View v)
+                {
+                    DownloadUtils.download(getActivity().getBaseContext(),
+                            getItem((Integer) v.getTag()));
+                }
+            });
+            holder.tvName.setText(getItem(position).getBusinessName());
+            holder.tvSize.setText("大小" + getItem(position).getSize());
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            private TextView tvName;
+            
+            private TextView tvSize;
+            
+            private Button imgUpdate;
+            
+            private Button imgDown;
+            
+            private Button imgUninstall;
+        }
+    }
+    
+    //    private DownloadManager downloadManager;
+    //    
+    //    private DownloadManagerPro downloadManagerPro;
+    //    
+    //    private long downloadId = 0;
+    //    
+    //    public static final String DOWNLOAD_FOLDER_NAME = "ch_apk";
+    //    
+    //    public static final String KEY_NAME_DOWNLOAD_ID = "downloadId";
+    //    
+    //    public static final String MMIMETYPE = "application/cn.changhong.download.file";
+    //    
+    //    private CompleteReceiver completeReceiver;
+    //    
+    //    public void initDownload()
+    //    {
+    //        /**
+    //         * get download id from preferences.<br/>
+    //         * if download id bigger than 0, means it has been downloaded, then query status and show right text;
+    //         */
+    //        downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+    //        downloadManagerPro = new DownloadManagerPro(downloadManager);
+    //        downloadId = PreferencesUtils.getLong(getActivity().getBaseContext(),
+    //                KEY_NAME_DOWNLOAD_ID);
+    //        initDownloaderDir();
+    //    }
+    //    
+    //    public void initDownloaderDir()
+    //    {
+    //        //        File folder = new File(
+    //        //                CHUtils.getDiskCacheDir(getActivity().getBaseContext(),
+    //        //                        DOWNLOAD_FOLDER_NAME));
+    //        //        if (!folder.exists() || !folder.isDirectory())
+    //        //        {
+    //        //            folder.mkdirs();
+    //        //        }
+    //        
+    //        File folder = new File(DOWNLOAD_FOLDER_NAME);
+    //        if (!folder.exists() || !folder.isDirectory())
+    //        {
+    //            folder.mkdirs();
+    //        }
+    //    }
+    //    
+    //    /**
+    //     * 
+    //     * 下载apk
+    //     * [功能详细描述]
+    //     * @param bi
+    //     */
+    //    @SuppressLint({ "InlinedApi", "NewApi" })
+    //    public void download(BusinessInfo bi)
+    //    {
+    //        String pkgName = bi.getPackageName();
+    //        if (StringUtils.isEmpty(pkgName))
+    //        {
+    //            return;
+    //        }
+    //        
+    //        if (PreferencesUtils.isContainsKey(getActivity().getBaseContext(),
+    //                String.valueOf(dlLogic.map.get(pkgName))))
+    //        {
+    //            showToast(getString(R.string.app_installing));
+    //            return;
+    //        }
+    //        
+    //        initDownload();
+    //        AppLog.out(TAG,
+    //                "下载地址:" + HttpUrl.OSS + bi.getSourceUrl(),
+    //                AppLog.LEVEL_INFO);
+    //        DownloadManager.Request request = new DownloadManager.Request(
+    //                Uri.parse(HttpUrl.OSS + bi.getSourceUrl()));
+    //        request.setDestinationInExternalPublicDir(DOWNLOAD_FOLDER_NAME,
+    //                null == bi.getBusinessName() ? "" : bi.getBusinessName());
+    //        request.setTitle(bi.getBusinessName());
+    //        request.setDescription(getString(R.string.app_name));
+    //        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+    //        request.setVisibleInDownloadsUi(false);
+    //        //        request.setMimeType(MMIMETYPE);
+    //        downloadId = downloadManager.enqueue(request);
+    //        dlLogic.map.put(bi.getPackageName(), downloadId);
+    //        /** save download id to preferences **/
+    //        PreferencesUtils.putLong(getActivity().getBaseContext(),
+    //                KEY_NAME_DOWNLOAD_ID,
+    //                downloadId);
+    //    }
+    //    
+    //    class CompleteReceiver extends BroadcastReceiver
+    //    {
+    //        
+    //        @Override
+    //        public void onReceive(Context context, Intent intent)
+    //        {
+    //            /**
+    //             * get the id of download which have download success, if the id is my id and it's status is successful,
+    //             * then install it
+    //             **/
+    //            long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID,
+    //                    -1);
+    //            if (completeDownloadId == downloadId)
+    //            {
+    //                if (downloadManagerPro.getStatusById(downloadId) == DownloadManager.STATUS_SUCCESSFUL)
+    //                {
+    //                    //                    String fileName = downloadManagerPro.getFileName(downloadId);
+    //                    PreferencesUtils.removeByKey(getActivity().getBaseContext(),
+    //                            String.valueOf(downloadId));
+    //                }
+    //            }
+    //        }
+    //    };
+    
+    //    private void queryDownloadStatus(String downloadId)
+    //    {
+    //        DownloadManager.Query query = new DownloadManager.Query();
+    //        query.setFilterById(PreferencesUtils.getLong(getActivity().getBaseContext(),
+    //                downloadId));
+    //        //        Cursor c = downloadManager.query(query);
+    //        //        if (c.moveToFirst())
+    //        //        {
+    //        //            int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
+    //        //            switch (status)
+    //        //            {
+    //        //                case DownloadManager.STATUS_PAUSED:
+    //        //                    Log.v("down", "STATUS_PAUSED");
+    //        //                case DownloadManager.STATUS_PENDING:
+    //        //                    Log.v("down", "STATUS_PENDING");
+    //        //                case DownloadManager.STATUS_RUNNING:
+    //        //                    //正在下载，不做任何事情  
+    //        //                    Log.v("down", "STATUS_RUNNING");
+    //        //                    break;
+    //        //                case DownloadManager.STATUS_SUCCESSFUL:
+    //        //                    //完成  
+    //        //                    Log.v("down", "下载完成");
+    //        //                    break;
+    //        //                case DownloadManager.STATUS_FAILED:
+    //        //                    //清除已下载的内容，重新下载  
+    //        //                    Log.v("down", "STATUS_FAILED");
+    //        //                    downloadManager.remove(prefs.getLong(DL_ID, 0));
+    //        //                    prefs.edit().clear().commit();
+    //        //                    break;
+    //        //            }
+    //        //        }
+    //    }
+    
+    @Override
+    public void updateView(Intent intent)
+    {
+        initData();
+        initAdapter();
+        
+    }
+}

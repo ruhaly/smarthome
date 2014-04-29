@@ -1,0 +1,25 @@
+package com.changhong.smarthome.phone.foundation.baseapi;
+
+import com.changhong.sdk.entity.User;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+
+/**
+ * 
+ * 获取用户基本信息类
+ * [功能详细描述]
+ * @author hanliangru
+ * @version [智慧社区-终端底座, 2014年3月13日]
+ */
+public class UserUtils
+{
+    /**
+     * 
+     * 用户基本信息
+     * [功能详细描述]
+     * @return
+     */
+    public static User getUser()
+    {
+        return LoginLogic.getInstance().user;
+    }
+}

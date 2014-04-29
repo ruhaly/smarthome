@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:item="http://schemas.android.com/apk/res/com.changhong.smarthome.phone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ordermanager_list_bg"
+    android:orientation="vertical" >
+
+    <com.changhong.smarthome.phone.store.activity.StoreTitleItem
+        android:id="@+id/shopping_detail_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        item:titlename="@string/shopping_detail_title" >
+    </com.changhong.smarthome.phone.store.activity.StoreTitleItem>
+
+    <ScrollView
+        android:id="@+id/shopping_detail_ScrollView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shopping_detail_title"
+        android:layout_marginBottom="1dp" >
+
+        <RelativeLayout
+            android:id="@+id/shopping_detail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/shoping_name"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerHorizontal="true"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="@string/allshopping_item_name"
+                android:textColor="@color/shopping_detail_name"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/shoping_price"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_name"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/shopping_detail_price"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/shoping_image"
+                android:layout_width="200dip"
+                android:layout_height="130dip"
+                android:layout_below="@+id/shoping_price"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/changhong"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/shoping_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_image"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/shopping_detail_dese"
+                android:textColor="@color/shopping_detail_name"
+                android:textSize="20sp" />
+
+            <!--  TextView
+                android:id="@+id/shoping_detail_value"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_detail"
+                android:layout_margin="10dp"
+                android:textColor="@color/shopping_detail_name"
+                android:textSize="20sp" /-->
+        </RelativeLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/buy_button_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/shopping_detail_ScrollView"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bj3"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/buy_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/order_conform_btn_bg"
+            android:text="@string/shopping_detail_buy"
+            android:textColor="@color/white"
+            android:textSize="26sp" />
+    </LinearLayout>
+
+</RelativeLayout>

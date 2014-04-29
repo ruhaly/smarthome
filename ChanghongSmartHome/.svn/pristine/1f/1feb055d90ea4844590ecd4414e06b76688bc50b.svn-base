@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="48dip"
+        layout="@layout/title_top" >
+    </include>
+
+    <ScrollView
+        android:id="@+id/ScrollView_mainright"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                android:layout_margin="5.5dip"
+                android:background="@drawable/maincontent1" >
+
+                <ImageView
+                    android:id="@+id/hotImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                     />
+
+                <RelativeLayout
+                    android:id="@+id/hotRelative"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/maincontent1_shadow" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/hotTextView1"
+                    style="@style/TextViewTitleStyle_write26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/hotImageView"
+                    android:layout_alignLeft="@id/hotImageView"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginLeft="5dip"
+                    android:text="@string/hotcinema" />
+
+                <TextView
+                    android:id="@+id/hotTextView2"
+                    style="@style/TextViewTitleStyle_write26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/hotImageView"
+                    android:layout_alignRight="@id/hotImageView"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginRight="5dip"
+                    android:text="(更新0部)" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/child_oldLinear"
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                android:layout_marginBottom="5.5dip"
+                android:layout_marginLeft="5.5dip"
+                android:layout_marginRight="5.5dip" >
+
+                <RelativeLayout
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2.75dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/maincontent2" >
+
+                    <ImageView
+                        android:id="@+id/childImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <RelativeLayout
+                        android:id="@+id/childRelative"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/maincontent2_shadow" >
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/childTextView1"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/childImageView"
+                        android:layout_alignLeft="@id/childImageView"
+                        android:layout_centerInParent="true"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:text="@string/childcinema" />
+
+                    <TextView
+                        android:id="@+id/childTextView2"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/childImageView"
+                        android:layout_alignRight="@id/childImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginRight="5dip"
+                        android:gravity="bottom"
+                        android:text="(更新0部)" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dip"
+                    android:layout_height="160dip"
+                    android:layout_marginLeft="2.75dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/maincontent3" >
+
+                    <ImageView
+                        android:id="@+id/oldImageView"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" />
+
+                    <RelativeLayout
+                        android:id="@+id/oldRelative"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/maincontent3_shadow" >
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/oldTextView1"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/oldImageView"
+                        android:layout_alignLeft="@id/oldImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:text="@string/oldcinema" />
+
+                    <TextView
+                        android:id="@+id/oldTextView2"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/oldImageView"
+                        android:layout_alignRight="@id/oldImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginRight="5dip"
+                        android:gravity="bottom"
+                        android:text="(更新0部)" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                android:layout_marginBottom="5.5dip"
+                android:layout_marginLeft="5.5dip"
+                android:layout_marginRight="5.5dip"
+                android:background="@drawable/maincontent1" >
+
+                <ImageView
+                    android:id="@+id/sitcomImageView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+
+                <RelativeLayout
+                    android:id="@+id/sitcomRelative"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/maincontent1_shadow" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/sitcomTextView1"
+                    style="@style/TextViewTitleStyle_write26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/sitcomImageView"
+                    android:layout_alignLeft="@id/sitcomImageView"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginLeft="5dip"
+                    android:text="@string/sitcomcinema" />
+
+                <TextView
+                    android:id="@+id/sitcomTextView2"
+                    style="@style/TextViewTitleStyle_write26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/sitcomImageView"
+                    android:layout_alignRight="@id/sitcomImageView"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginRight="5dip"
+                    android:gravity="bottom"
+                    android:text="(更新0部)" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                android:layout_marginBottom="5.5dip"
+                android:layout_marginLeft="5.5dip"
+                android:layout_marginRight="5.5dip"
+                android:background="@drawable/maincontent1" >
+
+                <ImageView
+                    android:id="@+id/varietyImageView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+
+                <RelativeLayout
+                    android:id="@+id/varietyRelative"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/maincontent1_shadow" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/varietyTextView1"
+                    style="@style/TextViewTitleStyle_write26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/varietyImageView"
+                    android:layout_alignLeft="@id/varietyImageView"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginLeft="5dip"
+                    android:text="@string/varietycinema" />
+
+                <TextView
+                    android:id="@+id/varietyTextView2"
+                    style="@style/TextViewTitleStyle_write26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/varietyImageView"
+                    android:layout_alignRight="@id/varietyImageView"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginRight="5dip"
+                    android:gravity="bottom"
+                    android:text="(更新0部)" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                android:layout_marginBottom="5.5dip"
+                android:layout_marginLeft="5.5dip"
+                android:layout_marginRight="5.5dip"
+                android:background="@drawable/maincontent1" >
+
+                <ImageView
+                    android:id="@+id/sharingImageView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+
+                <RelativeLayout
+                    android:id="@+id/sharingRelative"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/maincontent1_shadow" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/sharingTextView1"
+                    style="@style/TextViewTitleStyle_write26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/sharingImageView"
+                    android:layout_alignLeft="@id/sharingImageView"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginLeft="5dip"
+                    android:text="@string/sharingcinema" />
+
+                <TextView
+                    android:id="@+id/sharingTextView2"
+                    style="@style/TextViewTitleStyle_write26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/sharingImageView"
+                    android:layout_alignRight="@id/sharingImageView"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginRight="5dip"
+                    android:gravity="bottom"
+                    android:text="(更新0部)" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/other1"
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                android:layout_marginBottom="5.5dip"
+                android:layout_marginLeft="5.5dip"
+                android:layout_marginRight="5.5dip"
+                android:visibility="gone" >
+
+                <RelativeLayout
+                    android:id="@+id/other1Relative"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2.75dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/maincontent2"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/other1ImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <RelativeLayout
+                        android:id="@+id/other1Relative"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/maincontent2_shadow" >
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/other1TextView1"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other1ImageView"
+                        android:layout_alignLeft="@id/other1ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:text="@string/othercinema" />
+
+                    <TextView
+                        android:id="@+id/other1TextView2"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other1ImageView"
+                        android:layout_alignRight="@id/other1ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginRight="5dip"
+                        android:gravity="bottom"
+                        android:text="(更新0部)" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/other2Relative"
+                    android:layout_width="0dip"
+                    android:layout_height="160dip"
+                    android:layout_marginLeft="2.75dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/maincontent3"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/other2ImageView"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" />
+
+                    <RelativeLayout
+                        android:id="@+id/other2Relative"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/maincontent3_shadow" >
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/other2TextView1"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other2ImageView"
+                        android:layout_alignLeft="@id/other2ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:text="@string/othercinema" />
+
+                    <TextView
+                        android:id="@+id/other2TextView2"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other2ImageView"
+                        android:layout_alignRight="@id/other2ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginRight="5dip"
+                        android:gravity="bottom"
+                        android:text="(更新0部)" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/other2"
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                android:layout_marginBottom="5.5dip"
+                android:layout_marginLeft="5.5dip"
+                android:layout_marginRight="5.5dip"
+                android:visibility="gone" >
+
+                <RelativeLayout
+                    android:id="@+id/other3Relative"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2.75dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/maincontent2"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/other3ImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <RelativeLayout
+                        android:id="@+id/other3Relative"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/maincontent2_shadow" >
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/other3TextView1"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other3ImageView"
+                        android:layout_alignLeft="@id/other3ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:text="@string/othercinema" />
+
+                    <TextView
+                        android:id="@+id/other3TextView2"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other3ImageView"
+                        android:layout_alignRight="@id/other3ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginRight="5dip"
+                        android:gravity="bottom"
+                        android:text="(更新0部)" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/other4Relative"
+                    android:layout_width="0dip"
+                    android:layout_height="160dip"
+                    android:layout_marginLeft="2.75dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/maincontent3"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/other4ImageView"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" />
+
+                    <RelativeLayout
+                        android:id="@+id/other4Relative"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/maincontent3_shadow" >
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/other4TextView1"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other4ImageView"
+                        android:layout_alignLeft="@id/other4ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:text="@string/othercinema" />
+
+                    <TextView
+                        android:id="@+id/other4TextView2"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other4ImageView"
+                        android:layout_alignRight="@id/other4ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginRight="5dip"
+                        android:gravity="bottom"
+                        android:text="(更新0部)" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/other3"
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                android:layout_marginBottom="5.5dip"
+                android:layout_marginLeft="5.5dip"
+                android:layout_marginRight="5.5dip"
+                android:visibility="gone" >
+
+                <RelativeLayout
+                    android:id="@+id/other5Relative"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2.75dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/maincontent2"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/other5ImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <RelativeLayout
+                        android:id="@+id/other5Relative"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/maincontent2_shadow" >
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/other5TextView1"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other5ImageView"
+                        android:layout_alignLeft="@id/other5ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:text="@string/othercinema" />
+
+                    <TextView
+                        android:id="@+id/other5TextView2"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other5ImageView"
+                        android:layout_alignRight="@id/other5ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginRight="5dip"
+                        android:gravity="bottom"
+                        android:text="(更新0部)" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/other6Relative"
+                    android:layout_width="0dip"
+                    android:layout_height="160dip"
+                    android:layout_marginLeft="2.75dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/maincontent3"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/other6ImageView"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" />
+
+                    <RelativeLayout
+                        android:id="@+id/other6Relative"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/maincontent3_shadow" >
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/other6TextView1"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other6ImageView"
+                        android:layout_alignLeft="@id/other6ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:text="@string/othercinema" />
+
+                    <TextView
+                        android:id="@+id/other6TextView2"
+                        style="@style/TextViewTitleStyle_write26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/other6ImageView"
+                        android:layout_alignRight="@id/other6ImageView"
+                        android:layout_marginBottom="5dip"
+                        android:layout_marginRight="5dip"
+                        android:gravity="bottom"
+                        android:text="(更新0部)" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,85 @@
+/**
+ * BillLogic.java
+ * com.pactera.ch_bedframe.logic
+ *
+ * Function�?TODO 
+ *
+ *   ver     date      		author
+ * �?���?���?���?���?���?���?���?���?���?���?���?���?���?���?���?���?��
+ *   		 2013-12-5 		b
+ *
+ * Copyright (c) 2013, TNT All Rights Reserved.com.example.changhongwyfw.logic.foundation.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.lidroid.xutils.exception.HttpException;
+import com.pactera.ch.foundation.entity.BillInfo;
+
+/**
+ * ClassName:BillLogic Function: TODO ADD FUNCTION
+ * 
+ * @author ruhaly
+ * @version
+ * @since Ver 1.1
+ * @Date 2013-12-5 下午2:16:03
+ */
+package com.changhong.smarthome.phone.property.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.changhong.sdk.entity.BaseAccountInfo;
+import com.changhong.sdk.logic.SuperLogic;
+import com.lidroid.xutils.exception.HttpException;
+
+public class BillLogic extends SuperLogic {
+
+	public List rList = new ArrayList();
+	public List hList = new ArrayList();
+	public static BaseAccountInfo accountInfo = new BaseAccountInfo();
+
+	private static BillLogic ins;
+
+	public static synchronized BillLogic getInstance() {
+		if (null == ins) {
+			ins = new BillLogic();
+		}
+		return ins;
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int rspCode, int requestId) {
+
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
+
+	}
+
+	@Override
+	public void handleHttpException(HttpException error, String msg) {
+
+	}
+
+	@Override
+	public void clear() {
+		hList.clear();
+		rList.clear();
+	}
+
+
+
+    @Override
+    public void stopRequest()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+	
+
+}

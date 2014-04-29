@@ -1,0 +1,110 @@
+package com.changhong.sdk.contentprovider;
+
+import com.changhong.sdk.contentprovider.ChangHong.Shopping;
+
+/**
+ * [建表语句]<BR>
+ * [功能详细描述]
+ * @author b
+ * @version [RCS Client V100R001C03, 2014-2-20] 
+ */
+public class TableSql
+{
+    /**
+     * 创建商品表
+     */
+    public static final String CREATE_SHOPPING = "create table if not exists "
+            + Shopping.TABLE_NAME + "(" + Shopping.ACTUALPRICE + " double,"
+            + Shopping.ADDRESS + " text," + Shopping.DESC + " text,"
+            + Shopping.GOODSID + " text," + Shopping.NAME + " text,"
+            + Shopping.PICURL + " text," + Shopping.SPID + " text,"
+            + Shopping.STOCK + " Integer " + ")";
+    
+    /**
+     * 删除商品表
+     */
+    public static final String DROP_PHOTO = "drop table if exists "
+            + Shopping.TABLE_NAME;
+    //
+    //    /**
+    //     * 创建时间间隔
+    //     */
+    //    public static final String CREATE_TIMEINTERVAL = "create table if not exists " + TimeInterval.TABLE_NAME + "("
+    //            + TimeInterval._ID + " Integer primary key autoincrement," + TimeInterval.INTERVAL + " text,"
+    //            + TimeInterval.IS_CHECKED + " Integer" + ")";
+    //
+    //    /**
+    //     * 删除时间间隔
+    //     */
+    //    public static final String DROP_TIMEINTERVAL = "drop table if exists " + TimeInterval.TABLE_NAME;
+    //
+    //    /**
+    //     * 创建特效表
+    //     */
+    //    public static final String CREATE_EFFECTS = "create table if not exists " + Effects.TABLE_NAME + "(" + Effects._ID
+    //            + " Integer primary key autoincrement," + Effects.EFFECT + " text," + Effects.IS_CHECKED + " Integer" + ")";
+    //
+    //    /**
+    //     * 删除特效表
+    //     */
+    //    public static final String DROP_EFFECTS = "drop table if exists " + Effects.TABLE_NAME;
+    //
+    //    /**
+    //     * 创建默认天气城市表
+    //     */
+    //    public static final String CREATE_WEATHERCITY = "create table if not exists " + WeatherCity.TABLE_NAME + "("
+    //            + WeatherCity._ID + " Integer primary key autoincrement," + WeatherCity.PROVINCE + " text,"
+    //            + WeatherCity.CITY + " text," + WeatherCity.AREACODE + " text " + ")";
+    //
+    //    /**
+    //     * 删除默认天气城市表
+    //     */
+    //    public static final String DROP_WEATHERCITY = "drop table if exists " + WeatherCity.TABLE_NAME;
+    //
+    //    /**
+    //     * 创建省市表
+    //     */
+    //    public static final String CREATE_PROVINCECITY = "create table if not exists " + ProvinceCity.TABLE_NAME + "("
+    //            + ProvinceCity._ID + " Integer primary key autoincrement," + ProvinceCity.PROVINCE + " text,"
+    //            + ProvinceCity.CITY + " text," + WeatherCity.AREACODE + " text " + ")";
+    //
+    //    /**
+    //     * 删除省市表
+    //     */
+    //    public static final String DROP_PROVINCECITY = "drop table if exists " + ProvinceCity.TABLE_NAME;
+    //
+    //    /**
+    //     * 创建声音表
+    //     */
+    //    public static final String CREATE_VOICE = "create table if not exists " + Voice.TABLE_NAME + "(" + Voice._ID
+    //            + " Integer primary key autoincrement," + Voice.VOICE_ITEM + " text," + Voice.IS_CHECKED + " Integer" + ")";
+    //
+    //    /**
+    //     * 删除声音表
+    //     */
+    //    public static final String DROP_VOICE = "drop table if exists " + Voice.TABLE_NAME;
+    //
+    //    /**
+    //     * 创建字幕表
+    //     */
+    //    public static final String CREATE_CAPTION = "create table if not exists " + Caption.TABLE_NAME + "(" + Caption._ID
+    //            + " Integer primary key autoincrement," + Caption.CAPTION_ITEM + " text," + Caption.IS_CHECKED + " Integer"
+    //            + ")";
+    //
+    //    /**
+    //     * 删除字幕表
+    //     */
+    //    public static final String DROP_CAPTION = "drop table if exists " + Caption.TABLE_NAME;
+    //
+    //    /**
+    //     * 创建用户表
+    //     */
+    //    public static final String CREATE_USERINFO = "create table if not exists " + UserInfo.TABLE_NAME + "("
+    //            + UserInfo.ISFIRSTRUN + " text," + UserInfo.REGNUM + " text," + UserInfo.ISREG + " text" + ")";
+    //
+    //    /**
+    //     * 创建好友表
+    //     */
+    //    public static final String CREATE_FRIEND = "create table if not exists " + Friend.TABLE_NAME + "("
+    //            + Friend.FRIENDID + " text," + Friend.NICKNAME + " text" + ")";
+}

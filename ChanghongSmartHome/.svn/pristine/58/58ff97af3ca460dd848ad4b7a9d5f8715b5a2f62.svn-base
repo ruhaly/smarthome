@@ -1,0 +1,40 @@
+package com.changhong.smarthome.phone.cinema.activity;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+
+public abstract class HandleActivity extends DialogActivity {
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+	}
+
+	/**
+	 * mHandler
+	 */
+	public MewwHandler mHandler = new MewwHandler();
+
+	@SuppressLint("HandlerLeak")
+	public class MewwHandler extends Handler {
+		/*
+		 * (non-Javadoc) (覆盖方法) 方法名称�?handleMessage 作�?�?ruhaly 方法描述�?
+		 * 
+		 * @see android.os.Handler#handleMessage(android.os.Message)
+		 */
+		@Override
+		public void handleMessage(Message msg) {
+			handleMsg(msg);
+		}
+	}
+
+	/**
+	 * 方法名称�?handleMsg 作�?�?ruhaly 方法描述�?处理消息 输入参数�?@param msg 返回类型�?void
+	 */
+	public void handleMsg(Message msg) {
+
+	}
+}

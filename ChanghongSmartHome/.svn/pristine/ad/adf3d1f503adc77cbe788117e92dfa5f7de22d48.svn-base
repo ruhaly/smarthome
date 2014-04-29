@@ -1,0 +1,57 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.app.Dialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.baseapi.MsgWhat;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.bean.MyDialogBean;
+
+/**
+ * 
+ * 私有基类
+ * @author b
+ * @version [智慧社区-终端底座, 2014年1月17日]
+ */
+public abstract class BaseActivity extends SuperActivity implements MsgWhat
+{
+    public MyDialogBean getLoginDialog(CallBack callBack)
+    {
+        MyDialogBean myDialog = new MyDialogBean(callBack);
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.login_layout, null);
+        TextView tvForgetPwd = (TextView) view.findViewById(R.id.tvForgetPwd);
+        TextView tvRegister30 = (TextView) view.findViewById(R.id.tvRegister30);
+        final EditText etAccount = (EditText) view.findViewById(R.id.etAccount);
+        ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
+        
+        EditText etPwd = (EditText) view.findViewById(R.id.etPwd);
+        Button btLogin = (Button) view.findViewById(R.id.btLogin);
+        imgDelete.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                etAccount.setText("");
+            }
+        });
+        Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        myDialog.setBtLogin(btLogin);
+        myDialog.setDialog(dialog);
+        myDialog.setEtAccount(etAccount);
+        myDialog.setEtPwd(etPwd);
+        myDialog.setTvRegister30(tvRegister30);
+        myDialog.setTvForgetPwd(tvForgetPwd);
+        return myDialog;
+    }
+    
+}

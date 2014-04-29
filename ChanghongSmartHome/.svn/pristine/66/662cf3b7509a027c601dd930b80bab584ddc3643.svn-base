@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/allshoping_item_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/main_bg_pressed" >
+
+    <ImageView
+        android:id="@+id/image_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+       
+        android:scaleType="fitXY" />
+    
+    <TextView
+        android:id="@+id/shopping_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/image_id"
+       
+        android:textColor="@color/title_text_color"
+        android:layout_alignTop="@+id/image_id"
+        android:singleLine="true"/>
+    
+    <RatingBar 
+        android:id="@+id/shopping_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/shopping_rating_bar"
+        android:layout_alignTop="@+id/image_id"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:numStars="5"
+        android:rating="5" 
+    	android:stepSize="1"
+        />
+    
+    <TextView
+        android:id="@+id/shopping_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shopping_name"
+        android:layout_toRightOf="@+id/image_id"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="10dip"
+        android:textColor="@color/title_text_color" />
+    
+    <TextView
+        android:id="@+id/shopping_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/shopping_price_1"
+        android:layout_marginRight="10dip"
+        android:layout_marginBottom="0dp"
+        android:textColor="@color/title_text_color"
+        android:text="@string/shopping_detail_price_1" />
+    
+    <TextView
+        android:id="@+id/shopping_price_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dip"
+        android:layout_marginBottom="0dp"
+        android:textColor="@color/red"
+        android:text="@string/shopping_detail_price" />
+
+</RelativeLayout>

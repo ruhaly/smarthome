@@ -1,0 +1,380 @@
+package com.changhong.smarthome.phone.store.activity;
+
+import android.app.AlertDialog;
+import android.os.Bundle;
+import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StrikethroughSpan;
+import android.util.TypedValue;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.store.entity.StoreConstant;
+import com.changhong.smarthome.phone.store.logic.OrderDetailLogic;
+import com.changhong.smarthome.phone.store.logic.bean.OrderInfoBean;
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
+import com.lidroid.xutils.bitmap.core.BitmapSize;
+
+public class OrderNewDatailActivity extends SuperActivity
+{
+    private OrderInfoBean item;
+    
+    private RelativeLayout subLayout;
+    
+    private ImageView imageView;
+    
+    private TextView nameTextView;
+    
+    private TextView descTextView;
+    
+    private TextView priceTextView;
+    
+    private TextView priceTextView1;
+    
+    //    private TextView timeTextView;
+    
+    private RatingBar ratingbar;
+    
+    private TextView numberTextView;
+    
+    private TextView phoneTextView;
+    
+    private TextView dateTextView;
+    
+    private TextView quanTextView;
+    
+    private TextView moneyTextView;
+    
+    private OrderDetailLogic orderDetailLogic;
+    
+    private HttpUtils httpUtils;
+    
+    private BitmapUtils mBitmapUtils;
+    
+    private int screenHeight;
+    
+    private int screenWidth;
+    
+    private StoreTitleItem titleItem;
+    
+    /**
+     * 提交订单按钮
+     */
+    private Button order_button;
+    
+    /**
+     * 提交订单布局
+     */
+    private LinearLayout orderLayout;
+    
+    
+    private RatingBar endBar;
+    
+    private TextView endTextView;
+    
+    @Override
+    public void initData()
+    {
+        // TODO Auto-generated method stub
+        mBitmapUtils = new BitmapUtils(getApplicationContext());
+        orderDetailLogic = OrderDetailLogic.getInstance(getApplicationContext());
+        orderDetailLogic.setData(mHandler);
+        httpUtils = new HttpUtils();
+        item = (OrderInfoBean) getIntent().getSerializableExtra(StoreConstant.ORDER_DETAIL);
+        screenHeight = orderDetailLogic.screenHeight;
+        screenWidth = orderDetailLogic.screenWidth;
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        setContentView(R.layout.ordernewdetail);
+        initView();
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    private void initView()
+    {
+        titleItem = (StoreTitleItem) findViewById(R.id.order_new_detail_title);
+        titleItem.setBackListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                // TODO Auto-generated method stub
+                finish();
+            }
+        });
+        
+        subLayout = (RelativeLayout) findViewById(R.id.order_item_layout);
+        RelativeLayout.LayoutParams layoutParams = (android.widget.RelativeLayout.LayoutParams) subLayout.getLayoutParams();
+        layoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        layoutParams.height = (screenHeight * 200) / 1280;
+//        new RelativeLayout.LayoutParams(
+//                LayoutParams.MATCH_PARENT, (screenHeight * 200) / 1280);
+        subLayout.setLayoutParams(layoutParams);
+        
+        imageView = (ImageView) findViewById(R.id.news_item_icon);
+        RelativeLayout.LayoutParams params1 = (android.widget.RelativeLayout.LayoutParams) imageView.getLayoutParams();
+        params1.height = (screenHeight * 200) / 1280;
+        params1.width = (screenWidth * 270) / 720;
+        //        params1.leftMargin = (screenWidth * 40) / 720;
+        //        params1.rightMargin = (screenWidth * 42) / 720;
+        //        params1.topMargin = (screenWidth * 40) / 720;
+        imageView.setLayoutParams(params1);
+        
+        nameTextView = (TextView) findViewById(R.id.news_item_name);
+        descTextView = (TextView) findViewById(R.id.news_item_desc);
+        ratingbar = (RatingBar) findViewById(R.id.order_star);
+        priceTextView = (TextView) findViewById(R.id.news_item_price);
+        priceTextView1 = (TextView) findViewById(R.id.news_item_price_1);
+        
+        nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        descTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 24) / 720);
+        priceTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 24) / 720);
+        priceTextView1.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 24) / 720);
+        
+        if (item != null)
+        {
+            nameTextView.setText(item.getGoodsName());
+            
+            descTextView.setText(item.getDesc());
+            //原价
+            double unitPrice = item.getOriginalPrice();
+            //优惠价
+            double rebatePrice = item.getSalePrice();
+            
+            String str1 = String.format(getResources().getString(R.string.order_item_price),
+                    String.valueOf(unitPrice));
+            
+            String str2 = String.format(getResources().getString(R.string.order_item_price_1),
+                    String.valueOf(rebatePrice));
+            
+            SpannableString spannableString = new SpannableString(str2);
+            //优惠价用删除线
+            spannableString.setSpan(new StrikethroughSpan(),
+                    0,
+                    str2.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            
+            priceTextView.setText(str1);
+            
+            priceTextView1.setText(spannableString);
+            
+            ratingbar.setRating(item.getRating());
+            
+            BitmapDisplayConfig bigPicDisplayConfig = new BitmapDisplayConfig();
+            BitmapSize bitmapSize = new BitmapSize((screenWidth * 270) / 720,
+                    (screenHeight * 199) / 1280);
+            bigPicDisplayConfig.setBitmapMaxSize(bitmapSize);
+            
+            mBitmapUtils.display(imageView,
+                    item.getGoodsIcon(),
+                    bigPicDisplayConfig,
+                    null);
+            
+            numberTextView = (TextView) findViewById(R.id.order_number);
+            phoneTextView = (TextView) findViewById(R.id.order_phone);
+            dateTextView = (TextView) findViewById(R.id.order_date);
+            quanTextView = (TextView) findViewById(R.id.order_quantity);
+            moneyTextView = (TextView) findViewById(R.id.order_money);
+            
+            nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    (screenWidth * 30) / 720);
+            phoneTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    (screenWidth * 30) / 720);
+            dateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    (screenWidth * 30) / 720);
+            quanTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    (screenWidth * 30) / 720);
+            moneyTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    (screenWidth * 30) / 720);
+            
+            String number = String.format(getResources().getString(R.string.order_new_detail_number),
+                    item.getOrderNumber());
+            numberTextView.setText(number);
+            
+            String phone = String.format(getResources().getString(R.string.order_new_detail_phone),
+                    item.getPhone());
+            phoneTextView.setText(phone);
+            
+            String date = String.format(getResources().getString(R.string.order_new_detail_date),
+                    item.getOrderTime());
+            dateTextView.setText(date);
+            
+            String quan = String.format(getResources().getString(R.string.order_new_detail_quantity),
+                    String.valueOf(item.getOrderQuantity()));
+            quanTextView.setText(quan);
+            
+            String money = String.format(getResources().getString(R.string.order_new_detail_money),
+                    String.valueOf(item.getOrderMoney()));
+            moneyTextView.setText(money);
+        }
+        
+        //订购按钮布局
+        orderLayout = (LinearLayout) findViewById(R.id.order_button_layout);
+        orderLayout.setVisibility(View.VISIBLE);
+        RelativeLayout.LayoutParams orderLayoutParams = (RelativeLayout.LayoutParams) orderLayout.getLayoutParams();
+        orderLayoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        orderLayoutParams.height = 168 * screenHeight / 1280;
+        orderLayout.setLayoutParams(orderLayoutParams);
+        
+        order_button = (Button) findViewById(R.id.order_button);
+        order_button.setOnClickListener(this);
+        LinearLayout.LayoutParams order_buttonParams = (android.widget.LinearLayout.LayoutParams) order_button.getLayoutParams();
+        order_buttonParams.height = screenHeight * 82 / 1280;
+        order_buttonParams.width = (screenWidth * 304) / 720;
+        order_button.setLayoutParams(order_buttonParams);
+        order_button.setPadding((screenWidth * 78) / 720,
+                screenHeight * 22 / 1280,
+                (screenWidth * 78) / 720,
+                screenHeight * 22 / 1280);
+        order_button.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 26) / 720);
+        order_button.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                // TODO Auto-generated method stub
+                showRatingDialog();
+            }
+        });
+        
+        endBar = (RatingBar)findViewById(R.id.end_star);
+        endBar.setVisibility(View.GONE);
+        endTextView = (TextView)findViewById(R.id.end_desc);
+        endTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        endTextView.setVisibility(View.GONE);
+    }
+    
+    private void showRatingDialog()
+    {
+        final AlertDialog dlg = new AlertDialog.Builder(this).create();
+        dlg.show();
+        Window window = dlg.getWindow();
+        // *** 主要就是在这里实现这种效果的.
+        // 设置窗口的内容页面,dialog.xml文件中定义view内容
+        window.setContentView(R.layout.showratingdialog);
+        
+        RelativeLayout show_rating_item = (RelativeLayout)window.findViewById(R.id.show_rating_item);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)show_rating_item.getLayoutParams();
+        params.width = (620 * screenWidth) / 720;
+        params.height = (341* screenHeight)/1280;
+        show_rating_item.setLayoutParams(params);
+        
+        final RatingBar msg = (RatingBar) window.findViewById(R.id.order_star);
+        
+        msg.setOnRatingBarChangeListener(new OnRatingBarChangeListener()
+        {
+            
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating,
+                    boolean fromUser)
+            {
+                // TODO Auto-generated method stub
+                if (msg.getRating() != rating)
+                {
+                    msg.setRating(rating);
+                }
+            }
+        });
+        
+        TextView descTextView = (TextView) window.findViewById(R.id.item_name);
+        descTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        
+        // 为确认按钮添加事件,执行退出应用操作
+        TextView ok = (TextView) window.findViewById(R.id.item_ok);
+        
+        ok.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        
+        ok.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(999, msg.getRating()));
+                
+                dlg.cancel();
+            }
+        });
+        
+        // 关闭alert对话框架
+        //       Button cancel = (Button) window.findViewById(R.id.dialog_button_cancel);
+        //       cancel.setOnClickListener(new View.OnClickListener()
+        //       {
+        //           public void onClick(View v)
+        //           {
+        //               dlg.cancel();
+        //           }
+        //       });
+    }
+    
+    
+    public void handleMsg(Message msg)
+    {
+        super.handleMsg(msg);
+        switch (msg.what)
+        {
+//            case StoreConstant.GET_ADDORDER_SUCCESS:
+//                showToast(getResources().getString(R.string.order_add_suessce));
+//                break;
+//            case StoreConstant.GET_ADDORDER_FAILED:
+//                showToast(getResources().getString(R.string.error_1));
+//                break;
+            case 999:
+                
+                order_button.setVisibility(View.GONE);
+                endBar.setVisibility(View.VISIBLE);
+                endTextView.setVisibility(View.VISIBLE);
+                float rating = (Float)msg.obj;
+                endBar.setRating(rating);
+
+                endBar.setOnTouchListener(new OnTouchListener() {
+                
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    // TODO Auto-generated method stub
+                    return true;
+                }
+                });
+
+                break;
+                
+        }
+    };
+    
+}

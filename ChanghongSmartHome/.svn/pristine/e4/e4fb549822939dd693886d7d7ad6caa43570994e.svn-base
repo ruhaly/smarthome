@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tip_dialog_bg"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="100dip"
+        android:gravity="center"
+        android:text="@string/exchange_success"
+        android:textColor="@color/gray_5f5f5f"
+        android:textSize="@dimen/font_36" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_gift1"
+            android:textColor="@color/gray_5f5f5f"
+            android:textSize="@dimen/font_36" />
+
+        <TextView
+            android:id="@+id/exchangeCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/deep_red"
+            android:textSize="@dimen/font_36" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_gift2"
+            android:textColor="@color/gray_5f5f5f"
+            android:textSize="@dimen/font_36" />
+    </LinearLayout>
+
+</LinearLayout>

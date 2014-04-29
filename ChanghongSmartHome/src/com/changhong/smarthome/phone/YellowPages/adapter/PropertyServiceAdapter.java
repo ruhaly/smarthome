@@ -1,0 +1,90 @@
+package com.changhong.smarthome.phone.YellowPages.adapter;
+
+import java.util.List;
+import java.util.Map;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import com.changhong.sdk.baseapi.ViewHolder;
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+
+/**
+ * <功能详细描述>
+ * 热线电话adapter
+ * @Copyright: Copyright (c) 2014  
+ * @author wangbaocheng
+ * @date 2014年4月18日 下午2:31:40
+ */
+public class PropertyServiceAdapter extends BaseAdapter {
+	
+	LayoutInflater mInflater = null;
+    List<Map<String, Object>> data;
+    private Context context;
+    
+    public PropertyServiceAdapter(Context context, List<Map<String, Object>> data)
+    {
+        this.mInflater = LayoutInflater.from(context);
+        this.context = context;
+        this.data = data;
+    }
+
+	@Override
+	public int getCount() {
+		// TODO Auto-generated method stub
+		return data.size();
+	}
+
+	@Override
+	public Object getItem(int position) {
+		// TODO Auto-generated method stub
+		return data.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		// TODO Auto-generated method stub
+		return position;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		// TODO Auto-generated method stub
+		ViewHolder123 holder = null;
+		if (convertView == null)
+        {
+            holder = new ViewHolder123();
+            convertView = mInflater.inflate(R.layout.property_servicelist_item, null);
+            holder.line_name = (TextView) convertView.findViewById(R.id.line_name);
+            holder.line_telephone = (TextView) convertView.findViewById(R.id.line_telephone);
+            holder.work_time = (TextView) convertView.findViewById(R.id.work_time);
+            convertView.setTag(holder);
+        }
+        else
+        {
+            holder = (ViewHolder123) convertView.getTag();
+        }
+        holder.line_name.setText(data.get(position).get("line_name").toString());
+        holder.line_telephone.setText(data.get(position).get("line_telephone").toString());
+        holder.work_time.setText(data.get(position).get("work_time").toString());
+        
+        return convertView;
+	}
+
+}
+
+class ViewHolder123
+{
+    TextView line_name;
+    
+    TextView line_telephone;
+    
+    TextView work_time;
+    
+}

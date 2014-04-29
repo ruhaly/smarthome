@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 积分兑换主界面 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="48dip"
+        layout="@layout/intergration_top" >
+    </include>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/integration_goods_bg"
+        android:orientation="vertical" >
+
+        <TextView
+            style="@style/TextViewTitleStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dip"
+            android:gravity="left|center"
+            android:text="@string/current_totalPoint" />
+
+        <LinearLayout
+            android:id="@+id/myintergrationtop"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dip"
+            android:background="@drawable/integration_bg1"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="30dip" >
+
+                <TextView
+                    android:id="@+id/todaytime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="2014.4.12"
+                    android:textSize="18dip"
+                    android:textColor="#5e5e5e" />
+
+                <TextView
+                    style="@style/TextViewIntegrationStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/todaytime"
+                    android:text="@string/deadline" />
+
+                <TextView
+                    style="@style/TextViewIntegrationStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/todaytime"
+                    android:text="@string/accumulate_gain" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="50dip" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dip" >
+
+                    <TextView
+                        android:id="@+id/myintergrationscore"
+                        style="@style/TextViewTitleStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="5999"
+                        android:textColor="@color/red"
+                        android:textSize="55dip" />
+
+                    <TextView
+                        style="@style/TextViewTitleStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="@string/point"
+                        android:gravity="bottom"
+                        android:textSize="18dip" />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/notshowTextView"
+            style="@style/TextViewTitleStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dip"
+            android:gravity="left"
+            android:text="@string/exchange_gifts" />
+
+        <GridView
+            android:id="@+id/gridviews"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dip"
+            android:background="@drawable/bg_2"
+            android:horizontalSpacing="30dip"
+            android:numColumns="2"
+            android:paddingLeft="20dip"
+            android:paddingRight="20dip"
+            android:verticalSpacing="30dip"
+            android:scrollbars="none" >
+        </GridView>
+    </LinearLayout>
+
+</LinearLayout>

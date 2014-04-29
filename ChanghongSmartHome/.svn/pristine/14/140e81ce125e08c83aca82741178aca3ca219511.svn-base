@@ -1,0 +1,15 @@
+<resources>
+ <!-- 物业服务start -->
+    <item name="center_body_view_pager" type="id"></item>
+    <item name="vp_main" type="id"></item>
+    <item name="vp_no1" type="id"></item>
+    <item name="vp_no2" type="id"></item>
+    <item name="title_main" type="id"></item>
+    <item name="line_no1" type="id"></item>
+    <item name="line_no2" type="id"></item>
+    <item name="lx_main" type="id"></item>
+    <item name="ts_text" type="id"></item>
+    <item name="bx_fwjd" type="id"></item>
+    <item name="ts_fwjd" type="id"></item>
+     <!-- 物业服务end-->
+</resources>

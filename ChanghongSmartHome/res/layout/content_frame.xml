@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:id="@+id/menu_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.changhong.smarthome.phone.cinema.view.LeftSliderLayout
+        android:id="@+id/main_slider_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <!-- Main Child -->
+
+        <FrameLayout
+            android:id="@+id/content_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.changhong.smarthome.phone.cinema.view.LeftSliderLayout>
+
+</FrameLayout>

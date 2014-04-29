@@ -1,0 +1,185 @@
+/**
+ * LoginLogic.java
+ * com.pactera.ch.bedframe.logic
+ *
+ * Function： TODO 
+ *
+ *   ver     date      		author
+ * ──────────────────────────────────
+ *   		 2013-12-12 		b
+ *
+ * Copyright (c) 2013, TNT All Rights Reserved.
+ */
+
+package com.changhong.foundation.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.changhong.foundation.baseapi.HttpAction;
+import com.changhong.foundation.baseapi.HttpUrl;
+import com.changhong.foundation.baseapi.JsonParse;
+import com.changhong.foundation.baseapi.MsgWhat;
+import com.changhong.foundation.baseapi.RequestId;
+import com.changhong.foundation.entity.Ad;
+import com.changhong.sdk.entity.BaseAccountInfo;
+import com.changhong.sdk.entity.Pager;
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+/**
+ * ClassName:LoginLogic Function: TODO ADD FUNCTION
+ * 
+ * @author ruhaly
+ * @version
+ * @since Ver 1.1
+ * @Date 2013-12-12 下午2:32:07
+ */
+public class AdLogic extends SuperLogic
+{
+    
+    public static final int PAGENUM = 10;
+    
+    public int currentPage = 1;
+    
+    private HttpHandler<String> httpHanlder;
+    
+    private static AdLogic ins;
+    
+    public List<Ad> adList = new ArrayList<Ad>();
+    
+    public static synchronized AdLogic getInstance()
+    {
+        if (null == ins)
+        {
+            ins = new AdLogic();
+        }
+        return ins;
+    }
+    
+    /**
+     * 
+     * 获取广告列表
+     * @param account
+     * @param httpUtils
+     */
+    public void requestAds(BaseAccountInfo baseAccountInfo, HttpUtils httpUtils)
+    {
+        Pager pager = new Pager();
+        pager.setPageId(currentPage);
+        pager.setPageSize(PAGENUM);
+        
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("accountInfo", baseAccountInfo);
+        serviceInfo.put("pager", pager);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_AD_LIST,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_AD_LIST,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.AD_LIST_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_CBS);
+        
+    }
+    
+    /**
+     * 
+     * 获取广告列表
+     * @param account
+     * @param httpUtils
+     */
+    public void requestAdClick(int adId, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("adId", adId);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_AD_CLICK,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_AD_CLICK,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.AD_CLICK_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_CBS);
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(String response, int requestId,
+            InputStream is)
+    {
+    }
+    
+    public void handleAdListData(ServiceResponse response)
+    {
+        if (response.getBody().getResult().equals("0"))
+        {
+            adList = JsonParse.parseAdList(response.getBody().getParamsString());
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_ADLIST_SUCCESS);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        // if (error.getExceptionCode() == 0 || error.getExceptionCode() == 404)
+        // {
+        handler.sendEmptyMessage(CONNECT_ERROR_MSGWHAT);
+        // }
+    }
+    
+    @Override
+    public void clear()
+    {
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is)
+    {
+        switch (requestId)
+        {
+            case RequestId.AD_LIST_REQUESTID:
+                handleAdListData(serviceRes);
+                break;
+            
+            default:
+                break;
+        }
+        
+    }
+    
+    public void stopRequest()
+    {
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+        }
+    }
+}

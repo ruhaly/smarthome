@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_content_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bg" >
+
+        <ImageView
+            android:id="@+id/imgBack"
+            style="@style/title_left_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/title_center_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modify_pwd" />
+
+        <Button
+            android:id="@+id/btnConfirm"
+            style="@style/title_right_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirm" />
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/view_common_margin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/view_common_item_margin_bottom"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/editAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/modify_account_input"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:hint="@string/please_input_old_pwd"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/color_949494"
+                    android:textColorHint="@color/color_949494"
+                    android:textSize="@dimen/font_size_content_common" />
+
+                <Button
+                    android:id="@+id/btnForgetPwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_valicode_bg"
+                    android:text="@string/forget_pwd"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_size_content_common" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/editText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/modify_account_input"
+                    android:hint="@string/please_input_new_pwd"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/color_949494"
+                    android:textColorHint="@color/color_949494"
+                    android:textSize="@dimen/font_size_content_common" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="7dp"
+                android:text="@string/warn_modify_pwd"
+                android:textColorHint="@color/color_949494"
+                android:textSize="@dimen/font_size_content_common" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/editText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/modify_account_input"
+                    android:hint="@string/please_input_new_pwd_again"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/color_949494"
+                    android:textColorHint="@color/color_949494"
+                    android:textSize="@dimen/font_size_content_common" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center" >
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

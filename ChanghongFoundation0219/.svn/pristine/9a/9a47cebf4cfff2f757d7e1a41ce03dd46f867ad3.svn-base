@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/plugin_bg"
+        android:orientation="vertical" >
+
+        <com.changhong.sdk.widget.CustomViewPager
+            android:id="@+id/vp"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:focusable="false" >
+        </com.changhong.sdk.widget.CustomViewPager>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/frame_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/btn_huimin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bianmin_press"
+            android:clickable="true"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/btn_zonghe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/zonghe_def"
+            android:gravity="center"
+            android:textColor="@color/font_selected" />
+
+        <TextView
+            android:id="@+id/btn_anfang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/anfang_def"
+            android:gravity="center"
+            android:textColor="@color/font_selected" />
+
+        <!-- <TextView -->
+        <!-- android:id="@+id/btn_kuapin" -->
+        <!-- android:layout_width="wrap_content" -->
+        <!-- android:layout_height="wrap_content" -->
+        <!-- android:layout_weight="1" -->
+        <!-- android:background="@drawable/kuaping_default" -->
+        <!-- android:gravity="center" -->
+        <!-- android:textColor="@color/font_selected" -->
+        <!-- android:visibility="gone" /> -->
+
+        <TextView
+            android:id="@+id/btn_other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/other_def"
+            android:gravity="center"
+            android:textColor="@color/font_selected" />
+    </LinearLayout>
+
+</LinearLayout>

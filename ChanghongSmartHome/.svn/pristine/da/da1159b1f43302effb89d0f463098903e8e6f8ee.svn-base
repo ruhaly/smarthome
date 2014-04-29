@@ -1,0 +1,438 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/title_house"
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:background="@drawable/iconbg" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/house_escrow"
+            android:textColor="@color/title_text_black"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/house_lefttitle"
+            android:layout_width="60dip"
+            android:layout_height="30dip"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@id/textView1"
+            android:layout_marginBottom="20dip"
+            android:src="@drawable/drawable_expand_finish" />
+
+        <TextView
+            android:id="@+id/textViewUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dip"
+            android:text="@string/house_update"
+            android:textColor="@color/title_text_black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/mainRela"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_house"
+        android:background="@drawable/popupbg"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/mainRela01"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip" >
+
+            <LinearLayout
+                android:id="@+id/inputLinear"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dip"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/house_jgqj"
+                    android:textColor="@color/title_text_black"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip" >
+
+                    <EditText
+                        android:id="@+id/house_editmin"
+                        android:layout_width="0dip"
+                        android:layout_height="45dip"
+                        android:layout_weight="8"
+                        android:background="@drawable/house_input"
+                        android:gravity="center"
+                        android:numeric="integer"
+                        android:textColor="@color/title_text_black"
+                        android:textSize="30dip" />
+
+                    <ImageView
+                        android:layout_width="0dip"
+                        android:layout_height="1dip"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginRight="5dip"
+                        android:layout_marginTop="22dip"
+                        android:layout_weight="1"
+                        android:background="@drawable/house_line" />
+
+                    <EditText
+                        android:id="@+id/house_editmax"
+                        android:layout_width="0dip"
+                        android:layout_height="45dip"
+                        android:layout_weight="8"
+                        android:background="@drawable/house_input"
+                        android:gravity="center"
+                        android:numeric="integer"
+                        android:textColor="@color/title_text_black"
+                        android:textSize="30dip" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/house_zxmsText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/inputLinear"
+                android:layout_marginTop="10dip"
+                android:text="@string/house_zxms"
+                android:textColor="@color/title_text_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/bx_popupe"
+                android:layout_width="fill_parent"
+                android:layout_height="130dip"
+                android:layout_below="@id/house_zxmsText"
+                android:layout_marginBottom="10dip"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/popupcontentbg"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="top"
+                android:hint="@string/house_sk"
+                android:maxLength="70"
+                android:minLines="3"
+                android:paddingLeft="8dip"
+                android:paddingTop="8dip"
+                android:textColorHint="@color/title_text_gay" />
+
+            <HorizontalScrollView
+                android:id="@+id/hosuse_horscroll"
+                android:layout_width="wrap_content"
+                android:layout_height="80dip"
+                android:layout_below="@id/bx_popupe"
+                android:layout_marginTop="0dip" >
+
+                <LinearLayout
+                    android:id="@+id/pic_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dip"
+                    android:background="@drawable/pic_bg"
+                    android:padding="10dip" >
+
+                    <ImageView
+                        android:id="@+id/iv_add_1"
+                        android:layout_width="60dip"
+                        android:layout_height="60dip"
+                        android:layout_marginLeft="10dip"
+                        android:background="@drawable/add_image"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/iv_add_2"
+                        android:layout_width="60dip"
+                        android:layout_height="60dip"
+                        android:layout_marginLeft="10dip"
+                        android:background="@drawable/add_image"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/iv_add_3"
+                        android:layout_width="60dip"
+                        android:layout_height="60dip"
+                        android:layout_marginLeft="10dip"
+                        android:background="@drawable/add_image"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/iv_add_4"
+                        android:layout_width="60dip"
+                        android:layout_height="60dip"
+                        android:layout_marginLeft="10dip"
+                        android:background="@drawable/add_image"
+                        android:scaleType="fitXY" />
+
+                    <!--
+                     <ImageView
+                    android:id="@+id/iv_video_1"
+                    android:layout_width="60dip"
+                    android:layout_height="60dip"
+                    android:layout_marginLeft="20dip"
+                    android:background="@drawable/add_image"
+                    android:scaleType="fitXY" />
+                    -->
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <RadioGroup
+                android:id="@+id/house_rp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hosuse_horscroll"
+                android:layout_marginTop="10dip"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/house_rbsend"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:checked="true"
+                    android:drawableLeft="@drawable/radiobtn_type"
+                    android:gravity="center"
+                    android:text="@string/house_rbsend"
+                    android:textColor="@color/title_text_black" />
+
+                <RadioButton
+                    android:id="@+id/house_rbsell"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/radiobtn_type"
+                    android:text="@string/house_rbsell"
+                    android:textColor="@color/title_text_black" />
+            </RadioGroup>
+        </RelativeLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/summit_bx1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dip" >
+
+        <TextView
+            android:id="@+id/bx_popupq"
+            android:layout_width="wrap_content"
+            android:layout_height="50dip"
+            android:layout_weight="1"
+            android:background="@drawable/house_summit_btn"
+            android:gravity="center"
+            android:textColor="@color/title_text_white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/oversendLay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_house"
+        android:background="@drawable/popupbg"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dip"
+            android:layout_marginTop="35dip" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/house_over1"
+                android:textColorHint="@color/title_text_gay"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/houser_over1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/title_text_black"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dip"
+            android:layout_marginTop="30dip" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/house_over2"
+                android:textColorHint="@color/title_text_gay"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/houser_over2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/title_text_black"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dip"
+            android:layout_marginTop="30dip" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/house_over3"
+                android:textColorHint="@color/title_text_gay"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/houser_over3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/title_text_black"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dip"
+            android:layout_marginTop="30dip" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/house_over4"
+                android:textColorHint="@color/title_text_gay"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/houser_over4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/title_text_black"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dip"
+            android:layout_marginTop="30dip" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/house_over5"
+                android:textColorHint="@color/title_text_gay"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/houser_over5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/title_text_black"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dip"
+            android:layout_marginTop="30dip" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/house_over6"
+                android:textColorHint="@color/title_text_gay"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/houser_over6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/title_text_black"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dip"
+            android:layout_marginTop="30dip" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/house_over7"
+                android:textColorHint="@color/title_text_gay"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/houser_over7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/title_text_black"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/house_popup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#b0000000" >
+
+        <TextView
+            android:id="@+id/popup_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" 
+            android:layout_marginTop="8dip"
+            android:layout_marginBottom="8dip"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/popup_center"
+            android:layout_centerHorizontal="true"
+          
+            android:background="@drawable/house_goon" />
+
+        <TextView
+            style="@style/TextViewTitleStyle_write26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/popup_center"
+            android:id="@+id/house_popupTextView"
+            android:layout_centerHorizontal="true"
+            android:text="@string/house_goonsuccess" />
+    </RelativeLayout>
+
+</RelativeLayout>

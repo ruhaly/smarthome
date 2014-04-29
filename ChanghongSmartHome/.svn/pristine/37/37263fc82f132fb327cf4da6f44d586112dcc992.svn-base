@@ -1,0 +1,138 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Dialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.sdk.baseapi.PreferencesUtils;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.baseapi.MsgWhat;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.bean.MsgTip;
+import com.changhong.smarthome.phone.foundation.bean.MyDialogBean;
+
+/**
+ * 
+ * 私有基类
+ * @author b
+ * @version [智慧社区-终端底座, 2014年1月17日]
+ */
+public abstract class BaseActivity extends SuperActivity implements MsgWhat
+{
+    public MyDialogBean getLoginDialog(CallBack callBack)
+    {
+        MyDialogBean myDialog = new MyDialogBean(callBack);
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.login_layout, null);
+        TextView tvForgetPwd = (TextView) view.findViewById(R.id.tvForgetPwd);
+        TextView tvRegister30 = (TextView) view.findViewById(R.id.tvRegister30);
+        final EditText etAccount = (EditText) view.findViewById(R.id.etAccount);
+        ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
+        
+        EditText etPwd = (EditText) view.findViewById(R.id.etPwd);
+        Button btLogin = (Button) view.findViewById(R.id.btLogin);
+        imgDelete.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                etAccount.setText("");
+            }
+        });
+        Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        myDialog.setBtLogin(btLogin);
+        myDialog.setDialog(dialog);
+        myDialog.setEtAccount(etAccount);
+        myDialog.setEtPwd(etPwd);
+        myDialog.setTvRegister30(tvRegister30);
+        myDialog.setTvForgetPwd(tvForgetPwd);
+        return myDialog;
+    }
+    
+    /**
+     * 
+     * 通用自定义提示框
+     * [功能详细描述]
+     * @param tip 显示内容
+     * @param callBack 点击确定按钮做的事
+     * @param hasCancelBtn 是否有取消按钮
+     * @param okTitle TODO
+     */
+    public void showTipDialog(String tip, final CallBack callBack,
+            boolean hasCancelBtn, String okTitle)
+    {
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.tipdialog_layout, null);
+        TextView tvContent = (TextView) view.findViewById(R.id.tvContent);
+        if (!StringUtils.isEmpty(tip))
+        {
+            tvContent.setText(tip);
+        }
+        Button btnCancel = (Button) view.findViewById(R.id.btnCancel);
+        Button btnConfirm = (Button) view.findViewById(R.id.btnConfirm);
+        if (!StringUtils.isEmpty(okTitle))
+        {
+            btnConfirm.setText(okTitle);
+        }
+        View divideView = view.findViewById(R.id.divide);
+        if (!hasCancelBtn)
+        {
+            btnCancel.setVisibility(View.GONE);
+            divideView.setVisibility(View.GONE);
+            btnConfirm.setTextColor(getResources().getColor(R.color.red));
+        }
+        final Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        dialog.show();
+        btnCancel.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+            }
+        });
+        
+        btnConfirm.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                callBack.update();
+            }
+        });
+    }
+    
+    /**
+     * 
+     * 获取消息提示所有的数据
+     * [功能详细描述]
+     * @return
+     */
+    public List<MsgTip> getMsgTipList()
+    {
+        List<MsgTip> list = new ArrayList<MsgTip>();
+        String[] array = getResources().getStringArray(R.array.array_msg_tip);
+        for (int i = 0; i < array.length; i++)
+        {
+            MsgTip mt = new MsgTip();
+            mt.setName(array[i]);
+            mt.setState(PreferencesUtils.getInt(getBaseContext(), array[i], 0));
+            list.add(mt);
+        }
+        return list;
+        
+    }
+}

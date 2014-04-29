@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_content_bg" >
+
+    <RelativeLayout
+        android:id="@+id/title_rl"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/top_height"
+        android:background="@drawable/top_bg" >
+
+        <ImageView
+            android:id="@+id/exit_button"
+            style="@style/title_left_style" />
+
+        <TextView
+            android:id="@+id/comment_title"
+            style="@style/title_center_style"
+            android:text="@string/interact_share_share_info" />
+
+        <TextView
+            android:id="@+id/edit_btn"
+            style="@style/title_right_style"
+            android:text="@string/my_edit" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/scroll_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_rl"
+        android:layout_marginBottom="80dip"
+        android:padding="13.3dip" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/frame_gallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <FrameLayout
+                    android:id="@+id/frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <com.changhong.sdk.widget.CustomGallery
+                        android:id="@+id/gallery"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/picture" />
+
+                    <LinearLayout
+                        android:id="@+id/frame_dian"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="visible" >
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:padding="26dip" >
+
+                <TextView
+                    android:id="@+id/share_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/list_content_text_color"
+                    android:textSize="@dimen/list_name_size" />
+
+                <TextView
+                    android:id="@+id/description_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:textColor="@color/list_content_text_color"
+                    android:textSize="@dimen/pub_content_size" />
+
+                <TextView
+                    android:id="@+id/contact_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:textColor="@color/list_content_text_color"
+                    android:textSize="@dimen/pub_content_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/list_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <com.changhong.sdk.widget.InnerScrollViewPullRefreshListView
+                    android:id="@+id/share_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginTop="15dip"
+                    android:cacheColorHint="#00000000"
+                    android:divider="@null"
+                    android:drawSelectorOnTop="false"
+                    android:listSelector="@android:color/transparent"
+                    android:scrollbars="none" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/bottom_all"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bottom_btn_bg"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/comment_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dip"
+            android:background="@drawable/pub_btn_selector"
+            android:gravity="center"
+            android:text="@string/leave_msg"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/title_size" />
+
+        <TextView
+            android:id="@+id/comfirm_swap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dip"
+            android:background="@drawable/pub_btn_selector"
+            android:gravity="center"
+            android:text="@string/confirm_swap"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/title_size"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/swap_suceess_rl"
+        android:layout_width="fill_parent"
+        android:layout_height="80dip"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/darker_gray"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/swap_suceess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/swap_suceess"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/title_size" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/pagerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pagerImage"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
+
+</RelativeLayout>

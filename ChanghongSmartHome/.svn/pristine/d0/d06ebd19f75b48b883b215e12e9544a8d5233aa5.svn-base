@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shwo_rating_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/searchresult_group_bg" >
+
+    <RelativeLayout
+        android:id="@+id/shwo_rating_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/showrating_bg" >
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:text="@string/show_rating_desc"
+            android:textColor="@color/title_text_color"
+            android:textSize="24sp" />
+
+        <RatingBar
+            android:id="@+id/order_star"
+            style="@style/shopping_rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_name"
+            android:layout_centerHorizontal="true"
+            android:numStars="5"
+            android:rating="5"
+            android:stepSize="1" />
+
+        <TextView
+            android:id="@+id/item_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/order_new_detail_ok"
+            android:textColor="@color/red"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

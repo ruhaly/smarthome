@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_content_bg"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/share_info_title_tv"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_gravity="center"
+        android:background="@drawable/top_bg"
+        android:gravity="center"
+        android:text="@string/interact_share_share_info"
+        android:textColor="@color/title_text_color"
+        android:textSize="@dimen/title_size" />
+
+    <ScrollView
+        android:id="@+id/scroll_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/share_info_title_tv"
+        android:fillViewport="true"
+        android:visibility="visible" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/frame_gallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <FrameLayout
+                    android:id="@+id/frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <com.changhong.sdk.widget.CustomGallery
+                        android:id="@+id/gallery"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/picture" />
+
+                    <LinearLayout
+                        android:id="@+id/frame_dian"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="visible" >
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/content_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/title_tv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginTop="3dip"
+                    android:text="下雪啦"
+                    android:textColor="@color/share_detail_title_color"
+                    android:textSize="@dimen/list_content_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/content_tv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dip"
+                    android:layout_marginLeft="10dip"
+                    android:text="下雪啦"
+                    android:textColor="@color/list_content_text_color"
+                    android:textSize="@dimen/pub_title_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <com.changhong.sdk.widget.InnerScrollViewPullRefreshListView
+                    android:id="@+id/share_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginTop="15dip"
+                    android:cacheColorHint="#00000000"
+                    android:divider="@null"
+                    android:drawSelectorOnTop="false"
+                    android:listSelector="@android:color/transparent"
+                    android:scrollbars="none" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/scroll_content"
+        android:layout_marginTop="50dip"
+        android:background="@drawable/bottom_btn_bg" >
+
+        <TextView
+            android:id="@+id/comment_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dip"
+            android:background="@drawable/pub_btn_selector"
+            android:gravity="center"
+            android:text="@string/pub_btn"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/title_size" />
+    </RelativeLayout>
+
+</RelativeLayout>

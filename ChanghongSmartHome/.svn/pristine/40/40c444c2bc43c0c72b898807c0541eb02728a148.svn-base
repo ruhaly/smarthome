@@ -1,0 +1,319 @@
+package com.changhong.smarthome.phone.store.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.os.Message;
+import android.util.DisplayMetrics;
+
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+import com.changhong.smarthome.phone.store.entity.StoreConstant;
+import com.changhong.smarthome.phone.store.entity.StoreRequestId;
+import com.changhong.smarthome.phone.store.logic.bean.GoodsDetailInfo;
+import com.changhong.smarthome.phone.store.logic.bean.PagerBean;
+import com.changhong.smarthome.phone.store.logic.bean.SpInfoBean;
+import com.changhong.smarthome.phone.store.tools.StringUtil;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+/**
+ * [搜索逻辑管理类]<BR>
+ * [功能详细描述]
+ * @author 王磊
+ * @version [ChangHong SmartHome V100R001C03, 2014-4-22] 
+ */
+public class SearchLogic extends SuperLogic
+{
+//    private final static String TAG = "searchLogic";
+    
+    private HttpHandler<String> httpHanlder;
+    
+    private Context mContext;
+    
+    private static volatile SearchLogic instance;
+    
+    public int screenHeight;
+    
+    public int screenWidth;
+    
+//    private BaseAccountInfo accountInfo;
+    
+    //    public BitmapUtils bitmapUtils;
+    
+    public static SearchLogic getInstance(Context context)
+    {
+        if (instance == null)
+        {
+            synchronized (SearchLogic.class)
+            {
+                if (instance == null)
+                {
+                    instance = new SearchLogic(context);
+                }
+            }
+        }
+        return instance;
+    }
+    
+    private SearchLogic(Context context)
+    {
+        mContext = context;
+        getScreenSize();
+//        accountInfo = MainLogic.getInstance(context).getBaseAccountInfo();
+        
+    }
+    
+    private void getScreenSize()
+    {
+        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
+    }
+    
+    /**
+     * [搜索商品]<BR>
+     * [功能详细描述]
+     * @param searchWords  搜索关键字
+     * @param columnId     栏目Id
+     * @param pagerBean    分页信息
+     */
+    public void sendFindGoodsReq(String searchWords,String columnId,PagerBean pager,int mode,HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("keyWords", searchWords);
+        serviceInfo.put("waresType", 0);
+        serviceInfo.put("distanceType", 1);
+        serviceInfo.put("pager", pager);
+        serviceInfo.put("accountInfo", LoginLogic.getInstance().getBaseAccountInfo());
+        fixRequestParams(params,
+                serviceInfo,
+                "findWaresList",
+                "sc",
+                "sc",
+                "4100");
+        //ACTION_LOGIN没有用到
+        int reqid = StoreRequestId.REQUESTID_GET_FINDGOODS;
+        if(mode == 2)
+        {
+            reqid = StoreRequestId.REQUESTID_GET_MORE_FINDGOODS;
+        }
+        httpHanlder = HttpSenderUtils.sendMsgImpl("ACTION",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                reqid,
+                this,
+                false,
+                StoreConstant.URL_STORE,
+                -1);
+    }
+    
+    
+   
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is, int pos)
+    {
+        // TODO Auto-generated method stub
+        switch (requestId)
+        {
+            //搜索商品请求 返回数据解析
+            case StoreRequestId.REQUESTID_GET_FINDGOODS:
+                handleGetFindGoods(serviceRes);
+                break;
+            case StoreRequestId.REQUESTID_GET_MORE_FINDGOODS:
+                handleGetMoreFindGoods(serviceRes);
+                break;  
+           
+        }
+    }
+    
+    /**
+     * 处理搜索商品的响应
+     * @param response
+     */
+    public void handleGetFindGoods(ServiceResponse response)
+    {
+        Message message = new Message();
+        if (StringUtil.isNotEmpty(response.getBody().getResult()))
+        {
+            if (response.getBody().getResult().equals("200"))
+            {
+                List<GoodsDetailInfo> dynamicBeans = parseGetFindGoodsRsp(response.getBody()
+                        .getParamsString());
+                
+                if (null != dynamicBeans && dynamicBeans.size()>0)
+                {
+                    message.what = StoreConstant.GET_FINDGOODS_SUCCESS;
+                    message.obj = dynamicBeans;
+                }
+                else
+                {
+                    message.what = StoreConstant.GET_FINDGOODS_NO_DATA;
+                    
+                }
+            }
+            else
+            {
+                message.what = StoreConstant.GET_FINDGOODS_FAILED;
+            }
+            handler.sendMessage(message);
+        }
+        
+    }
+    
+    /**
+     * 处理搜索商品的响应
+     * @param response
+     */
+    public void handleGetMoreFindGoods(ServiceResponse response)
+    {
+        Message message = new Message();
+        if (StringUtil.isNotEmpty(response.getBody().getResult()))
+        {
+            if (response.getBody().getResult().equals("200"))
+            {
+                List<GoodsDetailInfo> dynamicBeans = parseGetFindGoodsRsp(response.getBody()
+                        .getParamsString());
+                
+                if (null != dynamicBeans)
+                {
+                    message.what = StoreConstant.GET_FINDGOODS_GET_MORE_SUCCESS;
+                    message.obj = dynamicBeans;
+                }
+                else
+                {
+                    message.what = StoreConstant.GET_FINDGOODS_GET_MORE_FAILED;
+                    
+                }
+            }
+            else
+            {
+                message.what = StoreConstant.GET_FINDGOODS_FAILED;
+            }
+            handler.sendMessage(message);
+        }
+        
+    }
+    
+   
+    /**
+     * 解析搜索商品信息返回 
+     */
+    public ArrayList<GoodsDetailInfo> parseGetFindGoodsRsp(String response)
+    {
+        if (StringUtil.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<GoodsDetailInfo> list = new ArrayList<GoodsDetailInfo>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray joa = job.optJSONArray("dataList");
+                
+                if (null != joa && joa.length() > 0)
+                {
+                    for (int i = 0; i < joa.length(); i++)
+                    {
+                        jsonObject = joa.optJSONObject(i);
+                        GoodsDetailInfo goodsDetailInfo = new GoodsDetailInfo();
+                        goodsDetailInfo.setId(jsonObject.optString("waresId"));
+                        goodsDetailInfo.setWaresType(Integer.parseInt(jsonObject.optString("waresType")));
+                        goodsDetailInfo.setDistanceType(Integer.parseInt(jsonObject.optString("distanceType")));
+                        goodsDetailInfo.setDetail(jsonObject.optString("detail"));
+                        goodsDetailInfo.setSaleRule(jsonObject.optString("saleRule"));
+                        goodsDetailInfo.setOriginalPrice(Double.parseDouble(jsonObject.optString("originalPrice")));
+                        goodsDetailInfo.setSalePrice(Double.parseDouble(jsonObject.optString("salePrice")));
+                        goodsDetailInfo.setScore(Integer.parseInt(jsonObject.optString("score")));
+                        goodsDetailInfo.setLongitude(Double.parseDouble(jsonObject.optString("longitude")));
+                        goodsDetailInfo.setLatitude(Double.parseDouble(jsonObject.optString("latitude")));
+                        goodsDetailInfo.setDesc(jsonObject.optString("descriptions"));
+                        goodsDetailInfo.setName(jsonObject.optString("waresName"));
+//                        goodsDetailInfo.setStock(Integer.parseInt(jsonObject.optString("stock")));
+                        
+                        JSONArray urlArray = jsonObject.optJSONArray("picUrls");
+                        if (null != urlArray && urlArray.length() > 0)
+                        {
+                            List<String> picList = new ArrayList<String>();
+                            for (int j = 0; j < urlArray.length(); j++)
+                            {
+                                picList.add(urlArray.getString(j));
+                            }
+                            goodsDetailInfo.setPicURL(picList);
+                        }
+                        
+                        JSONObject spObject = jsonObject.optJSONObject("spInfo");
+                        if(null != spObject)
+                        {
+                            SpInfoBean spInfoBean = new SpInfoBean();
+                            spInfoBean.setSpid(spObject.optString("spId"));
+                            spInfoBean.setSpname(spObject.optString("spName"));
+                            spInfoBean.setSpaddress(spObject.optString("address"));
+                            spInfoBean.setTelphone(spObject.optString("telPhone"));
+                            goodsDetailInfo.setsInfo(spInfoBean);
+                        }
+                        list.add(goodsDetailInfo);
+                    }
+                    
+                }
+                
+            }
+        }
+        catch (Exception e)
+        {
+            //            list = null;
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+   
+    
+   
+
+    @Override
+    public void clear()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void stopRequest()
+    {
+        // TODO Auto-generated method stub
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+            httpHanlder = null;
+        }
+        
+    }
+    
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        handler.sendEmptyMessage(com.changhong.sdk.baseapi.SuperMsgWhat.DATA_FORMAT_ERROR_MSGWHAT );
+    }
+    
+    
+    
+}

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_content_bg" >
+
+    <RelativeLayout
+        android:id="@+id/title_rl"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/top_height" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/interact_share_private_letter_text"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size" />
+
+        <TextView
+            android:id="@+id/msg_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dip"
+            android:gravity="center"
+            android:text="@string/msg_clear"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size" />
+    </RelativeLayout>
+
+    <com.changhong.sdk.widget.PullRefreshListView
+        android:id="@+id/share_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/title_rl"
+        android:background="#EEEEEE"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:dividerHeight="0.5dip"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none" />
+
+    <RelativeLayout
+        android:id="@+id/msg_reply_rl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:padding="10dip"
+        android:visibility="gone" >
+
+        <EditText
+            android:id="@+id/msg_reply_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/comment_input_bg" >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/msg_reply_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="@string/msg_reply"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size" />
+    </RelativeLayout>
+
+</RelativeLayout>

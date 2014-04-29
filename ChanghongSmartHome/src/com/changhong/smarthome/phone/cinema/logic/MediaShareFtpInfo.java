@@ -1,0 +1,56 @@
+package com.changhong.smarthome.phone.cinema.logic;
+
+/**  
+* @author yang_jun
+* @date 2014-3-17 下午5:44:22 
+*/
+public class MediaShareFtpInfo
+{
+    String ftpIp;
+    String ftpPort;
+    String userName;
+    String password;
+    String path;
+    
+    public String getPath()
+    {
+        return path;
+    }
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+    public String getFtpIp()
+    {
+        return ftpIp;
+    }
+    public void setFtpIp(String ftpIp)
+    {
+        this.ftpIp = ftpIp;
+    }
+    public String getFtpPort()
+    {
+        return ftpPort;
+    }
+    public void setFtpPort(String ftpPort)
+    {
+        this.ftpPort = ftpPort;
+    }
+    public String getUserName()
+    {
+        return userName;
+    }
+    public void setUserName(String userName)
+    {
+        this.userName = userName;
+    }
+    public String getPassword()
+    {
+        return password;
+    }
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+    
+}

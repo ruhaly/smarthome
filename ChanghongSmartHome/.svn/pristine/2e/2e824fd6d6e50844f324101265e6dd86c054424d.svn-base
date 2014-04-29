@@ -1,0 +1,752 @@
+package com.changhong.smarthome.phone.property.fragment;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.sdk.fragment.SuperFragment;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.property.PopupWindowActivity;
+import com.changhong.smarthome.phone.property.RepairsDetailActivity;
+import com.changhong.smarthome.phone.property.adapter.BxlistAdapter;
+import com.changhong.smarthome.phone.property.entry.Base64;
+import com.changhong.smarthome.phone.property.entry.BitMapUtil;
+import com.changhong.smarthome.phone.property.entry.ServicesItem;
+import com.changhong.smarthome.phone.property.entry.SharedPreferenceUtil;
+import com.changhong.smarthome.phone.property.entry.TSnsThemePic;
+import com.changhong.smarthome.phone.property.http.HttpAction;
+import com.changhong.smarthome.phone.property.logic.BillLogic;
+import com.changhong.smarthome.phone.property.logic.GetBxItemListLogic;
+import com.changhong.smarthome.phone.property.logic.GetBxItemList_wLogic;
+import com.changhong.smarthome.phone.property.recording.RecordActivity;
+import com.changhong.smarthome.phone.property.view.SwipeListView;
+import com.lidroid.xutils.HttpUtils;
+
+/**
+ * 这个里就是page页面中的单个页面现实，具体可以根据自己需求， 做多个布�?��同Fragment然后添加到FragAdapter的List中就ok
+ * 
+ * @author lxlin
+ * 
+ */
+public class RepairsFragment extends SuperFragment
+{
+    private View view;
+    
+    //储存网路返回的数据实例
+    private GetBxItemListLogic listbxitemlogic;
+    
+    private GetBxItemList_wLogic listbxitemlogic_w;
+    
+    //服务中报修列表 重写了ListView实现了下拉刷新
+    private SwipeListView bxfwlistview;
+    
+    //服务记录中的报修列表
+    private SwipeListView bxfwlistview_w;
+    
+    //服务中菜单
+    private RelativeLayout bxLayout;
+    
+    //服务记录菜单
+    private RelativeLayout bxLayout_w;
+    
+    //用来计算屏幕宽高
+    private DisplayMetrics dm;
+    
+    //点击我要报修出现的PopupWindow页面
+   // private View root;
+    
+    //private PopupWindow popup;
+    
+    //用来计算屏幕的宽度和长度
+    //private WindowManager wm;
+    
+    //用来标记需要删除的服务（服务中）
+    private int bx;
+    
+    //用来标记需要删除的服务（服务记录）
+    private int bx_w;
+    
+    //页面中的 " 我要报修 " 按钮
+    private Button bx_button;
+    
+    private HttpUtils httpUtil;
+    
+    //设置一个半透明层
+    private RelativeLayout bx_half;
+    
+    //服务中菜单上的标识图片 用来显示ListView是展开还是收缩
+    private ImageView bx_expand1;
+    
+    //服务记录菜单上的标识图片 用来显示ListView是展开还是收缩
+    private ImageView bx_expand2;
+    
+    //服务中菜单上的标识文字
+    private TextView bxfw_text;
+    
+    //服务记录菜单上的标识文字
+    private TextView bxfw_text_w;
+    
+    //服务记录菜单上的清空按钮
+    private TextView bx_clear;
+    
+    //服务中的报修服务列表数据
+    private BxlistAdapter bxlistadapter;
+    
+    //服务记录中的报修服务列表数据
+    private BxlistAdapter bxlistadapter_w;
+    
+   
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+    }
+    
+    //网路请求返回的标识，我们已此标识更新客户端的数据
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+        //初始进入物业服务加载全部服务信息
+            case HttpAction.BXLIST_SUCCESS_MSGWHAT_ALL:
+                initBxAdapter();
+                break;
+            //发送我要报修请求返回的成功信息
+            case HttpAction.BXADD_SUCCESS_MSGWHAT:
+                bxlistadapter.updateData(listbxitemlogic.services_bxList);
+              
+                
+               /* ((TextView) root.findViewById(R.id.bx_hm)).setText("");
+                ((TextView) root.findViewById(R.id.bx_popupe)).setText("");
+                popup.dismiss();*/
+                
+                showToast("提交成功!");
+                break;
+            //服务中服务下拉刷新返回的成功信息
+            case HttpAction.BXLIST_SUCCESS_MSGWHAT:
+                /* bxlistadapter = new BxlistAdapter(getActivity(),
+                    listbxitemlogic.services_bxList);
+                      bxfwlistview.setAdapter(bxlistadapter); */
+                listbxitemlogic.services_bxList = (ArrayList<ServicesItem>) msg.obj;
+                bxlistadapter.updateData(listbxitemlogic.services_bxList);
+                
+                bxfwlistview.onRefreshComplete();
+                break;
+            //服务记录下拉刷新返回的成功信息
+            case HttpAction.BXLIST_SUCCESS_MSGWHAT_W:
+                /* bxlistadapter_w = new BxlistAdapter(getActivity(),
+                         listbxitemlogic_w.services_bxList_w);
+                 bxfwlistview_w.setAdapter(bxlistadapter_w);*/
+                listbxitemlogic_w.services_bxList_w = (ArrayList<ServicesItem>) msg.obj;
+                bxlistadapter_w.updateData(listbxitemlogic_w.services_bxList_w);
+                bxfwlistview_w.onRefreshComplete();
+                break;
+            //清空返回的成功信息
+            case HttpAction.BXDELETEALL_SUCCESS_MSGWHAT:
+                listbxitemlogic_w.services_bxList_w.clear();
+                bxlistadapter_w.notifyDataSetChanged();
+                break;
+            //服务中服务删除返回的成功信息
+            case HttpAction.BXDELETE_SUCCESS_MSGWHAT:
+                listbxitemlogic.services_bxList.remove(bx);
+                bxlistadapter.notifyDataSetChanged();
+                break;
+            //服务记录中服务删除返回的成功信息
+            case HttpAction.BXDELETE_SUCCESS_MSGWHAT_W:
+                listbxitemlogic_w.services_bxList_w.remove(bx_w);
+                bxlistadapter_w.notifyDataSetChanged();
+                break;
+            case DATA_FORMAT_ERROR_MSGWHAT:
+                if (bxfwlistview_w != null)
+                {
+                    bxfwlistview_w.onRefreshComplete();
+                }
+                if (bxfwlistview != null)
+                {
+                    bxfwlistview.onRefreshComplete();
+                }
+                break;
+            default:
+                break;
+        }
+        super.handleMsg(msg);
+        
+    }
+    
+    @Override
+    public View initLayout(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        
+        dm = getResources().getDisplayMetrics();
+      /*  root = this.getActivity()
+                .getLayoutInflater()
+                .inflate(R.layout.bx_popup, null);
+        popup = new PopupWindow(root, dm.widthPixels, dm.heightPixels);*/
+        view = inflater.inflate(R.layout.main_bxfw, container, false);
+        bx_half = (RelativeLayout) view.findViewById(R.id.bx_half);
+        bxfwlistview = (SwipeListView) view.findViewById(R.id.bxfwlist);
+        bxfwlistview_w = (SwipeListView) view.findViewById(R.id.bxfwlist_w);
+        bxLayout = (RelativeLayout) view.findViewById(R.id.bxLayout);
+        bxLayout_w = (RelativeLayout) view.findViewById(R.id.bxLayout_w);
+        bx_button = (Button) view.findViewById(R.id.bx_button);
+        bx_expand1 = (ImageView) view.findViewById(R.id.bx_expand1);
+        bx_expand2 = (ImageView) view.findViewById(R.id.bx_expand2);
+        bxfw_text = (TextView) view.findViewById(R.id.bxfw_text);
+        bxfw_text_w = (TextView) view.findViewById(R.id.bxfw_text_w);
+        bx_clear = (TextView) view.findViewById(R.id.bx_clear);
+      /*  addImageView1 = (ImageView) root.findViewById(R.id.iv_add_1);
+        iv_video_1 = (ImageView) root.findViewById(R.id.iv_video_1);*/
+        
+        final Builder builder = new AlertDialog.Builder(this.getActivity()
+                .getApplicationContext());
+        
+        initBxList();
+        //网络请求加载报修页面数据
+        showProcessDialog(dismiss);
+        httpUtil = new HttpUtils();
+        
+        listbxitemlogic.setData(fHandler);
+        listbxitemlogic.requestbxItemListAll("2",
+                BillLogic.getInstance().accountInfo,
+                httpUtil);
+        listbxitemlogic_w.setData(fHandler);
+        
+        return view;
+    }
+    
+    // 初始化报修列表
+    private void initBxList()
+    {
+        
+        bx_button.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                
+                bx_half.setVisibility(View.VISIBLE);
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), PopupWindowActivity.class);
+                intent.putExtra("bz", "repairs");
+                startActivityForResult(intent, 8);
+                getActivity().overridePendingTransition(R.anim.anim_enter,
+                        R.anim.anim_exit);
+                // 点击popupWindow不消失
+          /*      popup.setFocusable(true);
+                popup.setOutsideTouchable(false);
+
+                popup.showAtLocation(view, Gravity.FILL, 0, 32);*/
+                
+            }
+            
+        });
+       
+      
+        bx_clear.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                new AlertDialog.Builder(getActivity()).setTitle("确认")
+                        .setMessage("你确定清除所有的数据吗？")
+                        .setPositiveButton("删除",
+                                new DialogInterface.OnClickListener()
+                                {
+                                    
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                            int which)
+                                    {
+                                        
+                                        // services_bx_w.clear();
+                                        
+                                        listbxitemlogic_w.requestbxDeleteAll("5",
+                                                BillLogic.getInstance().accountInfo,
+                                                httpUtil);
+                                        
+                                    }
+                                    
+                                })
+                        .setNegativeButton("取消",
+                                new DialogInterface.OnClickListener()
+                                {
+                                    
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                            int which)
+                                    {
+                                        dialog.dismiss();
+                                        
+                                    }
+                                    
+                                })
+                        .show();
+                
+            }
+        });
+        
+        //对服务中的报修服务下拉刷新
+        bxfwlistview.setOnRefreshListener(new SwipeListView.OnRefreshListener()
+        {
+            public void onRefresh()
+            {
+                listbxitemlogic.requestbxItemList("2",
+                        BillLogic.getInstance().accountInfo,
+                        httpUtil);
+                
+            }
+        });
+        //对服务记录的报修服务下拉刷新
+        bxfwlistview_w.setOnRefreshListener(new SwipeListView.OnRefreshListener()
+        {
+            public void onRefresh()
+            {
+                listbxitemlogic_w.requestbxItemList("2",
+                        BillLogic.getInstance().accountInfo,
+                        httpUtil);
+                
+            }
+        });
+        //点击服务中菜单中的图片改变 服务中菜单和服务记录菜单的状态
+        bx_expand1.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                if (bxfwlistview.getVisibility() == View.VISIBLE)
+                {
+                    bxfwlistview.setVisibility(View.GONE);
+                    bxfw_text.setBackgroundResource(R.drawable.iconbg_unselect);
+                    bx_expand1.setBackgroundResource(R.drawable.drawable_expand_close);
+                }
+                else
+                {
+                    bxfwlistview.setVisibility(View.VISIBLE);
+                    bxfwlistview_w.setVisibility(View.GONE);
+                    bxfw_text.setBackgroundResource(R.drawable.iconbg_select);
+                    bxfw_text_w.setBackgroundResource(R.drawable.iconbg_unselect);
+                    bx_expand1.setBackgroundResource(R.drawable.drawable_expand_open);
+                    bx_expand2.setBackgroundResource(R.drawable.drawable_expand_close);
+                }
+                ;
+                
+            }
+            
+        });
+        //点击服务中菜单改变 服务中菜单和服务记录菜单的状态
+        bxLayout.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                if (bxfwlistview.getVisibility() == View.VISIBLE)
+                {
+                    bxfwlistview.setVisibility(View.GONE);
+                    bxfw_text.setBackgroundResource(R.drawable.iconbg_unselect);
+                    bx_expand1.setBackgroundResource(R.drawable.drawable_expand_close);
+                }
+                else
+                {
+                    bxfwlistview.setVisibility(View.VISIBLE);
+                    bxfwlistview_w.setVisibility(View.GONE);
+                    bxfw_text.setBackgroundResource(R.drawable.iconbg_select);
+                    bxfw_text_w.setBackgroundResource(R.drawable.iconbg_unselect);
+                    bx_expand1.setBackgroundResource(R.drawable.drawable_expand_open);
+                    bx_expand2.setBackgroundResource(R.drawable.drawable_expand_close);
+                }
+                ;
+                
+            }
+            
+        });
+        //点击服务记录菜单中的图片改变 服务中菜单和服务记录菜单的状态
+        bx_expand2.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                if (bxfwlistview_w.getVisibility() == View.VISIBLE)
+                {
+                    bxfwlistview_w.setVisibility(View.GONE);
+                    bxfw_text_w.setBackgroundResource(R.drawable.iconbg_unselect);
+                    bx_expand2.setBackgroundResource(R.drawable.drawable_expand_close);
+                }
+                else
+                {
+                    bxfwlistview_w.setVisibility(View.VISIBLE);
+                    bxfwlistview.setVisibility(View.GONE);
+                    bxfw_text_w.setBackgroundResource(R.drawable.iconbg_select);
+                    bxfw_text.setBackgroundResource(R.drawable.iconbg_unselect);
+                    bx_expand2.setBackgroundResource(R.drawable.drawable_expand_open);
+                    bx_expand1.setBackgroundResource(R.drawable.drawable_expand_close);
+                }
+                ;
+                
+            }
+            
+        });
+        //点击服务记录菜单改变 服务中菜单和服务记录菜单的状态
+        bxLayout_w.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                if (bxfwlistview_w.getVisibility() == View.VISIBLE)
+                {
+                    bxfwlistview_w.setVisibility(View.GONE);
+                    bxfw_text_w.setBackgroundResource(R.drawable.iconbg_unselect);
+                    bx_expand2.setBackgroundResource(R.drawable.drawable_expand_close);
+                }
+                else
+                {
+                    bxfwlistview_w.setVisibility(View.VISIBLE);
+                    bxfwlistview.setVisibility(View.GONE);
+                    bxfw_text_w.setBackgroundResource(R.drawable.iconbg_select);
+                    bxfw_text.setBackgroundResource(R.drawable.iconbg_unselect);
+                    bx_expand2.setBackgroundResource(R.drawable.drawable_expand_open);
+                    bx_expand1.setBackgroundResource(R.drawable.drawable_expand_close);
+                }
+                ;
+                
+            }
+            
+        });
+        
+    }
+   
+    public void initBxAdapter()
+    {
+        
+        if (listbxitemlogic.services_bxList != null)
+        {
+            
+            bxlistadapter = new BxlistAdapter(getActivity(),
+                    listbxitemlogic.services_bxList);
+            bxfwlistview.setAdapter(bxlistadapter);
+            
+            bxfwlistview.setOnItemLongClickListener(new OnItemLongClickListener()
+            {
+                
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent,
+                        View view, final int position, long id)
+                {
+                    /*new AlertDialog.Builder(getActivity()).setTitle("确认")
+                            .setMessage("你确定删除此条数据吗")
+                            .setPositiveButton("删除",
+                                    new DialogInterface.OnClickListener()
+                                    {
+                                        
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which)
+                                        {
+                                            
+                                            // services_bx_w.clear();
+                                            
+                                            listbxitemlogic.deleteBxItem("4",
+                                                    BillLogic.getInstance()
+                                                            .accountInfo,
+                                                    bxlistadapter.getItemId(position - 1),
+                                                    httpUtil);
+                                            bx = position - 1;
+                                            
+                                        }
+                                        
+                                    })
+                            .setNegativeButton("取消",
+                                    new DialogInterface.OnClickListener()
+                                    {
+                                        
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which)
+                                        {
+                                            dialog.dismiss();
+                                            
+                                        }
+                                        
+                                    })
+                            .show();*/
+                    
+                    return true;
+                }
+            });
+            bxfwlistview.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id)
+                {
+                    Intent intent = new Intent(
+                            getActivity().getApplicationContext(),
+                            RepairsDetailActivity.class);
+                    
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("servicesitem",
+                            (ServicesItem) bxlistadapter.getItem(position - 1));
+                    intent.putExtras(bundle);
+                    Log.i("跳转到报修详情页", position + "");
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.anim_enter,
+                            R.anim.anim_exit);
+                }
+                
+            });
+            
+        }
+        if (listbxitemlogic_w.services_bxList_w != null)
+        {
+            
+            bxlistadapter_w = new BxlistAdapter(getActivity(),
+                    listbxitemlogic_w.services_bxList_w);
+            bxfwlistview_w.setAdapter(bxlistadapter_w);
+            bxfwlistview_w.setOnItemLongClickListener(new OnItemLongClickListener()
+            {
+                
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent,
+                        View view, final int position, long id)
+                {
+                    new AlertDialog.Builder(getActivity()).setTitle("确认")
+                            .setMessage("你确定删除此条数据吗?")
+                            .setPositiveButton("删除",
+                                    new DialogInterface.OnClickListener()
+                                    {
+                                        
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which)
+                                        {
+                                            
+                                            // services_bx_w.clear();
+                                            
+                                            listbxitemlogic_w.deleteBxItem("4",
+                                                    BillLogic.getInstance().accountInfo,
+                                                    bxlistadapter_w.getItemId(position - 1),
+                                                    httpUtil);
+                                            bx_w = position - 1;
+                                            
+                                        }
+                                        
+                                    })
+                            .setNegativeButton("取消",
+                                    new DialogInterface.OnClickListener()
+                                    {
+                                        
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which)
+                                        {
+                                            dialog.dismiss();
+                                            
+                                        }
+                                        
+                                    })
+                            .show();
+                    
+                    return false;
+                }
+            });
+            bxfwlistview_w.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id)
+                {
+                    Intent intent = new Intent(
+                            getActivity().getApplicationContext(),
+                            RepairsDetailActivity.class);
+                    
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("servicesitem",
+                            listbxitemlogic_w.services_bxList_w.get(position - 1));
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent,
+                            listbxitemlogic_w.services_bxList_w.get(position - 1)
+                                    .getFwid());
+                    getActivity().overridePendingTransition(R.anim.anim_enter,
+                            R.anim.anim_exit);
+                }
+                
+            });
+            
+        }
+        
+    }
+    
+    //提供网路加载Dialog
+    DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            listbxitemlogic.stopRequest();
+        }
+    };
+    
+    //报修详情页面关闭后调用的回调方法
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+       
+        if (resultCode == 1)
+        {
+            // 子窗口ChildActivity的回传数
+            if (data != null)
+            {
+                Bundle bundle = data.getExtras();
+                if (bundle != null)
+                {
+                    // 得到子窗口ChildActivity的回传数
+                    String datax = bundle.getString("result");
+                    String content_pj = bundle.getString("content_pj");
+                    String pf = bundle.getString("pf").substring(0, 1);
+                    
+                    for (int n = 0; n < listbxitemlogic_w.services_bxList_w.size(); n++)
+                    {
+                        
+                        if (listbxitemlogic_w.services_bxList_w.get(n)
+                                .getFwid() == requestCode)
+                        {
+                            listbxitemlogic_w.services_bxList_w.get(n)
+                                    .setContent_pj(content_pj);
+                            listbxitemlogic_w.services_bxList_w.get(n)
+                                    .setPf(Integer.parseInt(pf));
+                            listbxitemlogic_w.services_bxList_w.get(n)
+                                    .setFwzt(4);//设置服务状态为已完成
+                            
+                            bxlistadapter_w = new BxlistAdapter(getActivity(),
+                                    listbxitemlogic_w.services_bxList_w);
+                            bxfwlistview_w.setAdapter(bxlistadapter_w);
+                            
+                            // tslistadapter_w.notifyDataSetChanged(); }
+                            
+                        }
+                    }
+                    
+                }
+            }
+        }
+        else if (resultCode==8){
+            if(requestCode==8){
+                Bundle bundle = data.getExtras();
+                if (bundle != null)
+                {
+                    String phonenum = bundle.getString("phonenum");
+                    String newfwcontent = bundle.getString("newfwcontent");
+                    ArrayList addImageList = bundle.getStringArrayList("addImageList");
+                   // String picStr = bundle.getString("picStr");
+                    String voiceStr = bundle.getString("voiceStr");
+                    int repairType = bundle.getInt("typec");
+                 // 新增报修
+                    httpUtil = new HttpUtils();
+                    showProcessDialog(dismiss);
+                    listbxitemlogic.setData(fHandler);
+                    listbxitemlogic.addBxItem("1",
+                            BillLogic.getInstance().accountInfo,
+                            phonenum,
+                            newfwcontent,
+                            addImageList,voiceStr,"jpg","ram",repairType,
+                            httpUtil);
+                }
+            }
+        }
+  
+        
+    }
+   
+    
+    
+    //一下是继承框架要重写的方法
+    @Override
+    public void onClick(View v)
+    {
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        if (null != GetBxItemListLogic.getInstance())
+        {
+            listbxitemlogic = GetBxItemListLogic.getInstance();
+            listbxitemlogic_w = GetBxItemList_wLogic.getInstance();
+        }
+        
+    }
+    
+    @Override
+    public void updateView(Message msg)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+   
+    @Override
+    public void updateView(Intent intent)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+}

@@ -1,0 +1,143 @@
+package com.changhong.smarthome.phone.store.adapter;
+
+import java.util.List;
+
+import android.content.Context;
+import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.store.entity.StoreConstant;
+
+public class Expandadapter extends BaseAdapter
+{
+    private final static String TAG = "Expandadapter";
+    
+    private Context context;
+    
+    private List<String> mgroups;
+    
+    private int itemHeight = 88;
+    
+    
+    private int screenHeight;
+    
+    private int screenWidth;
+    
+    private Handler mUiHandler;
+    
+    private int mType;
+    public Expandadapter(Context context, List<String> groups,Handler uiHandler,int type)
+    {
+        this.context = context;
+        mgroups = groups;
+        mUiHandler = uiHandler;
+        mType = type;
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
+        
+        itemHeight = (screenHeight * 88) / 1280;
+        
+    }
+  
+    
+    final class ChildViewHolder
+    {
+        private RelativeLayout subLayout;
+        
+        private TextView childtext;
+        
+    }
+
+    @Override
+    public int getCount()
+    {
+        // TODO Auto-generated method stub
+        if(mgroups != null )
+        {
+            return mgroups.size();
+        }
+        return 0;
+    }
+
+    @Override
+    public Object getItem(int position)
+    {
+        // TODO Auto-generated method stub
+        if(mgroups != null )
+        {
+            return mgroups.get(position);
+        }
+        return null;
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        // TODO Auto-generated method stub
+        return position;
+    }
+
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent)
+    {
+        // TODO Auto-generated method stub
+      ChildViewHolder holder = null;
+      if (convertView == null)
+      {
+          
+          holder = new ChildViewHolder();
+          convertView = View.inflate(context, R.layout.childlist, null);
+          holder.subLayout = (RelativeLayout) convertView.findViewById(R.id.sub_child_layout);
+          android.widget.AbsListView.LayoutParams layoutParams = new android.widget.AbsListView.LayoutParams(
+                  screenWidth * 360 / 720, itemHeight);
+          holder.subLayout.setLayoutParams(layoutParams);
+         
+          holder.childtext = (TextView) convertView.findViewById(R.id.child_text_id);
+              
+          holder.childtext.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                  (screenWidth * 30) / 720);
+          convertView.setTag(holder);
+          
+      }
+      else
+      {
+          holder = (ChildViewHolder) convertView.getTag();
+      }
+      
+      //convertView.setOnClickListener(new );
+      final String item = mgroups.get(position);
+      if (item != null)
+      {
+          holder.childtext.setText(item);
+          
+      }
+      convertView.setOnClickListener(new View.OnClickListener()
+      {
+          @Override
+          public void onClick(View v)
+          {
+              // TODO Auto-generated method stub
+            Log.d(TAG, "onItemClick | position = " + position);
+            if(mUiHandler != null)
+            {
+                mUiHandler.sendMessage(mUiHandler.obtainMessage(mType, item));
+            }
+//            Intent intent = new Intent(context, ClassifyshowActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable(StoreConstant.GOODS_COLUMN, item);
+//            intent.putExtras(bundle);
+//            context.startActivity(intent);
+          }
+      });
+      return convertView;
+    }
+}

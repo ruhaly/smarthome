@@ -1,0 +1,254 @@
+package com.changhong.smarthome.phone.property.activity;
+
+import java.util.ArrayList;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.sdk.baseapi.HttpUrl;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.fragment.ProManageFragment;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+import com.changhong.smarthome.phone.property.entry.HouseDescription;
+import com.changhong.smarthome.phone.property.fragment.ComplaintFragment;
+import com.changhong.smarthome.phone.property.fragment.RepairsFragment;
+import com.changhong.smarthome.phone.property.http.HttpAction;
+import com.changhong.smarthome.phone.property.logic.BillLogic;
+import com.changhong.smarthome.phone.property.logic.GetHouseDescriptionLogic;
+import com.lidroid.xutils.HttpUtils;
+
+public class HomeEscrowMainActivity extends SuperActivity implements
+        OnClickListener
+{
+    
+    private String bz;
+    
+    //标题
+    private TextView textView1;
+    
+    private ImageView house_lefttitle;
+    
+    private GridView house_gridView;
+    
+    private HttpUtils httpUtil;
+    
+    private GetHouseDescriptionLogic getHouseDescriptionLogic;
+    
+    public ArrayList<HouseDescription> houselist;
+    
+    private static Context context;
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case HttpAction.HOUSED_SUCCESS_MSGWHAT:
+                houselist = (ArrayList<HouseDescription>) msg.obj;
+                
+                initPage();
+                break;
+        }
+        super.handleMsg(msg);
+    }
+    
+    private void initPage()
+    {
+        HousedAdapter house_gridViewAdpater = new HousedAdapter();
+        house_gridView.setAdapter(house_gridViewAdpater);
+        house_gridView.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                Intent intent = new Intent();
+                intent.putExtra("state", houselist.get(position).getState());
+                intent.putExtra("id", houselist.get(position).getId());
+                intent.setClass(context, HouseEscrowDetailActivity.class);
+                startActivity(intent);
+                
+            }
+            
+        });
+        
+    }
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.housemain);
+        context = this;
+        Intent intent = this.getIntent();
+        bz = intent.getStringExtra("bz");
+        
+        String userId = LoginLogic.getInstance().user.getUid();
+        
+        String account = LoginLogic.getInstance().user.getAccount();
+        if (userId == null || userId.equals(""))
+        {
+            userId = "yhx";
+        }
+        String communityCode = LoginLogic.getInstance().user.getCommuntyId();
+        if (account == null)
+        {
+            account = "yhx";
+        }
+        BillLogic.accountInfo.setAccountId(account);
+        BillLogic.accountInfo.setUserId(userId);
+        BillLogic.accountInfo.setCommunityCode(communityCode);
+        BillLogic.accountInfo.setFlag(1);//�ն˱�ʶ1�ֻ�2 TV 3 PAD
+        BillLogic.accountInfo.setResolution("720p");
+        BillLogic.accountInfo.setType("SONY");
+        initViewPage();
+        
+    }
+    
+    private void initViewPage()
+    {
+        if (bz.equals(ProManageFragment.HOMEESCROW))
+        {
+            house_lefttitle = (ImageView) findViewById(R.id.house_lefttitle);
+            textView1 = (TextView) findViewById(R.id.textView1);
+            house_gridView = (GridView) findViewById(R.id.house_gridView);
+            house_lefttitle.setOnClickListener(this);
+            httpUtil = new HttpUtils();
+            getHouseDescriptionLogic.setData(mHandler);
+            getHouseDescriptionLogic.getHouseDescriptionList(httpUtil);
+        }
+        
+    }
+    
+    public class HousedAdapter extends BaseAdapter
+    {
+        private LayoutInflater m_inflater;
+        
+        private HousedAdapter()
+        {
+            m_inflater = LayoutInflater.from(context);
+        }
+        
+        @Override
+        public int getCount()
+        {
+            // TODO Auto-generated method stub
+            return houselist.size();
+        }
+        
+        @Override
+        public Object getItem(int position)
+        {
+            // TODO Auto-generated method stub
+            return houselist.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            // TODO Auto-generated method stub
+            return houselist.size();
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            
+            if (convertView == null)
+            {
+                convertView = m_inflater.inflate(R.layout.housed_item,
+                        parent,
+                        false);
+                ImageView childimage = (ImageView) convertView.findViewById(R.id.childimage);
+                TextView childtext = (TextView) convertView.findViewById(R.id.childtext);
+                if (houselist.get(position).getState() == 1)
+                {
+                    childimage.setBackgroundDrawable(getResources().getDrawable(R.drawable.house_onrend));
+                }
+                else if (houselist.get(position).getState() == 2)
+                {
+                    childimage.setBackgroundDrawable(getResources().getDrawable(R.drawable.house_overrend));
+                }
+                else if (houselist.get(position).getState() == 3)
+                {
+                    childimage.setBackgroundDrawable(getResources().getDrawable(R.drawable.house_onsell));
+                }
+                else if (houselist.get(position).getState() == 4)
+                {
+                    childimage.setBackgroundDrawable(getResources().getDrawable(R.drawable.house_oversell));
+                }
+                if (null != houselist.get(position).getHouse_no())
+                {
+                    childtext.setText(houselist.get(position).getHouse_no());
+                }
+            }
+            
+            return convertView;
+        }
+        
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        //getMenuInflater().inflate(R.menu.wwfwmain, menu);
+        return true;
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
+            case R.id.house_lefttitle:
+                finish();
+                break;
+            default:
+                break;
+        }
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        if (null != GetHouseDescriptionLogic.getInstance())
+        {
+            getHouseDescriptionLogic = GetHouseDescriptionLogic.getInstance();
+        }
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+}

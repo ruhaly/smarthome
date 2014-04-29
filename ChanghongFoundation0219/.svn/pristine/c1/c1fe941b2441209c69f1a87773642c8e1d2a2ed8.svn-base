@@ -1,0 +1,43 @@
+package com.changhong.foundation.baseapi;
+
+public class ResultCode
+{
+    //成功
+    public static final String RESULT_SUCCESS = "200";
+    
+    //成功
+    public static final String RESULT_SUCCESS_CBS = "0";
+    
+    //服务器异常
+    public static final String RESULT_FAILED = "400";
+    
+    //数据不合法
+    public static final String RESULT_DATA_INVALID = "505";
+    
+    //参数错误
+    public static final String RESULT_EMPTY = "2";
+    
+    //用户不存在
+    public static final String RESULT_USER_NOT_EXIT = "-3";
+    
+    //参数错误
+    public static final String RESULT_PARAMS_ERROR = "-1";
+    
+    //获取验证码识别
+    public static final String RESULT_VALICODE_ERROR = "-2";
+    
+    //506：原密码错误
+    public static final String RESULT_OLDPWD_ERROR = "506";
+    
+    //507：密码修改失败
+    public static final String RESULT_PWD_MODIFY_ERROR = "507";
+    
+    //501：密码错误
+    public static final String RESULT_PWD_ERROR = "501";
+    
+    //502：用户不存在
+    public static final String RESULT_USER_NOT_EXIST = "502";
+    
+    //503：用户未激活
+    public static final String RESULT_USER_NOT_ACTIVATE = "503";
+}

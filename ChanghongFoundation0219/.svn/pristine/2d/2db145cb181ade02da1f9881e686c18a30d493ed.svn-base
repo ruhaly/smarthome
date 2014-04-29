@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="gray">#d7d7d7</color>
+    <color name="black">#000000</color>
+    <color name="gray_font">#999999</color>
+    <color name="color_Trans">#00ffffff</color>
+    <color name="gray_title">#ffcccccc</color>
+    <color name="dip_gray">#666666</color>
+    <color name="gray_content_bg">#ffffff</color>
+    <color name="color_White">#ffffffff</color>
+    <color name="deep_red">#f80000</color>
+    <color name="background_list_front">#ffffff</color>
+    <color name="dip_green">#66a800</color>
+    <color name="cacheColorHint">#00000000</color>
+
+    <!-- 玫红 -->
+    <color name="rose_red">#f85e5e</color>
+    <color name="color_pink">#f25454</color>
+
+</resources>

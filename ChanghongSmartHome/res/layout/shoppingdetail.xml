@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:item="http://schemas.android.com/apk/res/com.changhong.smarthome.phone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ordermanager_list_bg"
+    android:orientation="vertical" >
+
+    <com.changhong.smarthome.phone.store.activity.StoreTitleItem
+        android:id="@+id/shopping_detail_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        item:titlename="@string/shopping_detail_title" >
+    </com.changhong.smarthome.phone.store.activity.StoreTitleItem>
+
+    <ScrollView
+        android:id="@+id/shopping_detail_ScrollView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shopping_detail_title"
+        android:layout_marginBottom="10dp" >
+
+        <RelativeLayout
+            android:id="@+id/shopping_detail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/shoping_image"
+                android:layout_width="200dip"
+                android:layout_height="130dip"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/changhong"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY" />
+
+            <RelativeLayout
+                android:id="@+id/shopping_price_rl"
+                android:layout_below="@+id/shoping_image"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/shoping_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_centerVertical="true"
+                    android:text="@string/shopping_detail_price"
+                    android:textColor="@color/red"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/shoping_price_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/shoping_price"
+                    android:text="@string/shopping_detail_price_1"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/buy_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/shopping_conform_btn_bg" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/shoping_price_line"
+                android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:layout_below="@+id/shopping_price_rl"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/shopping_detail_line" />
+
+            <TextView
+                android:id="@+id/shoping_name"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_price_line"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="赛江南"
+                android:textColor="@color/shopping_detail_name"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/shoping_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_name"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/shopping_detail_name"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/shoping_detail_1"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_detail"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/shopping_detail_dese"
+                android:textColor="@color/shopping_detail_1"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/shoping_detail_1_value"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_detail_1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/shopping_detail_name"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/shoping_detail_1_line"
+                android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:layout_below="@+id/shoping_detail_1_value"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/shopping_detail_line" />
+
+            <TextView
+                android:id="@+id/shoping_detail_2"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_detail_1_line"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/shopping_detail_notify"
+                android:textColor="@color/shopping_detail_1"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/shoping_detail_2_value"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_detail_2"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/shopping_detail_name"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/shoping_detail_2_line"
+                android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:layout_below="@+id/shoping_detail_2_value"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/shopping_detail_line" />
+
+            <TextView
+                android:id="@+id/shoping_detail_3"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_detail_2_line"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/shopping_detail_info"
+                android:textColor="@color/shopping_detail_1"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/shoping_detail_3_value"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_detail_3"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/shopping_detail_name"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/shoping_map"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/shoping_detail_3"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="40dp"
+                android:layout_alignTop="@+id/shoping_detail_3_value"
+                android:drawableLeft="@drawable/shopping_detail_map"
+                android:drawablePadding="5dp"
+                android:text="@string/shopping_detail_map"
+                android:textColor="@color/shopping_detail_name"
+                android:textSize="20sp" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

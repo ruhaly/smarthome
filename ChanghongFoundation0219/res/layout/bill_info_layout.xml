@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bg"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/img_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="3dp"
+                android:clickable="true"
+                android:src="@drawable/back_bg" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/bill_info"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/btn_recent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/menu_pressed_left_bg_press"
+                android:gravity="center"
+                android:text="@string/bill_recent" />
+
+            <TextView
+                android:id="@+id/btn_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/menu_pressed_left_bg_default"
+                android:gravity="center"
+                android:text="@string/bill_history" />
+        </LinearLayout>
+
+        <com.changhong.sdk.widget.CustomViewPager
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/vp"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/color_White"
+            android:flipInterval="30"
+            android:focusable="false"
+            android:persistentDrawingCache="animation" >
+        </com.changhong.sdk.widget.CustomViewPager>
+    </LinearLayout>
+
+</LinearLayout>

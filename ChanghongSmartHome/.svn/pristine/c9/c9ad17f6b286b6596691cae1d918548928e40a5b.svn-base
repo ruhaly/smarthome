@@ -1,0 +1,172 @@
+package com.changhong.smarthome.phone.cinema;
+
+import java.io.File;
+import java.io.IOException;
+
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.changhong.sdk.http.ContinueFTP;
+import com.changhong.sdk.http.ContinueFTP.UploadStatus;
+import com.changhong.smarthome.phone.cinema.activity.MainActivity;
+import com.changhong.smarthome.phone.cinema.activity.UploadFinishedActivity;
+import com.changhong.smarthome.phone.cinema.entry.LocalVideoInfo;
+import com.changhong.smarthome.phone.cinema.logic.AddShareSuccessLogic;
+import com.changhong.smarthome.phone.cinema.logic.MediaShareFtpInfo;
+
+/**  
+* @author yang_jun
+* @date 2014-3-19 下午3:36:05 
+*/
+public class UploadTask extends AsyncTask<String, Integer, String>
+{
+    ProgressDialog progressDialog;
+    
+    private static final String TAG = "UploadTask";
+    
+    LocalVideoInfo video;
+    
+    MediaShareFtpInfo ftpInfo;
+    
+    Context context;
+    
+    AddShareSuccessLogic addShareSuccessLogic;
+    
+    /**
+     * @param video
+     * @param ftpInfo
+     */
+    public UploadTask(LocalVideoInfo video, MediaShareFtpInfo ftpInfo,
+            Context con, AddShareSuccessLogic addShareSuccessLogic,
+            ProgressDialog progressDialog)
+    {
+        this.video = video;
+        this.ftpInfo = ftpInfo;
+        this.context = con;
+        this.addShareSuccessLogic = addShareSuccessLogic;
+        this.progressDialog = progressDialog;
+    }
+    
+    @Override
+    protected void onCancelled()
+    {
+        super.onCancelled();
+    }
+    
+    @Override
+    protected void onPreExecute()
+    {
+    }
+    
+    @Override
+    protected String doInBackground(String... params)
+    {
+        String Uploadstatus = "0";//1success,2fail
+        Log.i(TAG, "do in background");
+        ContinueFTP continueTP = new ContinueFTP();
+        if (ftpInfo == null)
+        {
+            return Uploadstatus;
+            
+        }
+        String videolocal = video.getPath();
+        String videoremote = ftpInfo.getPath() + File.separator
+                + video.getDisplayName();
+        String piclocalPath = null;
+        String picremotePath = null;
+        //save picture
+        int a = video.getPath().indexOf('.');
+        if (a != -1)
+        {
+            int b = video.getDisplayName().indexOf('.');
+            if (b != -1)
+            {
+                String fileNameWithNoType = video.getDisplayName().substring(0,
+                        b);
+                piclocalPath = video.getPath().substring(0, a) + File.separator
+                        + fileNameWithNoType + ".jpg";
+                picremotePath = ftpInfo.getPath() + File.separator
+                        + fileNameWithNoType + ".jpg";
+            }
+            
+        }
+        Log.i(TAG, "----------pic local" + piclocalPath
+                + "-----------picremotePath:" + picremotePath);
+        try
+        {
+            boolean hasConnect = continueTP.connect(ftpInfo.getFtpIp(),
+                    Integer.parseInt(ftpInfo.getFtpPort()),
+                    ftpInfo.getUserName(),
+                    ftpInfo.getPassword());
+            
+            if (hasConnect)
+            {
+                
+                Log.i(TAG, "---------hasConnect");
+                //                continueTP.upload(piclocalPath, picremotePath);
+                UploadStatus status = continueTP.upload(videolocal, videoremote);
+                Log.i(TAG, "status:" + status);
+                switch (status)
+                {
+                    case Upload_New_File_Success:
+                        Uploadstatus = "1";//success
+                        break;
+                    case File_Exits:
+                        Uploadstatus = "2";//exsites
+                        break;
+                    default:
+                        Uploadstatus = "0";//error
+                        break;
+                }
+            }
+            
+        }
+        catch (IOException e)
+        {
+            Log.i(TAG, "---------IOException");
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return Uploadstatus;
+    }
+    
+    @Override
+    protected void onPostExecute(String result)
+    {
+        if (progressDialog != null)
+        {
+            progressDialog.dismiss();
+        }
+        if ("1".equals(result))
+        {
+            addShareSuccessLogic.setVideo(video);
+            
+            addShareSuccessLogic.requestSendAddShareSuccess();
+            
+            Intent intent = new Intent();
+            intent.setClass(context, UploadFinishedActivity.class);
+            context.startActivity(intent);
+        }
+        else if ("0".equals(result) || result == null)
+        {
+            Intent intent = new Intent();
+            intent.setClass(context, MainActivity.class);
+            context.startActivity(intent);
+        }
+        else if ("2".equals(result))
+        {
+            Toast.makeText(context,
+                    "This movie has already uploaded.",
+                    Toast.LENGTH_LONG).show();
+            Intent intent = new Intent();
+            intent.setClass(context, UploadFinishedActivity.class);
+            context.startActivity(intent);
+        }
+    }
+}

@@ -1,0 +1,159 @@
+package com.changhong.smarthome.phone.store.activity;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+
+/**
+ * [订单详情的每个item]<BR>
+ * [功能详细描述]
+ * @author b
+ * @version [RCS Client V100R001C03, 2014-1-29] 
+ */
+public class OrderDetailItem extends RelativeLayout
+{
+    private TextView keyTextView;
+    
+    private TextView valueTextView;
+    
+    private ImageView editImageView;
+    
+    private TextView lineTextView;
+    
+    private String key;
+    
+    /**
+     * 1280 高保真的高度 ,当前item的高度
+     */
+    private int originalHeight;
+    
+    /**
+     * 1280 高保真的高度,文字和顶部的距离
+     */
+    private int originalTop;
+    
+    /**
+     * 1280 高保真的高度,文字和底部的距离
+     */
+    private int originalBottom;
+    
+    private int screenHeight;
+    
+    private int screenWidth;
+    
+    private View itemView;
+    
+    /**
+     * 是否显示分割线
+     */
+    private boolean lineVisibility;
+    
+    public OrderDetailItem(Context context)
+    {
+        super(context);
+        // TODO Auto-generated constructor stub
+    }
+    
+    public OrderDetailItem(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+        // TODO Auto-generated constructor stub
+        itemView = LayoutInflater.from(context)
+                .inflate(R.layout.order_detail_item, this, true);
+        // TypedArray是存放资源的array,1.通过上下文得到这个数组,attrs是构造函数传进来的,对应attrs.xml  
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.OrderDetailItem);
+        // 获得xml里定义的属性,格式为 名称_属性名 后面是默认值  
+        key = a.getString(R.styleable.OrderDetailItem_key);
+        originalHeight = a.getInt(R.styleable.OrderDetailItem_originalHeight,
+                140);
+        originalTop = a.getInt(R.styleable.OrderDetailItem_originalTop, 30);
+        originalBottom = a.getInt(R.styleable.OrderDetailItem_originalBottom,
+                30);
+        lineVisibility = a.getBoolean(R.styleable.OrderDetailItem_lineVisibility,
+                true);
+        keyTextView = (TextView) findViewById(R.id.key);
+        keyTextView.setText(key);
+        valueTextView = (TextView) findViewById(R.id.vaule);
+        editImageView = (ImageView) findViewById(R.id.edit_image);
+        lineTextView = (TextView) findViewById(R.id.item_line);
+        lineTextView.setVisibility(lineVisibility == true ? View.VISIBLE
+                : View.GONE);
+        a.recycle();
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
+        init();
+    }
+    
+    public void init()
+    {
+        RelativeLayout itemLayout = (RelativeLayout) itemView.findViewById(R.id.order_detail_item_layout);
+        RelativeLayout.LayoutParams itemLayoutParams = (LayoutParams) itemLayout.getLayoutParams();
+        itemLayoutParams.height = (screenHeight * originalHeight) / 1280;
+        itemLayoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        itemLayout.setLayoutParams(itemLayoutParams);
+        
+        RelativeLayout.LayoutParams keyTextViewParams = (android.widget.RelativeLayout.LayoutParams) keyTextView.getLayoutParams();
+        keyTextViewParams.topMargin = screenHeight * originalTop / 1280;
+        keyTextViewParams.leftMargin = (screenWidth * 40) / 720;
+        keyTextView.setLayoutParams(keyTextViewParams);
+        
+        RelativeLayout.LayoutParams valueTextViewParams = (android.widget.RelativeLayout.LayoutParams) valueTextView.getLayoutParams();
+        valueTextViewParams.bottomMargin = screenHeight * originalBottom / 1280;
+        valueTextViewParams.leftMargin = (screenWidth * 40) / 720;
+        valueTextView.setLayoutParams(valueTextViewParams);
+        
+        RelativeLayout.LayoutParams editImageViewParams = (android.widget.RelativeLayout.LayoutParams) editImageView.getLayoutParams();
+        editImageViewParams.height = (screenHeight * 32) / 1280;
+        editImageViewParams.width = (screenHeight * 32) / 1280;
+        editImageViewParams.rightMargin = (screenWidth * 43) / 720;
+        editImageView.setLayoutParams(editImageViewParams);
+        
+        keyTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 24) / 720);
+        
+        valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 20) / 720);
+    }
+    
+    public void setKey(String key)
+    {
+        keyTextView.setText(key);
+    }
+    
+    public void setValue(String value)
+    {
+        valueTextView.setText(value);
+    }
+    
+    public void setEditImageViewVisibility(int visibility)
+    {
+        editImageView.setVisibility(visibility);
+    }
+    
+    public void setLineTextViewVisibility(int visibility)
+    {
+        lineTextView.setVisibility(visibility);
+    }
+    
+    public void setEditImageListener(OnClickListener listener)
+    {
+        this.setOnClickListener(listener);
+    }
+    
+    public TextView getValueTextView()
+    {
+        return valueTextView;
+    }
+    
+}

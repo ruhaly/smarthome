@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/commentLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
+
+        <EditText
+            android:id="@+id/comment_Edit"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:background="@drawable/comment_bg"
+            android:hint="80个字以内"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLength="80"
+            android:maxLines="1"
+            android:paddingLeft="20dip"
+             android:paddingRight="50dip"
+            android:singleLine="false"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/comment_Btn"
+            style="@style/TextViewTitleStyle_write26"
+            android:layout_width="wrap_content"
+            android:layout_height="50dip"
+            android:layout_alignRight="@id/comment_Edit"
+            android:layout_marginRight="14dip"
+            android:text="发送" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/commentListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/commentLinearLayout"
+        android:divider="@drawable/split_line" >
+    </ListView>
+
+</RelativeLayout>

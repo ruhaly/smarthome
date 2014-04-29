@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/order_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/ordermanager_list_bg">
+
+    <ImageView
+        android:id="@+id/news_item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="28dip"
+        android:layout_marginLeft="26dip"
+        android:layout_marginTop="26dip" />
+
+    <TextView
+        android:id="@+id/news_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/news_item_icon"
+        android:layout_marginLeft="0dip"
+        android:layout_toRightOf="@+id/news_item_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="aaaaaaaaaaaaaaaaaa"
+        android:textColor="@color/sub_text_color"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/news_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/news_item_name"
+        android:layout_marginLeft="0dip"
+        android:layout_marginRight="10dip"
+        android:layout_toRightOf="@+id/news_item_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/ordermanager_item_price"
+        android:textColor="@color/ordermanager_list_item_time_bg"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/news_item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/news_item_price"
+        android:layout_marginLeft="0dip"
+        android:layout_marginRight="10dip"
+        android:layout_toRightOf="@+id/news_item_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/ordermanager_item_time"
+        android:textColor="@color/ordermanager_list_item_time_bg"
+        android:textSize="18sp" />
+
+    <!--  TextView
+        android:id="@+id/news_item_line"
+        android:layout_width="wrap_content"
+        android:layout_height="2dip"
+        android:layout_below="@+id/news_item_time"
+        android:background="@drawable/line2"
+        android:layout_marginTop="26dip"/-->
+
+</RelativeLayout>

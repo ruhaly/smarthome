@@ -1,0 +1,47 @@
+<resources>
+
+    <!-- +++++++++++++++++++720p距离像素 begin++++++++++++++++++++++++ -->
+    <dimen name="font_size_title">36px</dimen>
+    <dimen name="view_back_btn_margin_left">30px</dimen>
+    <dimen name="font_size_search_btn">40px</dimen>
+    <dimen name="view_search_input_margin_left">25px</dimen>
+    <dimen name="view_search_input_padding_left">30px</dimen>
+    <dimen name="view_community_item_text_margin_left">55px</dimen>
+    <dimen name="view_community_item_text_margin_top">40px</dimen>
+    <dimen name="view_community_item_text_margin_bottom">25px</dimen>
+    <dimen name="font_community_item_text_02_size_title">24px</dimen>
+    <dimen name="view_community_item_text_02_margin_bottom">40px</dimen>
+    <dimen name="view_ad_height">352px</dimen>
+    <dimen name="view_ad_margin">30px</dimen>
+    <dimen name="view_today_recommend_frame_heigth">84px</dimen>
+    <dimen name="view_today_recommend_text_margin_left">25px</dimen>
+    <dimen name="view_today_recommend_jiantou_margin_right">20px</dimen>
+    <dimen name="font_size_plugin">28px</dimen>
+    <dimen name="view_plugin_margin_left">30px</dimen>
+    <dimen name="font_size_register_01">34px</dimen>
+    <dimen name="view_frame_register01_margin">10px</dimen>
+    <dimen name="view_frame_register01_padding_top">35px</dimen>
+    <dimen name="view_frame_register01_padding_left">30px</dimen>
+    <dimen name="view_text_register02_padding_left">20px</dimen>
+    <dimen name="view_text_register02_magin_bottom">30px</dimen>
+    <dimen name="font_size_text_register02">30px</dimen>
+    <dimen name="view_frame_register02_margin_right">35px</dimen>
+    <dimen name="font_size_btn_valicode">34px</dimen>
+    <dimen name="view_frame_cbacceptagreement_margin_top">60px</dimen>
+    <dimen name="view_frame_cbacceptagreement_margin_bottom">20px</dimen>
+    <dimen name="view_frame_cbacceptagreement_padding_left">20px</dimen>
+    <dimen name="font_size_cbacceptagreement">30px</dimen>
+    <dimen name="font_size_btnstartregister">40px</dimen>
+    <dimen name="view_frame_register_pwd_padding_right">15px</dimen>
+    <dimen name="font_size_pwd_def_tip">26px</dimen>
+    <dimen name="view_radiobutton_padding_left">15px</dimen>
+    <dimen name="view_btnregisterover_margin_top">130px</dimen>
+    <dimen name="view_mine_bg_margin_left">30px</dimen>
+    <dimen name="view_mine_bg_item_height_01">138px</dimen>
+    <dimen name="view_mine_bg_item_height_02">100px</dimen>
+    <dimen name="view_mine_bg_item_icon_margin_rigth">25px</dimen>
+    <dimen name="view_mine_bg_margin_top">30px</dimen>
+
+    <!-- +++++++++++++++++++720P距离像素 end++++++++++++++++++++++++ -->
+
+</resources>

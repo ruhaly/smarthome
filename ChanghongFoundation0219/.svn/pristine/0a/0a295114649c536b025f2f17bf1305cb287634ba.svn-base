@@ -1,0 +1,361 @@
+/**
+ * MsgCenterActivity.java
+ * com.pactera.ch_bedframe.activity
+ *
+ * Function： TODO 
+ *
+ *   ver     date      		author
+ * ──────────────────────────────────
+ *   		 2013-12-3 		b
+ *
+ * Copyright (c) 2013, TNT All Rights Reserved.
+ */
+
+package com.changhong.foundation.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+
+import com.changhong.foundation.R;
+import com.changhong.foundation.fragment.MsgAllFragment;
+import com.changhong.foundation.fragment.MsgHuiminFragment;
+import com.changhong.foundation.fragment.MsgSecurityFragment;
+import com.changhong.foundation.fragment.MsgSystemFragment;
+import com.changhong.foundation.fragment.MsgTenementFragment;
+import com.changhong.foundation.logic.MsgAllLogic;
+import com.changhong.foundation.logic.MsgAnfangLogic;
+import com.changhong.foundation.logic.MsgHuiminLogic;
+import com.changhong.foundation.logic.MsgSystemLogic;
+import com.changhong.foundation.logic.MsgWuyeLogic;
+import com.changhong.foundation.widget.MsgCustomViewPager;
+import com.changhong.sdk.fragment.SuperFragment;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+
+/**
+ * ClassName:MsgCenterActivity Function: TODO ADD FUNCTION
+ * 
+ * @author ruhaly
+ * @version
+ * @since Ver 1.1
+ * @Date 2013-12-3 下午4:06:52
+ */
+public class MsgCenterActivity extends BaseActivity
+{
+    
+    public static final String[] TITLE = new String[] { "全部", "惠民", "物业", "安防",
+            "系统" };
+    
+    public List<SuperFragment> list = new ArrayList<SuperFragment>();
+    
+    public Adapter adapter;
+    
+    public MsgCustomViewPager vp;
+    
+    private ImageButton bt_all, bt_huimin, bt_tenement, bt_security, bt_system;
+    
+    public int currIndex = 0;
+    
+    @Override
+    public void initData()
+    {
+        SuperFragment frg1 = new MsgAllFragment();
+        SuperFragment frg2 = new MsgHuiminFragment();
+        SuperFragment frg3 = new MsgTenementFragment();
+        SuperFragment frg4 = new MsgSecurityFragment();
+        SuperFragment frg5 = new MsgSystemFragment();
+        list.add(frg1);
+        list.add(frg2);
+        list.add(frg3);
+        list.add(frg4);
+        list.add(frg5);
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.msgcenter_layout);
+        setSlideMenu(SlidingMenu.TOUCHMODE_NONE);
+        vp = (MsgCustomViewPager) findViewById(R.id.vp);
+        vp.setScrollable(true);
+        vp.setOffscreenPageLimit(0);
+        initImgButton();
+        initVp();
+    }
+    
+    public void initImgButton()
+    {
+        
+        bt_all = (ImageButton) findViewById(R.id.ibt_msg_all);
+        bt_huimin = (ImageButton) findViewById(R.id.ibt_msg_huimin);
+        bt_tenement = (ImageButton) findViewById(R.id.ibt_msg_wuye);
+        bt_security = (ImageButton) findViewById(R.id.ibt_msg_anfang);
+        bt_system = (ImageButton) findViewById(R.id.ibt_msg_system);
+        
+        bt_all.setOnClickListener(new MyOnClickListener(0));
+        bt_huimin.setOnClickListener(new MyOnClickListener(1));
+        bt_tenement.setOnClickListener(new MyOnClickListener(2));
+        bt_security.setOnClickListener(new MyOnClickListener(3));
+        bt_system.setOnClickListener(new MyOnClickListener(4));
+        
+    }
+    
+    public void initVp()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter(getSupportFragmentManager());
+            vp.setAdapter(adapter);
+            vp.setOffscreenPageLimit(0);
+            vp.setOnPageChangeListener(new MyOnPageChangeListener());
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+        //        vp.setOnTouchListener(new OnTouchListener()
+        //        {
+        //            
+        //            @Override
+        //            public boolean onTouch(View v, MotionEvent event)
+        //            {
+        //                return true;
+        //            }
+        //        });
+    }
+    
+    @Override
+    public void clearData()
+    {
+        MsgAllLogic.getInstance().clear();
+        MsgHuiminLogic.getInstance().clear();
+        MsgWuyeLogic.getInstance().clear();
+        MsgAnfangLogic.getInstance().clear();
+        MsgSystemLogic.getInstance().clear();
+    }
+    
+    class Adapter extends FragmentPagerAdapter
+    {
+        
+        public Adapter(FragmentManager fm)
+        {
+            super(fm);
+        }
+        
+        @Override
+        public SuperFragment getItem(int arg0)
+        {
+            return list.get(arg0);
+        }
+        
+        @Override
+        public int getCount()
+        {
+            return list.size();
+        }
+        
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object)
+        {
+            
+        }
+        
+        @Override
+        public void destroyItem(View container, int position, Object object)
+        {
+            
+        }
+        
+    }
+    
+    public void imgBackClick(View view)
+    {
+        finish();
+    }
+    
+    @Override
+    public void finish()
+    {
+        MsgAllLogic.getInstance().clear();
+        super.finish();
+        
+    }
+    
+    public class MyOnClickListener implements View.OnClickListener
+    {
+        private int index = 0;
+        
+        public MyOnClickListener(int i)
+        {
+            index = i;
+        }
+        
+        @Override
+        public void onClick(View v)
+        {
+            vp.setCurrentItem(index);
+        }
+    };
+    
+    public class MyOnPageChangeListener implements OnPageChangeListener
+    {
+        
+        @Override
+        public void onPageScrollStateChanged(int arg0)
+        {
+            
+        }
+        
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2)
+        {
+            
+        }
+        
+        @Override
+        public void onPageSelected(int arg0)
+        {
+            switch (arg0)
+            {
+                case 0:
+                    if (currIndex == 1)
+                    {
+                        
+                        bt_huimin.setBackgroundResource(R.drawable.bottom_bar_icon_huimin_default);
+                    }
+                    else if (currIndex == 2)
+                    {
+                        
+                        bt_tenement.setBackgroundResource(R.drawable.bottom_bar_icon_wuye_default);
+                    }
+                    else if (currIndex == 3)
+                    {
+                        
+                        bt_security.setBackgroundResource(R.drawable.bottom_bar_icon_anfang_default);
+                    }
+                    else if (currIndex == 4)
+                    {
+                        
+                        bt_system.setBackgroundResource(R.drawable.bottom_bar_icon_xitong_default);
+                    }
+                    
+                    bt_all.setBackgroundResource(R.drawable.bottom_bar_icon_quanbu_selected);
+                    break;
+                case 1:
+                    if (currIndex == 0)
+                    {
+                        
+                        bt_all.setBackgroundResource(R.drawable.bottom_bar_icon_selected_default);
+                    }
+                    else if (currIndex == 2)
+                    {
+                        
+                        bt_tenement.setBackgroundResource(R.drawable.bottom_bar_icon_wuye_default);
+                    }
+                    else if (currIndex == 3)
+                    {
+                        
+                        bt_security.setBackgroundResource(R.drawable.bottom_bar_icon_anfang_default);
+                    }
+                    else if (currIndex == 4)
+                    {
+                        
+                        bt_system.setBackgroundResource(R.drawable.bottom_bar_icon_xitong_default);
+                    }
+                    
+                    bt_huimin.setBackgroundResource(R.drawable.bottom_bar_icon_huimin_selected);
+                    break;
+                case 2:
+                    if (currIndex == 0)
+                    {
+                        
+                        bt_all.setBackgroundResource(R.drawable.bottom_bar_icon_selected_default);
+                    }
+                    else if (currIndex == 1)
+                    {
+                        
+                        bt_huimin.setBackgroundResource(R.drawable.bottom_bar_icon_huimin_default);
+                    }
+                    else if (currIndex == 3)
+                    {
+                        
+                        bt_security.setBackgroundResource(R.drawable.bottom_bar_icon_anfang_default);
+                    }
+                    else if (currIndex == 4)
+                    {
+                        
+                        bt_system.setBackgroundResource(R.drawable.bottom_bar_icon_xitong_default);
+                    }
+                    
+                    bt_tenement.setBackgroundResource(R.drawable.bottom_bar_icon_wuye_selected);
+                    break;
+                case 3:
+                    if (currIndex == 0)
+                    {
+                        
+                        bt_all.setBackgroundResource(R.drawable.bottom_bar_icon_selected_default);
+                    }
+                    else if (currIndex == 1)
+                    {
+                        
+                        bt_huimin.setBackgroundResource(R.drawable.bottom_bar_icon_huimin_default);
+                    }
+                    else if (currIndex == 2)
+                    {
+                        
+                        bt_tenement.setBackgroundResource(R.drawable.bottom_bar_icon_wuye_default);
+                    }
+                    else if (currIndex == 4)
+                    {
+                        
+                        bt_system.setBackgroundResource(R.drawable.bottom_bar_icon_xitong_default);
+                    }
+                    
+                    bt_security.setBackgroundResource(R.drawable.bottom_bar_icon_anfang_selected);
+                    break;
+                case 4:
+                    if (currIndex == 0)
+                    {
+                        
+                        bt_all.setBackgroundResource(R.drawable.bottom_bar_icon_selected_default);
+                    }
+                    else if (currIndex == 1)
+                    {
+                        
+                        bt_huimin.setBackgroundResource(R.drawable.bottom_bar_icon_huimin_default);
+                    }
+                    else if (currIndex == 2)
+                    {
+                        
+                        bt_tenement.setBackgroundResource(R.drawable.bottom_bar_icon_wuye_default);
+                    }
+                    else if (currIndex == 3)
+                    {
+                        
+                        bt_security.setBackgroundResource(R.drawable.bottom_bar_icon_anfang_default);
+                    }
+                    
+                    bt_system.setBackgroundResource(R.drawable.bottom_bar_icon_xitong_selected);
+                    break;
+            }
+            currIndex = arg0;
+            if (currIndex != 0)
+            {
+                adapter.getItem(currIndex).updateView(null);
+            }
+        }
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+    }
+}

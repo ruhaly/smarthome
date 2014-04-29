@@ -1,0 +1,132 @@
+package com.changhong.smarthome.phone.cinema;
+
+import java.io.File;
+import java.io.IOException;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
+
+import com.changhong.sdk.http.ContinueFTP;
+import com.changhong.sdk.http.ContinueFTP.UploadStatus;
+import com.changhong.smarthome.phone.cinema.entry.LocalVideoInfo;
+import com.changhong.smarthome.phone.cinema.logic.MediaShareFtpInfo;
+
+/**  
+* @author yang_jun
+* @date 2014-3-19 下午3:36:05 
+*/
+public class UploadTask extends AsyncTask<String, Integer, String>
+{
+    private static final String TAG = "UploadTask";
+    LocalVideoInfo video;
+    MediaShareFtpInfo ftpInfo;
+    Context context;
+    
+    /**
+     * @param video
+     * @param ftpInfo
+     */
+    public UploadTask(LocalVideoInfo video, MediaShareFtpInfo ftpInfo,Context con)
+    {
+        this.video = video;
+        this.ftpInfo = ftpInfo;
+        this.context = con;
+    }
+    
+    @Override
+    protected void onCancelled()
+    {
+        super.onCancelled();
+    }
+    
+    @Override
+    protected void onPreExecute()
+    {
+    }
+    
+    @Override
+    protected String doInBackground(String... params)
+    {
+        Log.i(TAG, "do in background");
+        ContinueFTP continueTP = new ContinueFTP();
+        String hostname;
+        int port;
+        String username;
+        String password;
+        if (ftpInfo == null)
+        {
+            Log.i(TAG, "ftpInfo==null");
+            hostname = "172.17.184.80";
+            port = 21;
+            username = "oracle";
+            password = "oracle";
+        }
+        else
+        {
+            hostname = ftpInfo.getFtpIp();
+            port = Integer.parseInt(ftpInfo.getFtpPort());
+            username = ftpInfo.getUserName();
+            password = ftpInfo.getPassword();
+        }
+        String local = Environment.getExternalStorageDirectory()
+                .getAbsolutePath()
+                + File.separator
+                + "Download"
+                + File.separator + "testVideo.flv";
+        
+        ;
+        String remote = "/opt/oracle/ftptest/testVideo.flv";
+        try
+        {
+            Log.i(TAG, "---------try");
+            boolean hasConnect = continueTP.connect(hostname,
+                    port,
+                    username,
+                    password);
+            
+            if (hasConnect)
+            {
+                Log.i(TAG, "---------hasConnect");
+                UploadStatus status = continueTP.upload(local, remote);
+                Log.i(TAG, "status:" + status);
+                switch (status)
+                {
+                    case Upload_From_Break_Success:
+                        //TODO
+                        //                        addShareSuccessLogic.requestSendAddShareSuccess();\
+                        break;
+                    case Upload_From_Break_Failed:
+                        
+                        break;
+                    case File_Exits:
+                        
+                        break;
+                    
+                    default:
+                        break;
+                }
+            }
+            
+        }
+        catch (IOException e)
+        {
+            Log.i(TAG, "---------IOException");
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
+    
+    @Override
+    protected void onPostExecute(String result)
+    {
+        Log.i(TAG, "-=------------upload finished");
+        Intent intent = new Intent();
+        intent.setClass(context, UploadFinishedActivity.class);
+        context.startActivity(intent);
+    }
+}

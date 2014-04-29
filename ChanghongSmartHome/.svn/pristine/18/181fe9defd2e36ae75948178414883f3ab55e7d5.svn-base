@@ -1,0 +1,7 @@
+package com.changhong.smarthome.phone.YellowPages.http;
+
+public class HttpAction {
+	public static final int YELLOWPAGE_LINE_SUCCESS_GET =100;
+	
+	public static final String url = "http://172.17.184.214:7777/cbs/msg";
+}

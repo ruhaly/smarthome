@@ -1,0 +1,109 @@
+package com.changhong.foundation.broadcast;
+
+import java.io.File;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+
+import com.changhong.foundation.baseapi.Constant;
+import com.changhong.foundation.baseapi.DbUtils;
+import com.changhong.sdk.baseapi.AppLog;
+import com.changhong.sdk.entity.BusinessInfo;
+
+public class AppInstallReceiver extends BroadcastReceiver
+{
+    public static final String TAG = "AppInstallReceiver";
+    
+    @Override
+    public void onReceive(Context context, Intent intent)
+    {
+        
+        String packageName = intent.getData().getSchemeSpecificPart();
+        if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)
+                || intent.getAction().equals(Intent.ACTION_PACKAGE_REPLACED))
+        {
+            //如果是长虹apk插件并且不是底座的话 就根据包名获取apk信息并存储到数据库中
+            if (packageName.startsWith(Constant.PREFIX)
+                    && !packageName.equals(Constant.CURRENT_PACKAGE))
+            {
+                getPermisson(context, packageName);
+            }
+        }
+        else if (intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED))
+        {
+            //监听apk卸载 发消息通知更新界面
+            Intent it = new Intent(Constant.UPDATE_PLUGIN_VIEW);
+            it.putExtra("pkgName", packageName);
+            context.sendBroadcast(it);
+        }
+        
+    }
+    
+    private void getPermisson(final Context context, String pkgName)
+    {
+        try
+        {
+            PackageManager pm = context.getPackageManager();
+            final PackageInfo pkgInfo = pm.getPackageInfo(pkgName,
+                    PackageManager.GET_PERMISSIONS);//通过包名，返回包信息
+            new Thread(new Runnable()
+            {
+                
+                @Override
+                public void run()
+                {
+                    saveAppInfo(context, pkgInfo);
+                }
+                
+            }).start();
+        }
+        catch (NameNotFoundException e)
+        {
+            AppLog.out(TAG, e.getMessage(), AppLog.LEVEL_INFO);
+        }
+    }
+    
+    /**
+     * 
+     * 保存apk信息到数据库
+     * [功能详细描述]
+     * @param pkgInfo
+     * @param type TODO
+     */
+    private void saveAppInfo(Context context, PackageInfo pkgInfo)
+    {
+        BusinessInfo bi = new BusinessInfo();
+        bi.setBusinessType(Constant.PLUGIN_BIANMING);
+        bi.setSize(""
+                + new File(pkgInfo.applicationInfo.publicSourceDir).length());
+        bi.setBusinessName(context.getPackageManager()
+                .getApplicationLabel(pkgInfo.applicationInfo)
+                .toString());
+        bi.setInstallState(Constant.INSTALLED);
+        bi.setPackageName(pkgInfo.packageName);
+        bi.setVersionNo(pkgInfo.versionName);
+        bi.setIsAuthority(Constant.FREE_USE);
+        if (Constant.bianmingArray.toString().contains(pkgInfo.packageName))
+        {
+            bi.setBusinessType(Constant.PLUGIN_BIANMING);
+        }
+        else if (Constant.guankongArray.toString()
+                .contains(pkgInfo.packageName))
+        {
+            bi.setBusinessType(Constant.PLUGIN_GUANGKONG);
+        }
+        else if (Constant.anfangArray.toString().contains(pkgInfo.packageName))
+        {
+            bi.setBusinessType(Constant.PLUGIN_ANFANG);
+        }
+        else if (Constant.otherArray.toString().contains(pkgInfo.packageName))
+        {
+            bi.setBusinessType(Constant.PLUGIN_OTHER);
+        }
+        DbUtils.insertAppInfo(context, bi);
+    }
+}

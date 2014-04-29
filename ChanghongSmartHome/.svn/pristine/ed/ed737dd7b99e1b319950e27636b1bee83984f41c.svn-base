@@ -1,0 +1,76 @@
+package com.changhong.smarthome.phone.cinema;
+
+import java.util.List;
+
+import android.os.Bundle;
+import android.os.Message;
+import android.view.View.OnClickListener;
+import android.view.Window;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.entry.MyVideoShareVO;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.logic.GetCinemaDetailLogic;
+import com.changhong.smarthome.phone.cinema.logic.GetMyVideoShareLogic;
+
+/**  
+* @author yang_jun
+* @date 2014-3-17 下午4:57:10 
+*/
+public class MyShareActivity extends SuperActivity implements OnClickListener
+{
+    private List<MyVideoShareVO> voList;
+    private GetMyVideoShareLogic logic;
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.myvideoshare);
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case HttpAction.CINEMADETAIL_SUCCESS_GET:
+                
+                initDataMyShare();
+                break;
+        }
+        super.handleMsg(msg);
+        
+    }
+    
+    /**
+     * 
+     */
+    private void initDataMyShare()
+    {
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        if (null != GetMyVideoShareLogic.getInstance())
+        {
+            logic = GetMyVideoShareLogic.getInstance();
+        }
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+}

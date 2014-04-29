@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/title_house"
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:background="@drawable/title_bg" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/house_escrow"
+            android:textColor="@color/title_text_black"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/house_lefttitle"
+            android:layout_width="60dip"
+            android:layout_height="30dip"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@id/textView1"
+            android:layout_marginBottom="20dip"
+            android:src="@drawable/drawable_expand_finish" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_house"
+        android:background="@drawable/house_bg" >
+
+        <GridView
+            android:id="@+id/house_gridView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dip"
+            android:gravity="center"
+            android:horizontalSpacing="10dp"
+            android:verticalSpacing="10dp"
+            android:numColumns="3" >
+        </GridView>
+    </LinearLayout>
+
+</RelativeLayout>

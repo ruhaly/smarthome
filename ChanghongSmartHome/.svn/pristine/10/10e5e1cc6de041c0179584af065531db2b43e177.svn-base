@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/page_bg" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <RelativeLayout
+                android:id="@+id/group_buy_fl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/group_nuy_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/tuangou" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/tgpd_bg"
+                    android:paddingLeft="6dip"
+                    android:paddingRight="10dip" >
+
+                    <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="center"
+                        android:text="@string/tuangou_pingdan"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/et_text" />
+
+                    <TextView
+                        android:id="@+id/group_nuy_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/last_share_height"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="10dip"
+                        android:layout_toRightOf="@+id/textView1"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingLeft="3dp"
+                        android:text="拼单啦！金龙鱼大豆调和油，原价88/桶，现享团购价58/桶，量大从优，满100人，可以再享受9折优惠。"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_detail_size" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dip" >
+
+                <FrameLayout
+                    android:id="@+id/group_buy_f2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingRight="5dip" >
+
+                    <ImageView
+                        android:id="@+id/iv2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/wei_life_iv_height_shoubianshangquan"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/zhoubianshanquan" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/swap_space_fl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:paddingRight="5dip" >
+
+                    <ImageView
+                        android:id="@+id/swap_space_bg_iv"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/wei_life_iv_height_shoubianshangquan"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/jiaohuankongjian" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/sun_life_fl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0" >
+
+                    <ImageView
+                        android:id="@+id/sun_life_bg_iv"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/wei_life_iv_height_shoubianshangquan"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/shaishenghuo" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tvCinema"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/cimema_iv"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/shequ_cinema"
+                        android:textColor="@android:color/darker_gray" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dip"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tvYellowPages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/cimema_iv"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/shequ_yellowpages"
+                        android:textColor="@android:color/darker_gray" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

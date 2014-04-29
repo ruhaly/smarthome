@@ -1,0 +1,279 @@
+package com.changhong.smarthome.phone.store.activity;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StrikethroughSpan;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.store.entity.StoreConstant;
+import com.changhong.smarthome.phone.store.logic.MainLogic;
+import com.changhong.smarthome.phone.store.logic.bean.GoodsDetailInfo;
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
+import com.lidroid.xutils.bitmap.core.BitmapSize;
+
+/**
+ * [商品详情界面]<BR>
+ * [功能详细描述]
+ * @author b
+ * @version [RCS Client V100R001C03, 2014-2-8] 
+ */
+public class ShoppingDetailActivity extends SuperActivity implements
+        OnClickListener
+{
+    /**
+     * 立即购买布局
+     */
+    private Button buy_btn;
+    
+    private MainLogic mainLogic;
+    
+    private BitmapUtils mBitmapUtils;
+    
+    private GoodsDetailInfo goodsDetailInfo;
+    
+    private TextView shoppingnameTextView;
+    
+    private TextView shoppingpriceTextView,shoppingpriceTextView1;
+    
+    //产品简介，套餐详情，购买须知，商家信息
+    private TextView shoppingdeseTextView,shoppingdeseTextView1,shoppingdeseTextView2,shoppingdeseTextView3;
+    
+    //地图
+    private TextView mapTextView;
+    
+    private ImageView shoppingiconiImageView;
+    
+    private BitmapDisplayConfig bigPicDisplayConfig;
+    
+    /**
+     * 标题栏
+     */
+    private StoreTitleItem titleItem;
+    
+    public int screenHeight;
+    
+    public int screenWidth;
+    
+    private void initlistener()
+    {
+        buy_btn.setOnClickListener(this);
+        mapTextView.setOnClickListener(this);
+        titleItem.setBackListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // TODO Auto-generated method stub
+                finish();
+            }
+        });
+    }
+    
+    private void initview()
+    {
+        // TODO Auto-generated method stub
+        titleItem = (StoreTitleItem) findViewById(R.id.shopping_detail_title);
+        
+        mapTextView = (TextView)findViewById(R.id.shoping_map);
+        
+        buy_btn = (Button) findViewById(R.id.buy_btn);
+        RelativeLayout.LayoutParams order_buttonParams = (android.widget.RelativeLayout.LayoutParams) buy_btn.getLayoutParams();
+        order_buttonParams.height = (screenHeight * 82) / 1280;
+        order_buttonParams.width = (screenWidth * 381) / 720;
+        buy_btn.setLayoutParams(order_buttonParams);
+        
+        shoppingnameTextView = (TextView) findViewById(R.id.shoping_name);
+        shoppingpriceTextView = (TextView) findViewById(R.id.shoping_price);
+        shoppingpriceTextView1 = (TextView) findViewById(R.id.shoping_price_1);
+        shoppingdeseTextView = (TextView) findViewById(R.id.shoping_detail);
+        shoppingdeseTextView1 = (TextView) findViewById(R.id.shoping_detail_1_value);
+        shoppingdeseTextView2 = (TextView) findViewById(R.id.shoping_detail_2_value);
+        shoppingdeseTextView3 = (TextView) findViewById(R.id.shoping_detail_3_value);
+        
+        shoppingnameTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        
+        shoppingpriceTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 48) / 720);
+        
+        shoppingpriceTextView1.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 48) / 720);
+        
+        shoppingdeseTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 30) / 720);
+        shoppingdeseTextView1.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 30) / 720);
+        shoppingdeseTextView2.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 30) / 720);
+        shoppingdeseTextView3.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 30) / 720);
+        
+        ((TextView)findViewById(R.id.shoping_detail_1)).setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        ((TextView)findViewById(R.id.shoping_detail_2)).setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        ((TextView)findViewById(R.id.shoping_detail_3)).setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        mapTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        
+        shoppingiconiImageView = (ImageView) findViewById(R.id.shoping_image);
+        LayoutParams params1 = shoppingiconiImageView.getLayoutParams();
+        params1.height = (screenHeight * 330) / 1280;
+        params1.width = (screenWidth * 696) / 720;
+        shoppingiconiImageView.setLayoutParams(params1);
+        
+        if (goodsDetailInfo != null)
+        {
+//            String shoppingname = String.format(getResources().getString(R.string.allshopping_item_name),
+//                    goodsDetailInfo.getAddress(),
+//                    goodsDetailInfo.getName());
+            shoppingnameTextView.setText(goodsDetailInfo.getName());
+            
+//            String shoppingprice = String.format(getResources().getString(R.string.shopping_detail_price),
+//                    goodsDetailInfo.getActualPrice());
+            //原价
+            double unitPrice = goodsDetailInfo.getOriginalPrice();
+            //优惠价
+            double rebatePrice = goodsDetailInfo.getSalePrice();
+            
+            String str1 = String.format(getResources().getString(R.string.shopping_detail_price),
+                    String.valueOf(unitPrice));
+            
+            String str2 = String.format(getResources().getString(R.string.shopping_detail_price_1),
+                    String.valueOf(rebatePrice));
+            
+            
+            SpannableString  spannableString = new SpannableString(str2);
+            //优惠价用删除线
+            spannableString.setSpan(new StrikethroughSpan(), 0, str2.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); 
+            
+            shoppingpriceTextView.setText(str1);
+            
+            shoppingpriceTextView1.setText(spannableString);
+            
+            shoppingdeseTextView.setText(goodsDetailInfo.getDesc());
+            //套餐详情
+            shoppingdeseTextView1.setText(goodsDetailInfo.getDetail());
+            //购买须知
+            shoppingdeseTextView2.setText(goodsDetailInfo.getSaleRule());
+            //商家信息
+            String info = goodsDetailInfo.getsInfo().getSpname() + "\n" 
+            +  goodsDetailInfo.getsInfo().getSpaddress() + "\n"  + "TEL:"
+            + goodsDetailInfo.getsInfo().getTelphone();
+            shoppingdeseTextView3.setText(info);
+//            String picUrl = goodsDetailInfo.getPicURL().get(0);
+            
+            
+            
+            String picUrl = null;
+            if(goodsDetailInfo.getPicURL() != null && goodsDetailInfo.getPicURL().size() > 0)
+            {
+                picUrl = goodsDetailInfo.getPicURL().get(0);
+            }
+            mBitmapUtils.display(shoppingiconiImageView,
+                    picUrl,
+                    bigPicDisplayConfig,
+                    null);
+        }
+        
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        // TODO Auto-generated method stub
+        super.onResume();
+    }
+    
+    @Override
+    protected void onDestroy()
+    {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        // TODO Auto-generated method stub
+        Intent intent;
+        switch (v.getId())
+        {
+            case R.id.btn_back:
+                finish();
+                break;
+            case R.id.buy_btn:
+                intent  = new Intent(ShoppingDetailActivity.this,
+                        OrderConfirmActivity.class);
+                Bundle bundle = new Bundle();
+                intent.putExtra(StoreConstant.ORDER_TYPE,
+                        StoreConstant.ORDER_CONFORM);
+                bundle.putSerializable(StoreConstant.GOODSDETAIL,
+                        goodsDetailInfo);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case R.id.shoping_map:
+                intent  = new Intent(ShoppingDetailActivity.this,
+                        ShowStoreLocationActivity.class);
+                intent.putExtra(StoreConstant.LONGITUDE, goodsDetailInfo.getLongitude());
+                intent.putExtra(StoreConstant.LATITUDE, goodsDetailInfo.getLatitude());
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    @Override
+    public void initData()
+    {
+        // TODO Auto-generated method stub
+        mainLogic = MainLogic.getInstance(getApplicationContext());
+        mBitmapUtils = new BitmapUtils(getApplicationContext());
+        bigPicDisplayConfig = new BitmapDisplayConfig();
+        //bigPicDisplayConfig.setShowOriginal(true); // 显示原始图片,不压缩, 尽量不要使用, 图片太大时容易OOM。
+        bigPicDisplayConfig.setBitmapConfig(Bitmap.Config.RGB_565);
+        BitmapSize bitmapSize = new BitmapSize(
+                (mainLogic.screenWidth * 696) / 720,
+                (mainLogic.screenHeight * 330) / 1280);
+        bigPicDisplayConfig.setBitmapMaxSize(bitmapSize);
+        
+        goodsDetailInfo = (GoodsDetailInfo) getIntent().getSerializableExtra(StoreConstant.GOODSDETAIL);
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        setContentView(R.layout.shoppingdetail);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
+        initview();
+        initlistener();
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+}

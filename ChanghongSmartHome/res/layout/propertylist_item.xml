@@ -1,0 +1,160 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/front"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/itembg"
+        android:orientation="vertical"
+        android:tag="front" >
+
+        <TextView
+            android:id="@+id/bx_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dip"
+            android:layout_marginTop="8dip"
+            android:layout_marginBottom="8dip"
+            android:layout_marginRight="11dip"
+            android:text="我家灯坏了，快来修"
+            android:textColor="@color/title_text_black"
+            android:textSize="20sp" />
+
+        
+        <RelativeLayout
+            android:id="@+id/bx_fwjd0"
+            android:layout_width="match_parent"
+            android:layout_height="110dip"
+            android:layout_below="@id/bx_text"
+            android:layout_marginLeft="15dip"
+            android:layout_marginRight="15dip"
+            android:background="@drawable/itemimgebg" >
+
+          
+
+                <ImageView
+                    android:layout_width="85dip"
+                    android:layout_height="85dip"
+                    android:id="@+id/addImg"
+                    android:layout_marginLeft="10dip"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitXY"
+                    android:background="@drawable/add_image" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/addImg"
+                      android:layout_centerVertical="true"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dip"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginBottom="1dip" >
+
+                        <TextView
+                            android:id="@+id/time1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:textColor="@color/title_text_black"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/time2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/title_text_black"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/time3"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:textColor="@color/title_text_black"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/time4"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:textColor="@color/title_text_black"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dip"
+                        android:layout_marginRight="15dip"
+                        android:layout_marginTop="1dip" >
+
+                        <ImageView
+                            android:id="@+id/imgview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="23dip"
+                            android:background="@drawable/progressbar1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dip" >
+
+                        <TextView
+                            android:id="@+id/text1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/wyff_tab_1_group_2_1"
+                            android:textColor="@color/title_text_gay"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/text2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/wyff_tab_1_group_2_2"
+                            android:textColor="@color/title_text_gay"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/text3"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/wyff_tab_1_group_2_3"
+                            android:textColor="@color/title_text_gay"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/text4"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/wyff_tab_1_group_2_4"
+                            android:textColor="@color/title_text_gay"
+                            android:textSize="16sp" />
+             
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</FrameLayout>

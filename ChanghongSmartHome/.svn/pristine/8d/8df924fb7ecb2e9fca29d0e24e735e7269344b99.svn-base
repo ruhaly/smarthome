@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg" >
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tab_bar" >
+
+        <ImageView
+            android:id="@+id/detail_back_commen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:background="@drawable/back"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/text_pay_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:textColor="@color/gray_font"
+            android:textSize="@dimen/title_size" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/detail_to_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:text="@string/pay_history_list"
+            android:textColor="@color/gray_font"
+            android:textSize="@dimen/title_size" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="350dp"
+        android:layout_margin="20dp"
+        android:layout_below="@+id/title"
+        android:background="@drawable/detail_pay_bg"
+        android:padding="10dp"
+        android:text="@string/pay_detail"
+        android:textColor="@color/gray_font"
+        android:textSize="@dimen/title_size" />
+
+    <Button
+        android:id="@+id/btn_pay_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/btn_pay_now"
+        android:gravity="center" />
+
+</RelativeLayout>

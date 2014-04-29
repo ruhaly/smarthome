@@ -1,0 +1,119 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-3-31 下午8:37:36 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.property.logic;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.smarthome.phone.cinema.logic.BillLogic;
+import com.changhong.smarthome.phone.property.entry.IntegrationDetailVO;
+import com.changhong.smarthome.phone.property.http.HttpAction;
+import com.changhong.smarthome.phone.property.http.RequestId;
+import com.google.gson.Gson;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+public class IntegrationDetailLogic extends SuperLogic
+{
+    HttpHandler<String> httpHanlder;
+    
+    private static IntegrationDetailLogic ins;
+    
+    public IntegrationDetailVO respVO;
+    
+    public static synchronized IntegrationDetailLogic getInstance()
+    {
+        if (null == ins)
+        {
+            ins = new IntegrationDetailLogic();
+        }
+        return ins;
+    }
+    
+    public void requestIntegrationInfo(String request)
+    {
+        RequestParams params = new RequestParams();
+        
+        Map serviceInfo = new HashMap();
+        serviceInfo.put("accountInfo", BillLogic.accountInfo);
+        
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.INTEGRATION_EXCHANGE_MAIN,
+                "sc",
+                "sc",
+                "4100");
+        
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.INTEGRATION_EXCHANGE_MAIN,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                new HttpUtils(),
+                RequestId.INTEGRATION_MAIN,
+                this,
+                false,
+                HttpAction.url);
+    }
+    
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        handler.sendEmptyMessage(SuperLogic.DATA_FORMAT_ERROR_MSGWHAT);
+    }
+    
+    @Override
+    public void clear()
+    {
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse response, int requestId,
+            InputStream is)
+    {
+        switch (requestId)
+        {
+        
+            case RequestId.INTEGRATION_MAIN:
+                if (response.getBody().getResult().equals(HttpAction.STATUS_OK))
+                {
+                    //给对象赋值
+                    if (response.getBody().getParamsString().length() > 0)
+                    {
+                        respVO = new Gson().fromJson(response.getBody()
+                                .getParamsString(), IntegrationDetailVO.class);
+                    }
+                    
+                    handler.sendEmptyMessage(HttpAction.INTEGRATION_MAIN_SUCCESSFUL_GET);
+                }
+                else
+                {
+                    handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+                }
+                break;
+            
+            default:
+                break;
+        }
+        
+    }
+    
+    public void stopRequest()
+    {
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+        }
+    }
+    
+}

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+      <include
+                          android:layout_width="fill_parent"
+                   android:layout_height="48dip"
+                        layout="@layout/title_top" >
+                        </include>
+                        
+       <RelativeLayout
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
+
+        <EditText
+             android:id="@+id/seacrhing_park_et"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:background="@drawable/comment_bg"
+            android:hint="请输入影片的关键字"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLength="80"
+            android:maxLines="1"
+            android:paddingLeft="20dip"
+             android:paddingRight="50dip"
+            android:singleLine="false"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/search_Btn"
+            style="@style/TextViewTitleStyle_write26"
+            android:layout_width="wrap_content"
+            android:layout_height="50dip"
+            android:layout_alignRight="@id/seacrhing_park_et"
+            android:layout_marginRight="14dip"
+            android:text="搜索" />
+    </RelativeLayout>
+    
+       
+ 
+    <GridView 
+        android:layout_marginTop="5dip"
+        android:id="@+id/gridviews"
+        android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+        android:horizontalSpacing="10dip"
+        android:verticalSpacing="10dip"
+        android:numColumns="3"
+        ></GridView>
+</LinearLayout>

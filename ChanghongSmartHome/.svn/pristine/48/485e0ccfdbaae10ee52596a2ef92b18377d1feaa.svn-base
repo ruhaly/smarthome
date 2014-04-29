@@ -1,0 +1,283 @@
+package com.changhong.smarthome.phone.cinema;
+
+import java.util.ArrayList;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.adapter.PopupAdapter;
+import com.changhong.smarthome.phone.cinema.adapter.RecordAdapter;
+import com.changhong.smarthome.phone.cinema.dao.DataHelper;
+import com.changhong.smarthome.phone.cinema.dao.SimpleDataDao;
+import com.changhong.smarthome.phone.cinema.dao.SimpleDataDaoImpl;
+import com.changhong.smarthome.phone.cinema.entry.VideoFile;
+import com.changhong.smarthome.phone.cinema.logic.BillLogic;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+
+public class RecordActivity extends Activity implements OnClickListener
+{
+    private GridView gridviews;
+    
+    private ListView listviews;
+    
+    private ArrayList<VideoFile> cinemaList;
+    
+    private TextView titletext;
+    
+    private ImageView exitImg1;
+    
+    private ImageView exitImg2;
+    
+    private ImageView lineImg;
+    
+    private Boolean isUpDown;
+    
+    private Boolean isAlpha;
+    
+    private PopupWindow popupWindow;
+    
+    private View popupWindow_view;
+    
+    private ListView popup_listview;
+    
+    private TextView linetext;
+    
+    private int popupheight;
+    
+    private RelativeLayout exitRelative;
+    private RelativeLayout lineLayout1;
+    
+private SimpleDataDao simpledataDao;
+    
+    private Dao<VideoFile, String> simpledatadao;
+    
+    private DataHelper dataHelper = null;
+    
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.hotcinema);
+        titletext = (TextView) findViewById(R.id.titletext);
+        exitImg1 = (ImageView) findViewById(R.id.exitImg1);
+        exitImg2 = (ImageView) findViewById(R.id.exitImg2);
+        linetext = (TextView) findViewById(R.id.linetext);//ѡ�еı���8
+        lineImg = (ImageView) findViewById(R.id.lineImg);
+        lineLayout1 = (RelativeLayout) findViewById(R.id.lineLayout1);
+        exitRelative = (RelativeLayout) findViewById(R.id.exitRelative);
+        lineImg.setOnClickListener(this);
+        exitImg1.setOnClickListener(this);
+        exitImg2.setOnClickListener(this);
+        exitRelative.setOnClickListener(this);
+        int titleLogo = this.getIntent().getIntExtra("titleLogo", 0);
+        
+        if (titleLogo == R.id.record)
+        {
+            titletext.setText(getResources().getString(R.string.record));
+        }
+        
+        gridviews = (GridView) findViewById(R.id.gridviews);
+        listviews = (ListView) findViewById(R.id.listviews);
+        gridviews.setVisibility(View.GONE);
+        listviews.setVisibility(View.VISIBLE);
+        checkhistory();
+       
+       
+       
+        
+    }
+    
+    private void checkhistory()
+    {
+         simpledataDao = new SimpleDataDaoImpl();
+        simpledatadao = getHelper().getSimpleDataDao();
+        
+        try
+        {
+            cinemaList =  (ArrayList<VideoFile>) simpledataDao.findallSimpleData(simpledatadao);
+        }
+        catch (Exception e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        RecordAdapter hotAdapter = new RecordAdapter(this, cinemaList);
+        listviews.setAdapter(hotAdapter);
+        listviews.setOnItemClickListener(new OnItemClickListener()
+        {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+              /*  Intent  intent = new Intent();
+                intent.putExtra("time",  cinemaList.get(position).getTime());
+                intent.putExtra("playUrl", cinemaList.get(position).getPath());
+                intent.setClass(RecordActivity.this, RecordPlayerActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.anim_enter, R.anim.anim_exit);*/
+                
+            }
+        });
+        // simpledataDao.addSimpleData(simpledatadao, id, contentId, mediaId, name, path, time);
+    }
+    private DataHelper getHelper()
+    {
+        if (dataHelper == null)
+        {
+            dataHelper = OpenHelperManager.getHelper(this, DataHelper.class);
+        }
+        return dataHelper;
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // getMenuInflater().inflate(R.menu.activity_cinema_start, menu);
+        return true;
+    }
+    
+    @Override
+    public void onClick(View v)
+    
+    {
+        if (v.getId() == R.id.lineImg||v.getId()==R.id.lineLayout1)
+        {
+            isUpDown = false;
+            isAlpha = true;   
+            getPopupWindow();
+            popupWindow.showAsDropDown(lineLayout1);
+            if (popupWindow != null && popupWindow.isShowing())
+            {
+                lineImg.setBackgroundResource(R.drawable.drawable_expand_close);
+            }
+            else
+            {
+                lineImg.setBackgroundResource(R.drawable.drawable_expand_open);
+            }
+        }else if (v.getId()==R.id.exitImg1||v.getId()==R.id.exitRelative){
+            
+            
+                finish();
+                
+            
+        }else if (v.getId()==R.id.exitImg2){
+            
+            Intent intent = new Intent();
+            intent.setClass(RecordActivity.this, SearchActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.anim_enter, R.anim.anim_exit);
+        }
+            
+        
+    }
+    public void getPopupWindow()
+    {
+        // ���˵popupwindow�Ѿ������ó�4���ٴε����ʧ
+        if (null != popupWindow)
+        {
+            popupWindow.dismiss();
+            Log.d("11", "null != popupWindow");
+        }
+        else
+        {
+            initPopupWindow();
+            Log.d("11", "initPopupWindow");
+        }
+    }
+    public void initPopupWindow()
+    {
+        // �����Դ�ļ�
+        popupWindow_view = getLayoutInflater().inflate(R.layout.pop_layout,
+                null);
+        // ����PopupWindowʵ��,200,150�ֱ��ǿ�Ⱥ͸߶ȣ����һ������Ƿ���轹�㣬������view�ĵ��û��Ч��
+        
+        popup_listview = (ListView) popupWindow_view.findViewById(R.id.popup_listview);
+        PopupAdapter popupAdapter = new PopupAdapter(this,
+                BillLogic.getInstance().titleList_easy);
+        popup_listview.setAdapter(popupAdapter);
+        
+        popup_listview.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                // ����⸺ֵ
+                linetext.setText(BillLogic.getInstance().titleList_easy.get(position)
+                        .getTitle_name());
+                
+                // popupWindow��ʧ
+                if (popupWindow != null && popupWindow.isShowing())
+                {
+                    
+                    popupWindow.dismiss();
+                    popupWindow = null;
+                    Log.d("onItemClick", "onItemClick");
+                }
+                
+            }
+        });
+        
+        ViewTreeObserver vto = popup_listview.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
+        {
+            public boolean onPreDraw()
+            {
+                popupheight = popup_listview.getMeasuredHeight();
+                
+                return true;
+            }
+        });
+        popupWindow = new PopupWindow(popupWindow_view, 200,
+                LayoutParams.WRAP_CONTENT, true);
+        // ���ö���Ч��
+        if (!isUpDown)
+        {
+            
+            popupWindow.setAnimationStyle(R.style.AnimationFade);
+        }
+        
+        // popupwindow�����ļ���
+        popupWindow_view.setOnTouchListener(new View.OnTouchListener()
+        {
+            
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                // ����Ѿ���������ʾ�ٴε������ʧ
+                if (popupWindow != null && popupWindow.isShowing())
+                {
+                    
+                    popupWindow.dismiss();
+                    popupWindow = null;
+                    Log.d("onTouchPopup", "onTouch");
+                }
+                
+                return false;
+            }
+        });
+        
+    }
+        
+}

@@ -1,0 +1,134 @@
+package com.changhong.sdk.contentprovider;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import android.net.Uri;
+import android.provider.BaseColumns;
+
+
+/**
+ * [共享数据库常量定义]<BR>
+ * [功能详细描述]
+ * @author b
+ * @version [RCS Client V100R001C03, 2014-2-20] 
+ */
+public class ChangHong
+{
+    /**
+     * AUTHORITY
+     */
+    public static final String AUTHORITY = "com.changhong.sdk";
+
+    /**
+     * segment
+     */
+    private static String segment = "/";
+
+    /**
+     * prefix
+     */
+    private static String prefix = "content:".concat(segment.concat(segment));
+
+    /**
+     * [商品数据]<BR>
+     * [功能详细描述]
+     * @author b
+     * @version [RCS Client V100R001C03, 2014-2-20] 
+     */
+    public static class Shopping implements BaseColumns
+    {
+        /**
+         * 表名
+         */
+        public static final String TABLE_NAME = "SHOPPING";
+
+        /**
+         * URI
+         */
+        public static final String URI = prefix + AUTHORITY + segment + TABLE_NAME;
+
+        /**
+         * CONTENT_URI
+         */
+        public static final Uri CONTENT_URI = Uri.parse(URI);
+
+        /**
+         * 商品图片地址
+         */
+        public static final String PICURL = "picURL";
+
+        /**
+         * 商场地址
+         */
+        public static final String ADDRESS = "address";
+
+        /**
+         * 商品库存
+         */
+        public static final String STOCK = "stock";
+
+        /**
+         * 商品描述
+         */
+        public static final String DESC = "desc";
+
+        /**
+         * 商品实际价格
+         */
+        public static final String ACTUALPRICE = "actualPrice";
+
+        /**
+         * 商品名称
+         */
+        public static final String NAME = "name";
+
+        /**
+         * 商品ID
+         */
+        public static final String GOODSID = "id";
+        
+        /**
+         *  所属SPID
+         */
+        public static final String SPID = "spId";
+
+        /**
+         * PHOTO_COLUMNS
+         */
+
+        public static final String[] SHOPPING_COLUMNS = new String[] { 
+            SPID, GOODSID, NAME, ACTUALPRICE,STOCK,ADDRESS,PICURL,DESC};
+
+    }
+
+    
+
+    /**
+     * [简要描述]:<br/>
+     * [详细描述]:<br/>
+     * 初始化ContentProvider中需要的projectionMaps
+     *
+     * @param tableName String
+     * @param columns String[]
+     * @param projectionMaps Map<String, HashMap<String, String>>
+     * @exception
+     */
+    public static final void initializeColumns(String tableName, String[] columns,
+            Map<String, HashMap<String, String>> projectionMaps)
+    {
+
+        HashMap<String, String> projectionMap = new HashMap<String, String>();
+
+        int lenght = columns.length;
+        for (int i = 0; i < lenght; i++)
+        {
+
+            projectionMap.put(columns[i], columns[i]);
+
+        }
+
+        projectionMaps.put(tableName, projectionMap);
+
+    }
+}

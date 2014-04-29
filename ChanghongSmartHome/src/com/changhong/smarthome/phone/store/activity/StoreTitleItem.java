@@ -1,0 +1,123 @@
+package com.changhong.smarthome.phone.store.activity;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+
+/**
+ * [社区商城界面的标题栏]<BR>
+ * [功能详细描述]
+ * @author 王磊
+ * @version [ChangHong SmartHome V100R001C03, 2014-4-22] 
+ */
+public class StoreTitleItem extends RelativeLayout
+{
+    private View itemView;
+    
+    private Button backButton;
+    
+    private TextView titleTextView;
+    
+    private TextView otherTextView;
+    
+    private int screenHeight;
+    
+    private int screenWidth;
+    
+//    private RelativeLayout titleLayout;
+    
+    private String titleName;
+    
+//    private String otherName;
+    
+    /**
+     * 标题栏右边的文字是否有
+     */
+    private boolean otherVisibility;
+    
+    public StoreTitleItem(Context context)
+    {
+        super(context);
+        // TODO Auto-generated constructor stub
+    }
+    
+    public StoreTitleItem(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+        itemView = LayoutInflater.from(context).inflate(R.layout.title_item,
+                this,
+                true);
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.titleItem);
+        // 获得xml里定义的属性,格式为 名称_属性名 后面是默认值  
+        titleName = a.getString(R.styleable.titleItem_titlename);
+//        otherName = a.getString(R.styleable.titleItem_othername);
+        otherVisibility = a.getBoolean(R.styleable.titleItem_otherVisibility,
+                false);
+        a.recycle();
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
+        init();
+    }
+    
+    private void init()
+    {
+        if (isInEditMode()) { return; }
+        RelativeLayout titleLayout = (RelativeLayout) itemView.findViewById(R.id.title_layout);
+        
+        RelativeLayout.LayoutParams titleLayoutParams = (LayoutParams) titleLayout.getLayoutParams();
+        titleLayoutParams.height = (screenHeight * 110) / 1280;
+        titleLayoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        titleLayout.setLayoutParams(titleLayoutParams);
+        
+        backButton = (Button) itemView.findViewById(R.id.btn_back);
+        RelativeLayout.LayoutParams backButtonParams = (android.widget.RelativeLayout.LayoutParams) backButton.getLayoutParams();
+        backButtonParams.height = ((screenHeight * 50) / 1280);
+        backButtonParams.width = ((screenWidth * 60) / 720);
+        backButton.setLayoutParams(backButtonParams);
+        
+        titleTextView = (TextView) itemView.findViewById(R.id.page_title);
+        titleTextView.setText(titleName);
+        
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (screenWidth * 36) / 720);
+        
+        if (otherVisibility)
+        {
+            otherTextView = (TextView) itemView.findViewById(R.id.btn_ordermanager);
+            otherTextView.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams otherParams = (android.widget.RelativeLayout.LayoutParams) otherTextView.getLayoutParams();
+            otherParams.height = ((screenHeight * 36) / 1280);
+            otherParams.width = ((screenWidth * 36) / 720);
+            otherTextView.setLayoutParams(otherParams);
+//            otherTextView.setText(otherName);
+//            otherTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+//                    (screenWidth * 36) / 720);
+        }
+    }
+    
+    public void setBackListener(OnClickListener listener)
+    {
+        backButton.setOnClickListener(listener);
+    }
+    
+    public void setOtherListener(OnClickListener listener)
+    {
+        otherTextView.setOnClickListener(listener);
+    }
+    
+    public void setTitleTextView(String title)
+    {
+        titleTextView.setText(title);
+    }
+}

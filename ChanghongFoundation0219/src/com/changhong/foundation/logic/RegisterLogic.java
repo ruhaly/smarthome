@@ -1,0 +1,575 @@
+/**
+ * LoginLogic.java
+ * com.pactera.ch.bedframe.logic
+ *
+ * Function： TODO 
+ *
+ *   ver     date      		author
+ * ──────────────────────────────────
+ *   		 2013-12-12 		b
+ *
+ * Copyright (c) 2013, TNT All Rights Reserved.
+ */
+
+package com.changhong.foundation.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.changhong.foundation.baseapi.EncryptionUtils;
+import com.changhong.foundation.baseapi.HttpAction;
+import com.changhong.foundation.baseapi.HttpUrl;
+import com.changhong.foundation.baseapi.JsonParse;
+import com.changhong.foundation.baseapi.MsgWhat;
+import com.changhong.foundation.baseapi.RequestId;
+import com.changhong.foundation.baseapi.ResultCode;
+import com.changhong.foundation.entity.Address;
+import com.changhong.foundation.entity.RegisterInfo;
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+/**
+ * 
+ * RegisterLogic
+ * @author hanliangru
+ * @version [智慧社区-终端底座, 2014年1月24日]
+ */
+public class RegisterLogic extends SuperLogic
+{
+    public List<Address> addressList = new ArrayList<Address>();
+    
+    public HttpHandler<String> httpHanlder;
+    
+    public static RegisterLogic ins;
+    
+    public static String JOIN_SYMBOL = "-";
+    
+    /**
+     * 市列表
+     */
+    public Map<String, List<Address>> cityMap = new HashMap<String, List<Address>>();
+    
+    /**
+     * 区列表
+     */
+    public Map<String, List<Address>> communityMap = new HashMap<String, List<Address>>();
+    
+    /**
+     * 组团列表
+     */
+    public Map<String, List<Address>> zutuanMap = new HashMap<String, List<Address>>();
+    
+    /**
+     * 楼栋列表
+     */
+    public Map<String, List<Address>> buildingMap = new HashMap<String, List<Address>>();
+    
+    /**
+     * 单元列表
+     */
+    public Map<String, List<Address>> unitMap = new HashMap<String, List<Address>>();
+    
+    /**
+     * 门牌列表
+     */
+    public Map<String, List<Address>> doorPlateMap = new HashMap<String, List<Address>>();
+    
+    //当前选中的省
+    public Address province = new Address();
+    
+    //当前选中的市
+    public Address city = new Address();
+    
+    //当前选中的区
+    public Address community = new Address();
+    
+    //当前选中的组团
+    public Address zutuan = new Address();
+    
+    //当前选中的楼栋
+    public Address building = new Address();
+    
+    //当前选中的单元
+    public Address unit = new Address();
+    
+    //当前选中的门牌
+    public Address doorPlate = new Address();
+    
+    public static synchronized RegisterLogic getInstance()
+    {
+        if (null == ins)
+        {
+            ins = new RegisterLogic();
+        }
+        return ins;
+    }
+    
+    public void requestRegister(RegisterInfo registerInfo, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("authCode", registerInfo.getValicode());
+        serviceInfo.put("userType", registerInfo.getRole());
+        serviceInfo.put("MasterMobile", registerInfo.getHouseholderPhone());
+        serviceInfo.put("userAccount", registerInfo.getNickName());
+        serviceInfo.put("userPwd", EncryptionUtils.MD5(registerInfo.getPwd()));
+        serviceInfo.put("userName", registerInfo.getReallyName());
+        serviceInfo.put("sex", "0");
+        serviceInfo.put("nickName", registerInfo.getNickName());
+        serviceInfo.put("mobile", registerInfo.getPhoneNumber());
+        serviceInfo.put("cdiNumber", registerInfo.getIdentityCard());
+        serviceInfo.put("birthday", "");
+        serviceInfo.put("photoPath", "");
+        serviceInfo.put("province", registerInfo.getProvinceId());
+        serviceInfo.put("city", registerInfo.getCityId());
+        serviceInfo.put("groupId", registerInfo.getZutuanId());
+        serviceInfo.put("buildingId", registerInfo.getBuildingId());
+        serviceInfo.put("unitId", registerInfo.getUnitId());
+        serviceInfo.put("houseId", registerInfo.getDoorPlateId());
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_REGISTER,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_REGISTER,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.REGISTER_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+    }
+    
+    public void requestProvince(HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_GET_PROVINCE,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_GET_PROVINCE,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.REGISTER_PROVINCE_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+    }
+    
+    public void requestCity(String provinceId, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("provinceId", provinceId);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_GET_CITY,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_GET_CITY,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.REGISTER_CITY_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+    }
+    
+    public void requestCommunity(String cityId, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("cityId", cityId);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_GET_COMMUNITY,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_GET_COMMUNITY,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.REGISTER_COMMUNITY_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+    }
+    
+    public void requestZutuan(String communityId, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("orgId", communityId);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_GET_ZUTUAN,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_GET_ZUTUAN,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.REGISTER_ZUTUAN_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+    }
+    
+    public void requestBuilding(String zutuanId, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("groupId", zutuanId);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_GET_BUILDING,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_GET_BUILDING,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.REGISTER_BUILDING_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+    }
+    
+    public void requestDoorplate(String buildingId, String unitId,
+            HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("buildingId", buildingId);
+        serviceInfo.put("unitNo", unitId);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_GET_DOORPLATE,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_GET_DOORPLATE,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.REGISTER_DOORPLATE_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+    }
+    
+    public void requestGetValicode(String phoneNumber, String type,
+            HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("phoneNumber", phoneNumber);
+        serviceInfo.put("type", type);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_REGISTER_VALICODE,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_REGISTER_VALICODE,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.REGISTER_VALICODE_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+    }
+    
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        // if (error.getExceptionCode() == 0 || error.getExceptionCode() == 404)
+        // {
+        handler.sendEmptyMessage(CONNECT_ERROR_MSGWHAT);
+        // }
+    }
+    
+    @Override
+    public void clear()
+    {
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is)
+    {
+        switch (requestId)
+        {
+            case RequestId.REGISTER_REQUESTID:
+            {
+                handleRegisterData(serviceRes);
+                break;
+            }
+            case RequestId.REGISTER_VALICODE_REQUESTID:
+            {
+                handleGetValicodeData(serviceRes);
+                break;
+            }
+            case RequestId.REGISTER_PROVINCE_REQUESTID:
+            {
+                handleGetProvinceData(serviceRes);
+                break;
+            }
+            case RequestId.REGISTER_CITY_REQUESTID:
+            {
+                handleGetCityData(serviceRes);
+                break;
+            }
+            case RequestId.REGISTER_COMMUNITY_REQUESTID:
+            {
+                handleGetCommunityData(serviceRes);
+                break;
+            }
+            case RequestId.REGISTER_ZUTUAN_REQUESTID:
+            {
+                handleGetZutuanData(serviceRes);
+                break;
+            }
+            case RequestId.REGISTER_BUILDING_REQUESTID:
+            {
+                handleGetBuildingData(serviceRes);
+                break;
+            }
+            case RequestId.REGISTER_DOORPLATE_REQUESTID:
+            {
+                handleGetDoorplateData(serviceRes);
+                break;
+            }
+            default:
+                break;
+        }
+        
+    }
+    
+    public void handleRegisterData(ServiceResponse response)
+    {
+        if (ResultCode.RESULT_SUCCESS.equals(response.getBody().getResult()))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_REGISTER_SUCCESS);
+        }
+        else if (ResultCode.RESULT_USER_HAS_EXIST_.equals(response.getBody()
+                .getResult()))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_USER_HAS_EXIST_);
+        }
+        else if (ResultCode.RESULT_REGISTER_AGIAN.equals(response.getBody()
+                .getResult()))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_REGISTER_AGIAN);
+        }
+        else if (ResultCode.RESULT_USERINFO_NOT_EXIST.equals(response.getBody()
+                .getResult()))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_USERINFO_NOT_EXIST);
+        }
+        else if (ResultCode.RESULT_HOUSEHOLDER_PHONE_ERROR.equals(response.getBody()
+                .getResult()))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_HOUSEHOLDER_PHONE_ERROR);
+        }
+        else if (ResultCode.RESULT_HOUSEHOLDER_NOT_EXIST_.equals(response.getBody()
+                .getResult()))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_HOUSEHOLDER_NOT_EXIST_);
+        }
+        else if (ResultCode.RESULT_HOUSEHOLDER_NEED_REGISTER_.equals(response.getBody()
+                .getResult()))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_HOUSEHOLDER_NEED_REGISTER_);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+    public void handleGetValicodeData(ServiceResponse response)
+    {
+        if (ResultCode.RESULT_SUCCESS.equals(response.getBody().getResult()))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_REGISTER_GETVALICODE_SUCCESS);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+    public void handleGetProvinceData(ServiceResponse response)
+    {
+        if (ResultCode.RESULT_SUCCESS.equals(response.getBody().getResult()))
+        {
+            List<Address> tempList = JsonParse.parseProvinceList(response.getBody()
+                    .getParamsString());
+            if (null != tempList)
+            {
+                addressList = tempList;
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_GET_PROVINCE_SUCCESS);
+            }
+            else
+            {
+                handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+            }
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    public void handleGetCityData(ServiceResponse response)
+    {
+        if (ResultCode.RESULT_SUCCESS.equals(response.getBody().getResult()))
+        {
+            List<Address> tempList = JsonParse.parseCityList(response.getBody()
+                    .getParamsString());
+            if (null != tempList)
+            {
+                cityMap.put(province.getId(), tempList);
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_GET_CITY_SUCCESS);
+            }
+            else
+            {
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_DATE_EMPTY);
+            }
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    public void handleGetCommunityData(ServiceResponse response)
+    {
+        if (ResultCode.RESULT_SUCCESS.equals(response.getBody().getResult()))
+        {
+            List<Address> tempList = JsonParse.parseCommunityList(response.getBody()
+                    .getParamsString());
+            if (null != tempList)
+            {
+                communityMap.put(city.getId(), tempList);
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_GET_COMMUNITY_SUCCESS);
+            }
+            else
+            {
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_DATE_EMPTY);
+            }
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    public void handleGetZutuanData(ServiceResponse response)
+    {
+        if (ResultCode.RESULT_SUCCESS.equals(response.getBody().getResult()))
+        {
+            List<Address> tempList = JsonParse.parseZutuanList(response.getBody()
+                    .getParamsString());
+            if (null != tempList)
+            {
+                zutuanMap.put(community.getId(), tempList);
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_GET_ZUTUAN_SUCCESS);
+            }
+            else
+            {
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_DATE_EMPTY);
+            }
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    public void handleGetBuildingData(ServiceResponse response)
+    {
+        if (ResultCode.RESULT_SUCCESS.equals(response.getBody().getResult()))
+        {
+            List<Address> tempList = JsonParse.parseBuildingList(response.getBody()
+                    .getParamsString());
+            if (null != tempList)
+            {
+                buildingMap.put(zutuan.getId(), tempList);
+                for (int n = 0; n < tempList.size(); n++)
+                {
+                    Address address = tempList.get(n);
+                    unitMap.put(address.getId(), address.getUnitList());
+                }
+                
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_GET_BUILDING_SUCCESS);
+            }
+            else
+            {
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_DATE_EMPTY);
+            }
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    public void handleGetDoorplateData(ServiceResponse response)
+    {
+        if (ResultCode.RESULT_SUCCESS.equals(response.getBody().getResult()))
+        {
+            List<Address> tempList = JsonParse.parseDoorplateList(response.getBody()
+                    .getParamsString());
+            if (null != tempList)
+            {
+                doorPlateMap.put(building.getId() + JOIN_SYMBOL + unit.getId(),
+                        tempList);
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_GET_DOORPLATE_SUCCESS);
+            }
+            else
+            {
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_DATE_EMPTY);
+            }
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    public void stopRequest()
+    {
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+        }
+    }
+}

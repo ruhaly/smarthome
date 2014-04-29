@@ -1,0 +1,48 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-3-26 下午3:23:59 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.property.entry;
+
+public class ExchangeVO
+{
+    private String exchangeName;
+    
+    private String needScore;
+    
+    private String picUrl;
+    
+    public String getExchangeName()
+    {
+        return exchangeName;
+    }
+    
+    public void setExchangeName(String exchangeName)
+    {
+        this.exchangeName = exchangeName;
+    }
+    
+    public String getNeedScore()
+    {
+        return needScore;
+    }
+    
+    public void setNeedScore(String needScore)
+    {
+        this.needScore = needScore;
+    }
+    
+    public String getPicUrl()
+    {
+        return picUrl;
+    }
+    
+    public void setPicUrl(String picUrl)
+    {
+        this.picUrl = picUrl;
+    }
+    
+}

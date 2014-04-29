@@ -1,0 +1,48 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-3-31 下午4:50:58 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.property.entry;
+
+import java.util.List;
+
+/**
+ *用户积分变化情况的详细信息
+ */
+public class IntegrationDetailVO
+{
+	private int peResult;
+	
+    private long totalPoint;
+    
+    private List<IntegrationChangeItemVO> pointDetailList;
+    
+	public int getPeResult() {
+		return peResult;
+	}
+	
+	public void setPeResult(int peResult) {
+		this.peResult = peResult;
+	}
+	
+	public long getTotalPoint() {
+		return totalPoint;
+	}
+	
+	public void setTotalPoint(long totalPoint) {
+		this.totalPoint = totalPoint;
+	}
+	
+	public List<IntegrationChangeItemVO> getPointDetailList() {
+		return pointDetailList;
+	}
+	
+	public void setPointDetailList(List<IntegrationChangeItemVO> pointDetailList) {
+		this.pointDetailList = pointDetailList;
+	}
+    
+}
+

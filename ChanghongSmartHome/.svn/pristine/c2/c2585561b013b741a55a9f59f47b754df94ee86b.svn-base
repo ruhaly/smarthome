@@ -1,0 +1,108 @@
+package com.changhong.smarthome.phone.foundation.fragment;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.changhong.sdk.fragment.SuperFragment;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.activity.RelationGroupActivity;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class MineFragment extends SuperFragment
+{
+    
+    private View convertView;
+    
+    @Override
+    public void onClick(View v)
+    {
+        
+    }
+    
+    @Override
+    public void updateView(Message msg)
+    {
+    }
+    
+    @Override
+    public void updateView(Intent intent)
+    {
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public View initLayout(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        convertView = inflater.inflate(R.layout.mine_layout, container, false);
+        ViewUtils.inject(this, convertView);
+        return convertView;
+    }
+    
+    @OnClick(R.id.framePersonInfo)
+    public void framePersonInfoClick(View view)
+    {
+        showToast("个人资料");
+    }
+    
+    @OnClick(R.id.frameAccount)
+    public void frameAccountClick(View view)
+    {
+        showToast("个人资料");
+    }
+    
+    @OnClick(R.id.frameOrderManage)
+    public void frameOrderManageClick(View view)
+    {
+        showToast("订单管理");
+    }
+    
+    @OnClick(R.id.frameRelativeNetwork)
+    public void frameRelativeNetworkClick(View view)
+    {
+        startActivity(new Intent(getActivity().getBaseContext(),
+                RelationGroupActivity.class));
+        showToast("关系圈");
+    }
+    
+    @OnClick(R.id.frameCommunityManage)
+    public void frameCommunityManageClick(View view)
+    {
+        showToast("个人资料");
+    }
+    
+    @OnClick(R.id.frameInviteJoin)
+    public void frameInviteJoinClick(View view)
+    {
+        showToast("邀请加入");
+    }
+    
+    @OnClick(R.id.frameAppManage)
+    public void frameAppManageClick(View view)
+    {
+        showToast("应用管理料");
+    }
+    
+    @OnClick(R.id.frameSetting)
+    public void frameSettingClick(View view)
+    {
+        showToast("设置");
+    }
+    
+    @OnClick(R.id.frameSuggestionFeedback)
+    public void frameSuggestionFeedbackClick(View view)
+    {
+        showToast("意见反馈");
+    }
+}

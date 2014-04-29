@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg" >
+
+    <RelativeLayout
+        android:id="@+id/title_rl"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/top_height"
+        android:background="@drawable/top_bg" >
+
+        <ImageView
+            android:id="@+id/exit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dip"
+            android:background="@drawable/drawable_expand_finish"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/comment_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/interact_share_share_info"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size" />
+
+        <TextView
+            android:id="@+id/edit_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:gravity="center"
+            android:text="@string/my_edit"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/frame_gallery_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_rl"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/frame_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="13.3dip" >
+
+            <FrameLayout
+                android:id="@+id/frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dip" >
+
+                <com.changhong.sdk.widget.CustomGallery
+                    android:id="@+id/gallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/picture" />
+
+                <LinearLayout
+                    android:id="@+id/frame_dian"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="visible" >
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scroll_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame_gallery_ll"
+        android:layout_marginBottom="80dip"
+        android:padding="13.3dip"
+        android:visibility="visible" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/detail_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="拼单拉！金龙鱼、、、、"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/list_content_size" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:text="@string/activity_time"
+                    android:textColor="@color/share_detail_title_color" />
+
+                <TextView
+                    android:id="@+id/group_buy_activity_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:text="12.25-12.28(3天)"
+                    android:textColor="@color/share_detail_title_color" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:text="@string/activity_launch_business"
+                    android:textColor="@color/share_detail_title_color" />
+
+                <TextView
+                    android:id="@+id/group_buy_activity_launch_business"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:text="家乐福"
+                    android:textColor="@color/share_detail_title_color" />
+
+                <ImageView
+                    android:id="@+id/group_buy_map_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginTop="5dip"
+                    android:src="@drawable/map_icon" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:text="@string/activity_contact_tel"
+                    android:textColor="@color/share_detail_title_color" />
+
+                <TextView
+                    android:id="@+id/group_buy_contact_tel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:text="18945522"
+                    android:textColor="@color/share_detail_title_color" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/my_group_shop_ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame_gallery_ll"
+        android:layout_marginBottom="80dip"
+        android:orientation="vertical"
+        android:padding="13.3dip"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/group_buy_follow_people"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:text="@string/group_buy_follow_people_text"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size" />
+
+        <com.changhong.sdk.widget.PullRefreshListView
+            android:id="@+id/follow_people_list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/follow_people_list_bg"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:drawSelectorOnTop="false"
+            android:listSelector="@android:color/transparent"
+            android:scrollbarThumbVertical="@drawable/list_thumb"
+            android:scrollbarTrackVertical="@drawable/list_track"
+            android:scrollbars="vertical" />
+
+        <EditText
+            android:id="@+id/notice_msg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/notice_msg_bg"
+            android:gravity="top"
+            android:padding="3dip" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/detail_group_buy_go_shop_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dip"
+        android:background="@drawable/detail_go_shop_btn_selector" />
+
+    <Button
+        android:id="@+id/detail_notice_all_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dip"
+        android:background="@drawable/delivery_notice_btn_selector"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/notice_send_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dip"
+        android:background="@drawable/notice_send_btn_selector"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/pagerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pagerImage"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
+
+</RelativeLayout>

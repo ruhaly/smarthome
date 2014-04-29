@@ -1,0 +1,237 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.baseapi.MsgWhat;
+import com.changhong.smarthome.phone.foundation.bean.Community;
+import com.changhong.smarthome.phone.foundation.logic.AddCommunityLogic;
+import com.changhong.smarthome.phone.foundation.logic.SelectCommunityLogic;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+
+public class CommunitySelectActivity extends BaseActivity
+{
+    @ViewInject(R.id.etSearch)
+    private EditText etSearch;
+    
+    @ViewInject(R.id.btnSearch)
+    private Button btnSearch;
+    
+    @ViewInject(R.id.listView)
+    private ListView listView;
+    
+    private SelectCommunityLogic selectLogic;
+    
+    private Adapter adapter;
+    
+    private HttpUtils selectHttpUtil;
+    
+    private List<Community> list = new ArrayList<Community>();
+    
+    private AddCommunityLogic addLogic;
+    
+    private HttpUtils addHttpUtil;
+    
+    @Override
+    public void initData()
+    {
+        selectLogic = SelectCommunityLogic.getInstance();
+        Community cc = new Community();
+        cc.setId("111");
+        cc.setName("社区111");
+        cc.setAddress("代付款理发店里看能否");
+        selectLogic.list.add(cc);
+        cc = new Community();
+        cc.setId("222");
+        cc.setName("社区222");
+        cc.setAddress("代付款理发店里看能否");
+        selectLogic.list.add(cc);
+        cc = new Community();
+        cc.setId("333");
+        cc.setName("社区333");
+        cc.setAddress("代付款理发店里看能否");
+        selectLogic.list.add(cc);
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.community_select_layout);
+        ViewUtils.inject(this);
+        String cityName = getIntent().getStringExtra("cityName");
+        etSearch.setText("搜索" + cityName + "小区");
+        initAdater();
+        requestSelectCommunityData();
+        
+        
+    }
+    
+    public void requestSelectCommunityData()
+    {
+        selectHttpUtil = new HttpUtils();
+        selectLogic.setData(mHandler);
+        String cityId = getIntent().getStringExtra("cityId");
+        //String cityId = "320100";
+        selectLogic.requestCommunity(cityId, selectHttpUtil);
+    }
+    
+    
+    @Override
+    public void handleMsg(android.os.Message msg)
+    {
+        switch (msg.what)
+        {
+            case MsgWhat.MSGWHAT_SELECT_COMMUNITY_SUCCESS:
+            {
+                for (int i = 0; i < selectLogic.list.size(); i++)
+                {
+                    Community cc = new Community();
+                    cc.setId(selectLogic.list.get(i).getId());
+                    cc.setName(selectLogic.list.get(i).getName());
+                    list.add(cc);
+                }
+                initAdater();
+                break;
+            }
+            case MsgWhat.MSGWHAT_ADD_COMMUNITY_SUCCESS:
+            {
+                finish();
+            }
+            default:
+            {
+                break;
+            }
+        }
+    };
+    
+    public void initAdater()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter();
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id)
+                {
+                   
+                    int typeSrc = getIntent().getIntExtra("typeSrc", 0);
+                    //选择小区来源于 小区管理页面
+                    if (typeSrc == 1)
+                    {
+                        addLogic = AddCommunityLogic.getInstance();
+                        addHttpUtil = new HttpUtils();
+                        addLogic.setData(mHandler);
+                        String userId = "1";
+                        String communityId = selectLogic.list.get(position).getId();
+                        addLogic.requestAddCommunity(userId,communityId,addHttpUtil);
+                        
+                        String city = getIntent().getStringExtra("cityName");
+                        Intent intent = new Intent();
+                        intent.putExtra("name",
+                                city + selectLogic.list.get(position).getName());
+                        intent.putExtra("image",
+                                R.drawable.community_default_picture);
+                        
+                        intent.putExtra("communityId", communityId);
+                        //将数据带回小区管理页面
+                        CommunitySelectActivity.this.setResult(RESULT_OK,
+                                intent);
+                    }
+                    //选择小区来源于登录页面
+                    else
+                    {
+                        Log.i("------------", "login");
+                    }
+                }
+            });
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    class Adapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return selectLogic.list.size();
+        }
+        
+        @Override
+        public Community getItem(int position)
+        {
+            return selectLogic.list.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            ViewHolder viewHolder = null;
+            if (convertView == null)
+            {
+                viewHolder = new ViewHolder();
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.community_item_layout, null);
+                viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+                viewHolder.tvArear = (TextView) convertView.findViewById(R.id.tvArear);
+                viewHolder.tvAddress = (TextView) convertView.findViewById(R.id.tvAddress);
+                convertView.setTag(viewHolder);
+            }
+            else
+            {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.tvName.setText(getItem(position).getName());
+            viewHolder.tvArear.setText(getItem(position).getArea());
+            viewHolder.tvAddress.setText(getItem(position).getAddress());
+            return convertView;
+            
+        }
+        
+        class ViewHolder
+        {
+            public TextView tvName;
+            
+            public TextView tvArear;
+            
+            public TextView tvAddress;
+        }
+    }
+    
+}

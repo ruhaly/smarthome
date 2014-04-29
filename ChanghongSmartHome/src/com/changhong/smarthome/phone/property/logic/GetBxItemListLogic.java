@@ -1,0 +1,752 @@
+package com.changhong.smarthome.phone.property.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.os.Message;
+
+import com.changhong.sdk.baseapi.HttpUrl;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.sdk.entity.BaseAccountInfo;
+import com.changhong.sdk.entity.Pager;
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.smarthome.phone.property.entry.ServicesItem;
+import com.changhong.smarthome.phone.property.http.HttpAction;
+import com.changhong.smarthome.phone.property.http.RequestId;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+/** 
+ * 报修首页逻辑类
+ * @author ruhaly
+ * @version
+ * @since Ver 1.1
+ * @Date 2013-12-12 下午2:32:07
+ */
+public class GetBxItemListLogic extends SuperLogic
+{
+    
+    private HttpHandler<String> httpHanlder;
+    
+    private static GetBxItemListLogic ins;
+    
+    public static ArrayList<ServicesItem> services_bxList;
+    
+//    public HashMap map;
+    
+    public static synchronized GetBxItemListLogic getInstance()
+    {
+        if (null == ins)
+        {
+            services_bxList = new ArrayList<ServicesItem>();
+            ins = new GetBxItemListLogic();
+        }
+        return ins;
+    }
+    
+//    /**
+//     * [获取报修的类型]<BR>
+//     * [功能详细描述]
+//     * @param eventType
+//     * @param httpUtil
+//     */
+//    public void getBxType(String eventType, HttpUtils httpUtil)
+//    {
+//        RequestParams params = new RequestParams();
+//        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+//        serviceInfo.put("eventType", eventType);
+//        fixRequestParams(params,
+//                serviceInfo,
+//                "RepairHandler",
+//                "sc",
+//                "sc",
+//                "4100");
+//        
+//        httpHanlder = HttpSenderUtils.sendMsgImpl("RepairHandler",
+//                params,
+//                HttpSenderUtils.METHOD_POST,
+//                httpUtil,
+//                RequestId.BX_TYPE,
+//                this,
+//                false,
+//                HttpUrl.URL_CBS);
+//        
+//    }
+    
+    /**
+     * [获取所有的报修条目]<BR>
+     * [功能详细描述]
+     * @param eventType
+     * @param accountInfo
+     * @param pager
+     * @param httpUtils
+     */
+    public void requestbxItemListAll(String eventType,
+            BaseAccountInfo accountInfo, Pager pager, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("eventType", eventType);
+        serviceInfo.put("accountInfo", accountInfo);
+        serviceInfo.put("pager", pager);
+        serviceInfo.put("compornot", 0);
+        
+        fixRequestParams(params,
+                serviceInfo,
+                "RepairHandler",
+                "sc",
+                "sc",
+                "4100");
+        
+        httpHanlder = HttpSenderUtils.sendMsgImpl("RepairHandler",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.BX_CXALL,
+                this,
+                false,
+                HttpUrl.URL_CBS);
+        
+    }
+    
+    /**
+     * [获取状态为 1，2 的报修数据]<BR>
+     * [功能详细描述]
+     * @param eventType
+     * @param accountInfo
+     * @param pager
+     * @param httpUtils
+     */
+    public void requestbxItemList(String eventType,
+            BaseAccountInfo accountInfo, Pager pager, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("eventType", eventType);
+        serviceInfo.put("accountInfo", accountInfo);
+        serviceInfo.put("pager", pager);
+        serviceInfo.put("compornot", 1);
+        
+        fixRequestParams(params,
+                serviceInfo,
+                "RepairHandler",
+                "sc",
+                "sc",
+                "4100");
+        
+        httpHanlder = HttpSenderUtils.sendMsgImpl("RepairHandler",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.BX_CX,
+                this,
+                false,
+                HttpUrl.URL_CBS);
+        
+    }
+    
+    /**
+     * [上传新建报修条目]<BR>
+     * [功能详细描述]
+     * @param eventType   1 新建
+     * @param accountInfo
+     * @param phonenum
+     * @param content
+     * @param addImageList
+     * @param voiceStr
+     * @param picSuffix
+     * @param voiceSuffix
+     * @param repairType
+     * @param httpUtils
+     */
+    public void addBxItem(String eventType, BaseAccountInfo accountInfo,
+            String phonenum, String content, ArrayList<?> addImageList,
+            String voiceStr, String picSuffix, String voiceSuffix,
+            String repairType, HttpUtils httpUtils)
+    {
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        RequestParams params = new RequestParams();
+        serviceInfo.put("eventType", eventType);
+        serviceInfo.put("accountInfo", accountInfo);
+        serviceInfo.put("phonenum", phonenum);
+        serviceInfo.put("content", content);
+        serviceInfo.put("picStrList", addImageList);
+        serviceInfo.put("voiceStr", voiceStr);
+        serviceInfo.put("picSuffix", picSuffix);
+        serviceInfo.put("voiceSuffix", voiceSuffix);
+        serviceInfo.put("repairType", repairType);
+//        System.out.println("voiceStr" + voiceStr);
+        fixRequestParams(params,
+                serviceInfo,
+                "RepairHandler",
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl("RepairHandler",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.BX_ADD,
+                this,
+                false,
+                HttpUrl.URL_CBS);
+    }
+    
+    /* public void deleteBxItem(String eventType, String personId, long id,
+             HttpUtils httpUtils)
+     {
+         Map serviceInfo = new HashMap();
+         RequestParams params = new RequestParams();
+         serviceInfo.put("eventType", eventType);
+         serviceInfo.put("personId", personId);
+         serviceInfo.put("fwid", id + "");
+         fixRequestParams(params,
+                 serviceInfo,
+                 "RepairHandler",
+                 "sc",
+                 "sc",
+                 "4100");
+         
+         httpHanlder = HttpSenderUtils.sendMsgImpl("RepairHandler",
+                 params,
+                 HttpSenderUtils.METHOD_POST,
+                 httpUtils,
+                 RequestId.BX_DELETE,
+                 this,
+                 false,
+                 HttpAction.url);
+         
+     }*/
+    
+    /*
+     * public void deleteList(String eventType, String fwid) { RequestParams
+     * params = new RequestParams();
+     * 
+     * Map serviceInfo = new HashMap(); serviceInfo.put("eventType", eventType);
+     * serviceInfo.put("fwid", fwid);
+     * 
+     * fixRequestParams(params, serviceInfo, "RepairHandler"); httpHanlder =
+     * HttpSenderUtils.sendMsgImpl(ACTION_GETBXLIST, params,
+     * HttpSenderUtils.METHOD_POST, httpUtils, RequestId.LOGIN_DL, this, false);
+     * }
+     */
+    @Override
+    public void handleHttpResponse(String response, int rspCode, int requestId)
+    {
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(String response, int requestId,
+            InputStream is)
+    {
+    }
+    
+//    private void handlegetBxType(ServiceResponse serviceRes)
+//    {
+//        if (serviceRes.getBody().getResult().equals("200"))
+//        {
+//            Message msg = new Message();
+//            msg.what = HttpAction.BXTYPE_SUCCESS_MSGWHAT;
+//            msg.obj = Josonparse_bxType(serviceRes.getBody().getParamsString());
+//            handler.sendMessage(msg);
+//        }
+//        else
+//        {
+//            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+//        }
+//        
+//    }
+    
+    public void handlegetBxListData(ServiceResponse response)
+    {
+        if (response.getBody().getResult().equals("200"))
+        {
+            Message msg = new Message();
+            
+            ArrayList<ServicesItem> bxList1 = Josonparse_bxList(response.getBody()
+                    .getParamsString());
+            msg.what = HttpAction.BXLIST_SUCCESS_MSGWHAT;
+            msg.obj = bxList1;
+            handler.sendMessage(msg);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+    public void handlegetBxListAllData(ServiceResponse response)
+    {
+        if (response.getBody().getResult().equals("200"))
+        {
+            services_bxList = Josonparse_bxList_ALL(response.getBody()
+                    .getParamsString(), 1);
+            GetBxItemList_wLogic.getInstance().services_bxList_w = Josonparse_bxList_ALL(response.getBody()
+                    .getParamsString(),
+                    2);
+            handler.sendEmptyMessage(HttpAction.BXLIST_SUCCESS_MSGWHAT_ALL);
+            
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+    public void handleBxAdd(ServiceResponse response)
+    {
+        if (response.getBody().getResult().equals("200"))
+        {
+            
+            services_bxList.add(0, Josonparse_add(response.getBody()
+                    .getParamsString()));
+            //services_bxList = sout(services_bxList);
+            
+            handler.sendEmptyMessage(HttpAction.BXADD_SUCCESS_MSGWHAT);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+//    private ArrayList<ServicesItem> sout(ArrayList<ServicesItem> list)
+//    {
+//        for (int i = list.size() - 1; i >= 0; i--)
+//        {
+//            services_bxList.add(list.get(i));
+//            services_bxList.remove(i);
+//        }
+//        return services_bxList;
+//    }
+    
+    public void handleBxUpdate(ServiceResponse response)
+    {
+        if (response.getBody().getResult().equals("200"))
+        {
+            
+            handler.sendEmptyMessage(HttpAction.BXUPDATE_SUCCESS_MSGWHAT);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+    /*public void handleBxDelete(ServiceResponse response)
+    {
+        if (response.getBody().getResult().equals("200"))
+        {
+            
+            bx_delete_bz = 1;
+            
+            handler.sendEmptyMessage(HttpAction.BXDELETE_SUCCESS_MSGWHAT);
+            
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }*/
+    
+    public void handleBxDeleteALL(ServiceResponse response)
+    {
+        if (response.getBody().getResult().equals("200"))
+        {
+            
+            handler.sendEmptyMessage(HttpAction.BXDELETEALL_SUCCESS_MSGWHAT);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+    public static ServicesItem Josonparse_add(String response)
+    {
+//        ArrayList<ServicesItem> list0 = new ArrayList<ServicesItem>();
+        ServicesItem bx_property = new ServicesItem();
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        try
+        {
+            
+            JSONObject job = new JSONObject(response);
+            // job.get("result");
+            JSONObject jobObject = null;
+            if (null != job)
+            {
+                JSONObject joba = job.optJSONObject("data");
+                jobObject = joba;
+                // for (int i = 0; i < joba.length(); i++) {
+                
+                bx_property.setFwid(Integer.parseInt(jobObject.getString("id")));
+                bx_property.setFwzt(Integer.parseInt(jobObject.optString("repairstate")));
+                bx_property.setContent(jobObject.optString("content"));
+                bx_property.setStateTimeStr(jobObject.optString("stateTimeStr"));
+                bx_property.setPropertyallback(jobObject.optString("stateDesc"));
+                bx_property.setContent_pj(jobObject.optString("userComment"));
+                bx_property.setPf(Integer.parseInt(jobObject.optString("score")));
+                bx_property.setLxry(jobObject.optString("maintainPeople"));
+                bx_property.setLxryhm(jobObject.optLong("maintainPhone"));
+                JSONArray array = jobObject.optJSONArray("picStrList");
+                
+                if (null != array && array.length() > 0)
+                {
+                    ArrayList<String> arrayList = new ArrayList<String>();
+                    for (int x = 0; x < array.length(); x++)
+                    {
+                        
+                        arrayList.add(array.optString(x));
+                    }
+                    bx_property.setPicStrList(arrayList);
+                }
+                
+                bx_property.setVoicePath(jobObject.optString("voicePath"));
+                
+                // }
+                // a = Integer.parseInt(joba.optString("result"));
+                
+            }
+        }
+        catch (JSONException e)
+        {
+            // wyfwproperty = null;
+            e.printStackTrace();
+        }
+        return bx_property;
+    }
+    
+    public static HashMap<String, String> Josonparse_bxType(String response)
+    {
+        HashMap<String, String> map1 = new HashMap<String, String>();
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        try
+        {
+            
+            JSONObject job = new JSONObject(response);
+//            JSONObject jobObject = null;
+           
+           
+            if (null != job)
+            {
+              
+                JSONObject joba = job.optJSONObject("data");
+                JSONArray jbarry= joba.names();
+                for(int i=0;i<jbarry.length();i++){
+                   String name = jbarry.getString(i);
+                   if(joba.optString(name)!=null){
+                   map1.put(name, joba.optString(name));
+                   }
+                   
+                }
+                //jonson(joba);
+//            String x="";
+            }
+        }
+        catch (JSONException e)
+        {
+            // wyfwproperty = null;
+            e.printStackTrace();
+        }
+        
+        return map1;
+    }
+    
+//    private static void jonson(String joba)
+//    {
+//  
+//        StringBuffer jobb = new StringBuffer();
+//        
+//        int position=0;
+//
+//        char currentChar;
+//        for(int i=0;i<joba.length();i++){
+//            if(joba.charAt(i)!='{'&&joba.charAt(i)!='}'&&joba.charAt(i)!='"'){
+//                jobb.append(joba.charAt(i));
+//                
+//            }
+//        };
+//        
+//        
+//    }
+
+    public ArrayList<ServicesItem> Josonparse_bxList(String response)
+    {
+        // ArrayList<ServicesItem> list = null;
+        ArrayList<ServicesItem> list0 = new ArrayList<ServicesItem>();
+        // ArrayList<ServicesItem> list1 = new ArrayList<ServicesItem>();
+        // ArrayList<ServicesItem> list2 = new ArrayList<ServicesItem>();
+        if (StringUtils.isEmpty(response))
+        {
+            return list0;
+        }
+        // bx_property = new Wyfw();
+        try
+        {
+            
+            JSONObject job = new JSONObject(response);
+            JSONObject jobObject = null;
+            if (null != job)
+            {
+                
+                JSONArray joba = job.optJSONArray("data");
+                for (int i = 0; i < joba.length(); i++)
+                {
+                    ServicesItem bx_property = new ServicesItem();
+                    jobObject = joba.getJSONObject(i);
+//                    System.out.println("获取数据到了数据");
+                    bx_property.setFwid(Integer.parseInt(jobObject.getString("id")));
+                    bx_property.setFwzt(Integer.parseInt(jobObject.optString("repairstate")));
+                    bx_property.setContent(jobObject.optString("content"));
+                    bx_property.setStateTimeStr(jobObject.optString("stateTimeStr"));
+                    bx_property.setPropertyallback(jobObject.optString("stateDesc"));
+                    bx_property.setContent_pj(jobObject.optString("userComment"));
+                    bx_property.setPf(Integer.parseInt(jobObject.optString("score")));
+                    bx_property.setLxry(jobObject.optString("maintainPeople"));
+                    bx_property.setLxryhm(jobObject.optLong("maintainPhone"));
+                    JSONArray array = jobObject.optJSONArray("picStrList");
+                    ArrayList<String> arrayList = new ArrayList<String>();
+                    if (null != array)
+                    {
+                        for (int x = 0; x < array.length(); x++)
+                        {
+                            
+                            arrayList.add(array.optString(x));
+                        }
+                    }
+                    bx_property.setPicStrList(arrayList);
+                    bx_property.setVoicePath(jobObject.optString("voicePath"));
+                    list0.add(bx_property);
+                    
+                }
+                
+            }
+        }
+        catch (JSONException e)
+        {
+            // wyfwproperty = null;
+            e.printStackTrace();
+        }
+        
+        return list0;
+        
+    }
+    
+    public static ArrayList<ServicesItem> Josonparse_bxList_W(String response)
+    {
+        // ArrayList<ServicesItem> list = null;
+        ArrayList<ServicesItem> list0 = new ArrayList<ServicesItem>();
+        // ArrayList<ServicesItem> list1 = new ArrayList<ServicesItem>();
+        // ArrayList<ServicesItem> list2 = new ArrayList<ServicesItem>();
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        // bx_property = new Wyfw();
+        try
+        {
+            
+            JSONObject job = new JSONObject(response);
+            JSONObject jobObject = null;
+            if (null != job)
+            {
+                
+                JSONArray joba = job.optJSONArray("data");
+                for (int i = 0; i < joba.length(); i++)
+                {
+                    ServicesItem bx_property = new ServicesItem();
+                    jobObject = joba.getJSONObject(i);
+                    System.out.println("获取数据到了数据");
+                    bx_property.setFwid(Integer.parseInt(jobObject.getString("id")));
+                    bx_property.setFwzt(Integer.parseInt(jobObject.optString("repairstate")));
+                    bx_property.setContent(jobObject.optString("content"));
+                    bx_property.setStateTimeStr(jobObject.optString("stateTimeStr"));
+                    bx_property.setPropertyallback(jobObject.optString("stateDesc"));
+                    bx_property.setContent_pj(jobObject.optString("userComment"));
+                    bx_property.setPf(Integer.parseInt(jobObject.optString("score")));
+                    bx_property.setLxry(jobObject.optString("maintainPeople"));
+                    bx_property.setLxryhm(jobObject.optLong("maintainPhone"));
+                    JSONArray array = jobObject.optJSONArray("picStrList");
+                    ArrayList<String> arrayList = new ArrayList<String>();
+                    if (null != array)
+                    {
+                        for (int x = 0; x < array.length(); x++)
+                        {
+                            
+                            arrayList.add(array.optString(x));
+                        }
+                    }
+                    bx_property.setPicStrList(arrayList);
+                    bx_property.setVoicePath(jobObject.optString("voicePath"));
+                    list0.add(bx_property);
+                    
+                }
+                
+            }
+        }
+        catch (JSONException e)
+        {
+            // wyfwproperty = null;
+            e.printStackTrace();
+        }
+        
+        return list0;
+        
+    }
+    
+    public static ArrayList<ServicesItem> Josonparse_bxList_ALL(
+            String response, int x)
+    {
+        ArrayList<ServicesItem> list = null;
+        // ArrayList<ServicesItem> list0 = new ArrayList<ServicesItem>();
+        ArrayList<ServicesItem> list1 = new ArrayList<ServicesItem>();
+        ArrayList<ServicesItem> list2 = new ArrayList<ServicesItem>();
+        if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+        // bx_property = new Wyfw();
+        try
+        {
+            
+            JSONObject job = new JSONObject(response);
+            JSONObject jobObject = null;
+            if (null != job)
+            {
+                
+                JSONArray joba = job.optJSONArray("data");
+                for (int i = 0; i < joba.length(); i++)
+                {
+                    ServicesItem bx_property = new ServicesItem();
+                    jobObject = joba.getJSONObject(i);
+//                    System.out.println("获取数据到了数据");
+                    bx_property.setFwid(Integer.parseInt(jobObject.getString("id")));
+                    bx_property.setFwzt(Integer.parseInt(jobObject.optString("repairstate")));
+                    bx_property.setContent(jobObject.optString("content"));
+                    bx_property.setStateTimeStr(jobObject.optString("stateTimeStr"));
+                    bx_property.setPropertyallback(jobObject.optString("stateDesc"));
+                    bx_property.setContent_pj(jobObject.optString("userComment"));
+                    bx_property.setPf(Integer.parseInt(jobObject.optString("score")));
+                    bx_property.setLxry(jobObject.optString("maintainPeople"));
+                    bx_property.setLxryhm(jobObject.optLong("maintainPhone"));
+                    JSONArray array = jobObject.optJSONArray("picStrList");
+                    ArrayList<String> arrayList = new ArrayList<String>();
+                    if (null != array)
+                    {
+                        for (int h = 0; h < array.length(); h++)
+                        {
+                            
+                            arrayList.add(array.optString(h));
+                        }
+                    }
+                    bx_property.setPicStrList(arrayList);
+                    bx_property.setVoicePath(jobObject.optString("voicePath"));
+                    if (x == 1)
+                    {
+                        if (jobObject.optString("repairstate").equals("1")
+                                || jobObject.optString("repairstate")
+                                        .equals("2"))
+                        {
+                            list1.add(bx_property);
+                        }
+                    }
+                    else
+                    {
+                        if (jobObject.optString("repairstate").equals("3")
+                                || jobObject.optString("repairstate")
+                                        .equals("4"))
+                        {
+                            list2.add(bx_property);
+                        }
+                    }
+                }
+                
+            }
+        }
+        catch (JSONException e)
+        {
+            // wyfwproperty = null;
+            e.printStackTrace();
+        }
+        if (x == 1)
+        {
+            list = list1;
+        }
+        else
+        {
+            list = list2;
+        }
+        return list;
+        
+    }
+    
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        handler.sendEmptyMessage(SuperLogic.DATA_FORMAT_ERROR_MSGWHAT);
+    }
+    
+    @Override
+    public void clear()
+    {
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is)
+    {
+        switch (requestId)
+        {
+        
+            case RequestId.BX_CX:
+                handlegetBxListData(serviceRes);
+                break;
+            case RequestId.BX_CXALL:
+                handlegetBxListAllData(serviceRes);
+                break;
+            case RequestId.BX_ADD:
+                handleBxAdd(serviceRes);
+                break;
+//            case RequestId.BX_TYPE:
+//                handlegetBxType(serviceRes);
+//                break;
+            
+            /*  case RequestId.BX_DELETE:
+                  handleBxDelete(serviceRes);
+                  break;
+              */
+            default:
+                break;
+        }
+        
+    }
+    
+    public void stopRequest()
+    {
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+        }
+    }
+    
+}

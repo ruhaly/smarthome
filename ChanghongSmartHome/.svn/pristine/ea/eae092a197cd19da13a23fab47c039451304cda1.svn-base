@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/exitLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="48dip"
+    android:background="@drawable/title_top" >
+    <TextView
+        android:id="@+id/titleTop"
+        style="@style/TextViewTitleStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:layout_centerInParent="true"
+        android:text="@string/shequ_yellowpages" />
+    
+    <RelativeLayout
+        android:id="@+id/exitRelative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/exitLayout"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="13dip" >
+
+        <ImageView
+            android:id="@+id/exitImg1"
+            android:layout_width="15dip"
+            android:layout_height="20dip"
+            android:layout_centerVertical="true"
+            android:background="@drawable/drawable_expand_finish" />
+
+        <TextView
+            style="@style/TextViewTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/exitImg1"
+            android:layout_marginLeft="4dip"
+            android:layout_toRightOf="@id/exitImg1"
+            android:gravity="top"
+            android:text="@string/goback" />
+    </RelativeLayout>
+
+</RelativeLayout>

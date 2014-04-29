@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_Trans"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tip_dialog_bg"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tip_content_bg"
+            android:gravity="center"
+            android:padding="10dp" >
+
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/gray_5f5f5f"
+                android:textSize="@dimen/font_36" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical" >
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@color/color_Trans"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:textColor="@color/red"
+                android:textSize="@dimen/font_36" />
+
+            <View
+                android:id="@+id/divide"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/tip_slide" >
+            </View>
+
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@color/color_Trans"
+                android:gravity="center"
+                android:text="@string/confirm"
+                android:textColor="@color/gray_5f5f5f"
+                android:textSize="@dimen/font_36" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

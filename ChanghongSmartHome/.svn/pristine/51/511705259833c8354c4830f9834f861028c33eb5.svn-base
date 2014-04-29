@@ -1,0 +1,431 @@
+package com.changhong.smarthome.phone.sns.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Toast;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.sdk.widget.MCloudProgressDialog;
+import com.changhong.sdk.widget.PullRefreshListView;
+import com.changhong.sdk.widget.PullRefreshListView.NewScrollerListener;
+import com.changhong.sdk.widget.PullRefreshListView.OnRefreshListener;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.sns.Constant;
+import com.changhong.smarthome.phone.sns.adapter.InteractShareAdapter;
+import com.changhong.smarthome.phone.sns.bean.ShareBean;
+import com.changhong.smarthome.phone.sns.logic.IntShareLogic;
+import com.lidroid.xutils.HttpUtils;
+
+/**
+ * 私信界面<功能详细描述>
+ * 
+ * @author wanghonghong
+ * @version [版本号, 2014-1-26]
+ * @see [相关类/方法]
+ * @since [产品/模块版本]
+ */
+public class PrivateLetterActivity extends SuperActivity implements
+        OnItemClickListener, OnItemLongClickListener, OnRefreshListener
+
+{
+    private PullRefreshListView listView;
+    
+    private InteractShareAdapter adapter;
+    
+    private List<ShareBean> shareBeans = new ArrayList<ShareBean>();
+    
+    private HttpUtils httpUtils;
+    
+    private IntShareLogic snsLogic;
+    
+    private MCloudProgressDialog progressDialog;
+    
+    /**
+     * 一页请求的个数
+     */
+    private int pageSize = 20;
+    
+    /**
+     * 当前请求的是第几页(真正数据从1开始)
+     */
+    private int curPage = 1;
+    
+    /**
+     * 标记加载更多
+     */
+    private boolean isMore = false;
+    
+    /**
+     * 标记是否有加载更多请求
+     */
+    private boolean isLoadingMore = false;
+    
+    /**
+     * 标记是否有更多
+     */
+    private boolean hasMore = true;
+    
+    /**
+     * 删除的是当前list的第几个item
+     */
+    private int deletePos;
+    
+    private int totalNum;
+    
+    private static int MODE = MODE_PRIVATE;//定义访问模式为私有模式
+    
+    private static final String PREFERENCE_NAME = "private_letter";//设置保存时的文件的名称
+    
+    /**
+     * lisView滑动加载监听
+     * @return
+     */
+    public NewScrollerListener createScroller()
+    {
+        NewScrollerListener scroller = new NewScrollerListener()
+        {
+            private boolean isLoadMoreFile = false;
+            
+            @Override
+            public void newScrollChanged(AbsListView view, int scrollState)
+            {
+                if ((scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING)
+                        && isLoadMoreFile)
+                {
+                    
+                    startToLoadMore();
+                }
+            }
+            
+            @Override
+            public void newScroll(AbsListView view, int firstVisibleItem,
+                    int visibleItemCount, int totalItemCount)
+            {
+                isLoadMoreFile = (firstVisibleItem + visibleItemCount == totalItemCount) ? true
+                        : false;
+            }
+        };
+        return scroller;
+    }
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.private_letter);
+        initView();
+        adapter = new InteractShareAdapter(PrivateLetterActivity.this,
+                shareBeans);
+        listView.setAdapter(adapter);
+        snsLogic = IntShareLogic.getInstance();
+        SharedPreferences sPreferences = getSharedPreferences(PREFERENCE_NAME,
+                MODE);
+        SharedPreferences.Editor editor = sPreferences.edit();//调用SharedPreferences.Editor方法对SharedPreferences进行修改
+        //用户Id
+        editor.putString("UserId", Constant.UserId);//往editor对象塞值
+        //当前是否有新私信
+        editor.putBoolean("statue", false);
+        editor.commit();
+        if (null == progressDialog)
+        {
+            progressDialog = new MCloudProgressDialog(
+                    PrivateLetterActivity.this,
+                    getResources().getString(R.string.loading));
+        }
+        progressDialog.show();
+        curPage = 1;
+        
+        getDynamicList(String.valueOf(Constant.PRIVATE_RANGE),
+                "",
+                curPage,
+                pageSize,
+                -1);
+    }
+    
+    private void initView()
+    {
+        listView = (PullRefreshListView) findViewById(R.id.share_list);
+        listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
+        listView.setRefreshable(true);
+        listView.setOnRefreshListener(this);
+        listView.setNewScrollerListener(createScroller());
+    }
+    
+    /**
+     * 获取动态列表
+     * @param userId
+     * @param themeType
+     * @param pageIndex
+     * @param pageSize
+     */
+    private void getDynamicList(String themeType, String themeSubType,
+            int pageIndex, int pageSize, int pos)
+    {
+        Log.d(TAG, "getDynamicList----start>");
+        
+        httpUtils = new HttpUtils();
+        snsLogic.setData(mHandler);
+        snsLogic.requestGetDynamicInfo(pos,
+                themeType,
+                themeSubType,
+                pageIndex,
+                pageSize,
+                httpUtils);
+    }
+    
+    /**
+     * 刷新
+     */
+    private void refresh()
+    {
+        curPage = 1;
+        isMore = false;
+        isLoadingMore = true;
+        hasMore = true;
+        getDynamicList(String.valueOf(Constant.PRIVATE_RANGE),
+                "",
+                curPage,
+                pageSize,
+                -1);
+        // 网络不可用时直接返回
+        //        if (!isNetworkAvailable())
+        //        {
+        //            closeDialog(refreshDialog);
+        //            epContainer.onRefreshComplete();
+        //            return;
+        //        }
+    }
+    
+    /**
+     * 加载更多
+     */
+    protected void startToLoadMore()
+    {
+        if (hasMore)
+        {
+            if (!isLoadingMore)
+            {
+                
+                listView.showLoading();
+                curPage = curPage + 1;
+                isLoadingMore = true;
+                isMore = true;
+                Log.d(TAG, "startToLoadMore--->");
+                getDynamicList("", "", curPage, pageSize, -1);
+            }
+        }
+        
+        // 处理云端滑动获取更多
+        
+        // 网络不可用时直接返回
+        //        if (!isNetworkAvailable())
+        //        {
+        //            return;
+        //        }
+    }
+    
+    @Override
+    public void initData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
+            long arg3)
+    {
+        // TODO Auto-generated method stub
+        
+        deletePos = arg2 - 1;
+        
+        showAlertDialog(0,
+                getString(R.string.tip),
+                getString(R.string.delete_tip_private),
+                null,
+                new DialogInterface.OnClickListener()
+                {
+                    
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        // TODO Auto-generated method stub
+                        deleteShare(shareBeans.get(deletePos).getId());
+                    }
+                },
+                DEFAULT_BTN,
+                null,
+                true,
+                false);
+        return false;
+    }
+    
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+    {
+        // TODO Auto-generated method stub
+        Intent intent = new Intent();
+        
+        ShareBean shareBean = shareBeans.get(arg2 - 1);
+        String whichInfo = shareBean.getThemeCodeId();
+        
+        //判断是活动/二手信息/或者其他
+        if (whichInfo.equals(Constant.DYNAMIC_TYPE_ID_SECOND))
+        {
+            intent.setClass(PrivateLetterActivity.this,
+                    ShareBusinessActivity.class);
+        }
+        else
+        {
+            intent.setClass(PrivateLetterActivity.this,
+                    ShareOriogionalActivity.class);
+        }
+        
+        intent.putExtra("whichInfo", whichInfo);
+        intent.putExtra("themeId", shareBean.getId());
+        intent.putExtra("codeId", shareBean.getThemeCodeId());
+        intent.putExtra("replyCount", String.valueOf(shareBean.getReplyCount()));
+        intent.putExtra("nickName", shareBean.getNickName());
+        intent.putExtra("userIcon", shareBean.getCreatorPicUrl());
+        intent.putExtra("postType", shareBean.getPostType());
+        intent.putExtra("userId", shareBean.getCreatorId());
+        intent.putExtra("rangeType", shareBean.getThemeType());
+        startActivity(intent);
+        
+    }
+    
+    @Override
+    public void onRefresh()
+    {
+        // TODO Auto-generated method stub
+        refresh();
+    }
+    
+    /**
+     * 删除请求
+     * @param themeOrReplyId
+     * @param delType
+     */
+    private void deleteShare(String themeOrReplyId)
+    {
+        if (null == progressDialog)
+        {
+            progressDialog = new MCloudProgressDialog(
+                    PrivateLetterActivity.this,
+                    getResources().getString(R.string.common_pagetip_deleting));
+        }
+        progressDialog.show();
+        httpUtils = new HttpUtils();
+        snsLogic.setData(mHandler);
+        snsLogic.requestDelete(themeOrReplyId,
+                Constant.DELETE_PRIVATE,
+                httpUtils);
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        // TODO Auto-generated method stub
+        super.handleMsg(msg);
+        if (null != progressDialog)
+        {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+        if (msg.arg1 != -1)
+        {
+            return;
+        }
+        switch (msg.what)
+        {
+            case Constant.GET_DYNAMIC_INFO_LIST_SUCCESS:
+                listView.onRefreshComplete();
+                listView.showLoadFinish();
+                isLoadingMore = false;
+                ShareBean shareBean = (ShareBean) msg.obj;
+                List<ShareBean> sBeans = shareBean.getShareBeans();
+                totalNum = shareBean.getTotalNum();
+                Log.d(TAG, "totalNum---->" + totalNum);
+                
+                //                if (null == sBeans || sBeans.size() == 0)
+                //                {
+                //                    hasMore = false;
+                //                }
+                if (!isMore)
+                {
+                    shareBeans.clear();
+                }
+                shareBeans.addAll(sBeans);
+                if (shareBeans.size() < totalNum)
+                {
+                    hasMore = true;
+                }
+                else
+                {
+                    hasMore = false;
+                }
+                adapter.notifyDataSetChanged();
+                break;
+            case Constant.GET_DYNAMIC_INFO_LIST_FAILED:
+                listView.onRefreshComplete();
+                listView.showLoadFinish();
+                isLoadingMore = false;
+                Toast.makeText(PrivateLetterActivity.this,
+                        getResources().getString(R.string.req_new_friend_failed),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                break;
+            case Constant.DELETE_SUCCESS:
+                Toast.makeText(PrivateLetterActivity.this,
+                        getResources().getString(R.string.delete_success),
+                        Toast.LENGTH_SHORT).show();
+                shareBeans.remove(deletePos);
+                adapter.notifyDataSetChanged();
+                
+                break;
+            case Constant.DELETE_FAILED:
+                Toast.makeText(PrivateLetterActivity.this,
+                        getResources().getString(R.string.delete_failed),
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case SuperLogic.CONNECT_ERROR_MSGWHAT:
+                listView.onRefreshComplete();
+                listView.showLoadFinish();
+                isLoadingMore = false;
+                break;
+            default:
+                break;
+        }
+    }
+    
+}

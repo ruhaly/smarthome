@@ -1,0 +1,115 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-3-27 下午8:24:20 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.property.activity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.property.adapter.MyIntegrationAdapter;
+
+public class MyIntegrationExchangeActivity extends SuperActivity
+{
+    private TextView topTitle;
+    
+    private ListView listView;
+    
+    private List<Map<String, Object>> data;
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.my_integration_exchange);
+        initWidgets();
+    }
+    
+    /**
+     * 
+     */
+    private void initWidgets()
+    {
+        topTitle = (TextView) findViewById(R.id.intergrationtitletext);
+        topTitle.setText("积分兑换");
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.relativeLayout1);
+        rl.setVisibility(View.GONE);
+        
+        listView = (ListView) findViewById(R.id.listView);
+        data = getData();
+        MyIntegrationAdapter adapter = new MyIntegrationAdapter(this, data);
+        listView.setAdapter(adapter);
+        
+        ImageView exitImg1 = (ImageView) findViewById(R.id.exitImg1);
+        
+        exitImg1.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                finish();
+            }
+        });
+        
+    }
+    
+    /**
+     * @return
+     */
+    private List<Map<String, Object>> getData()
+    {
+        List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+        
+        for (int i = 0; i < 10; i++)
+        {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("goodsName", "黄金脆皮鸡");
+            map.put("needIntegration", "10000");
+            map.put("validityTimeFrom", "2014.3.29");
+            map.put("validityTimeTo", "2014.4.23");
+            map.put("goodsImage", "goodsImage");
+            data.add(map);
+        }
+        return data;
+    }
+    
+    @Override
+    public void initData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+}

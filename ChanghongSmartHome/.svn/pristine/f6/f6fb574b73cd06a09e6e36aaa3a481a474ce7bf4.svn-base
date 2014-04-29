@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/order_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/order_item_bg">
+
+    <ImageView
+        android:id="@+id/news_item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="0dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="0dip" />
+
+    <TextView
+        android:id="@+id/news_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/news_item_icon"
+        android:layout_marginLeft="10dip"
+        android:layout_toRightOf="@+id/news_item_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="aaaaaaaaaaaaaaaaaa"
+        android:textColor="@color/sub_text_color"
+        android:textSize="24sp" />
+    
+     <RatingBar 
+        android:id="@+id/order_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/shopping_rating_bar"
+        android:layout_alignTop="@+id/news_item_name"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:numStars="5"
+        android:rating="5" 
+    	android:stepSize="1"
+        />
+     
+     <TextView
+        android:id="@+id/news_item_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/news_item_name"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_toRightOf="@+id/news_item_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="dddddddddddddddddddddddddddddddddddd"
+        android:textColor="@color/ordermanager_list_item_time_bg"
+        android:textSize="18sp" />
+     
+
+    <TextView
+        android:id="@+id/news_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/news_item_price_1"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_toRightOf="@+id/news_item_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="100"
+        android:textColor="@color/ordermanager_list_item_time_bg"
+        android:textSize="18sp" />
+    
+    <TextView
+        android:id="@+id/news_item_price_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_toRightOf="@+id/news_item_icon"
+        android:layout_alignParentBottom="true"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="88"
+        android:textColor="@color/red"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/news_item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/news_item_price"
+        android:layout_marginLeft="0dip"
+        android:layout_marginRight="10dip"
+        android:layout_alignParentRight="true"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="立即支付"
+        android:textColor="@color/red"
+        android:visibility="visible"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/news_item_haspay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/order_item_pay"
+        android:visibility="gone"/>
+
+</RelativeLayout>

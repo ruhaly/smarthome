@@ -1,0 +1,134 @@
+package com.changhong.smarthome.phone.store.logic.bean;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.util.Log;
+
+public class GoodsDetailInfo implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+    private String id;//  number  商品ID
+    private String spId;//    string  所属SPID
+    private String name;//    string  商品名称
+    private List<String> picURL;//  string[]    商品图片列表
+    private double actualPrice;// int  商品实际价格
+    private String desc ;//   string  商品描述
+    private int stock;//  string  商品库存
+    private String address;//地址
+    
+    /**
+     * [保存到数据库的图片地址  url1,url2,url3]<BR>
+     * [功能详细描述]
+     * @return
+     */
+    public String getPicurlByList()
+    {
+        String picurlByDB = "";
+        if (picURL != null && picURL.size() > 0)
+        {
+            for (int i = 0; i < picURL.size(); i++)
+            {
+                picurlByDB += (picURL.get(i) + ",");
+                
+            }
+        }
+        picurlByDB = picurlByDB.substring(0, picurlByDB.length() - 1);
+        Log.d("GoodsDetailInfo", "getPicurlByDB | picurlByDB = " + picurlByDB);
+        return picurlByDB;
+    }
+    
+    /**
+     * [根据从数据库获取的字段，生成图片list]<BR>
+     * [功能详细描述]
+     * @param picurlFromDB
+     */
+    public void setListByDB(String picurlFromDB)
+    {
+        if (picurlFromDB == null || picurlFromDB.equals(""))
+        {
+            Log.d("GoodsDetailInfo", "setPicurlByDB | picurlFromDB == NULL ");
+            return;
+        }
+        String[] temp = picurlFromDB.split(",");
+        if (temp != null)
+        {
+            
+            List<String> tempList = new ArrayList<String>();
+            
+            for (int i = 0; i < temp.length; i++)
+            {
+                tempList.add(temp[i]);
+            }
+            picURL = tempList;
+        }
+        
+    }
+    
+    public String getAddress()
+    {
+        return address;
+    }
+    public void setAddress(String address)
+    {
+        this.address = address;
+    }
+    public String getId()
+    {
+        return id;
+    }
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+    public String getSpId()
+    {
+        return spId;
+    }
+    public void setSpId(String spId)
+    {
+        this.spId = spId;
+    }
+    public String getName()
+    {
+        return name;
+    }
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+    public List<String> getPicURL()
+    {
+        return picURL;
+    }
+    public void setPicURL(List<String> picURL)
+    {
+        this.picURL = picURL;
+    }
+    public double getActualPrice()
+    {
+        return actualPrice;
+    }
+    public void setActualPrice(double actualPrice)
+    {
+        this.actualPrice = actualPrice;
+    }
+    public String getDesc()
+    {
+        return desc;
+    }
+    public void setDesc(String desc)
+    {
+        this.desc = desc;
+    }
+    public int getStock()
+    {
+        return stock;
+    }
+    public void setStock(int stock)
+    {
+        this.stock = stock;
+    }
+
+}

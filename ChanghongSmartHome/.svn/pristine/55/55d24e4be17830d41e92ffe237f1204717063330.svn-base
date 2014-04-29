@@ -1,0 +1,63 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.smarthome.phone.R;
+
+public class FeedbackActivity extends SuperActivity {
+
+	private EditText editFeedBack;
+
+	private  TextView feedBack_Submit;
+
+	private ImageView back_list;
+
+	private TextView feed_setting;
+
+	@Override
+	public void onCreate(Bundle paramBundle) {
+		// TODO Auto-generated method stub
+		super.onCreate(paramBundle);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.feed_back);
+
+		editFeedBack = (EditText) findViewById(R.id.feedBackText);
+		feedBack_Submit = (TextView) findViewById(R.id.submit_feedBack);
+		feed_setting = (TextView) findViewById(R.id.suggestion_feedback);
+		back_list = (ImageView) findViewById(R.id.img_back);
+		
+		back_list.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+	}
+
+
+	@Override
+	public void initData() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void initLayout(Bundle paramBundle) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void clearData() {
+		// TODO Auto-generated method stub
+
+	}
+
+}

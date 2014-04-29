@@ -1,0 +1,38 @@
+package com.changhong.foundation.activity;
+
+import android.os.Bundle;
+import android.view.View;
+
+import com.changhong.foundation.R;
+import com.changhong.sdk.activity.SuperActivity;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class PersonInfoActivity extends SuperActivity
+{
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.personinfo_layout);
+        ViewUtils.inject(this);
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    @OnClick(R.id.img_back)
+    public void imgBackClick(View view)
+    {
+        finish();
+    }
+}

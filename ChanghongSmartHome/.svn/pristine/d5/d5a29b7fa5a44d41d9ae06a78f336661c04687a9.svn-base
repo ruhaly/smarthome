@@ -1,0 +1,292 @@
+package com.changhong.smarthome.phone.cinema;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Message;
+import android.util.Log;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.sdk.http.ContinueFTP;
+import com.changhong.sdk.http.ContinueFTP.UploadStatus;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.adapter.LocalCinemaAdapter;
+import com.changhong.smarthome.phone.cinema.entry.Cinema;
+import com.changhong.smarthome.phone.cinema.entry.LocalVideoInfo;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.logic.AddShareSuccessLogic;
+import com.changhong.smarthome.phone.cinema.logic.GetUploadInfoLogic;
+import com.changhong.smarthome.phone.cinema.logic.MediaShareFtpInfo;
+
+public class UploadingActivity extends SuperActivity implements OnClickListener
+{
+    ProgressDialog progressDialog;
+    private static final String TAG = "UploadingActivity";
+    
+    LocalCinemaAdapter localAdapter;
+    
+    public static List<LocalVideoInfo> allVideoList = new ArrayList<LocalVideoInfo>();
+    
+    MediaShareFtpInfo ftpInfo = null;
+    
+    private GridView gridviews;
+    
+    private TextView titletext;
+    
+    private ImageView exitImg1;
+    
+    private TextView exitImg2;//完成按钮
+    
+    private GetUploadInfoLogic getUploadInfoLogic;// 上传logic
+    
+    private AddShareSuccessLogic addShareSuccessLogic;
+    
+    int gridViewPosition = -1;
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.uploading);
+        
+        initWidgets();
+        
+        // scan videos
+        getVideoFile(allVideoList, Environment.getExternalStorageDirectory());
+        
+        if (!allVideoList.isEmpty())
+        {
+            Log.i(TAG, "allVideoList.size():" + allVideoList.size());
+            localAdapter = new LocalCinemaAdapter(this, allVideoList);
+            gridviews.setAdapter(localAdapter);
+            gridviews.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id)
+                {
+                    gridViewPosition = position;
+                    localAdapter.setIsSelected(true,position);
+                }
+                
+            });
+        }
+        
+    }
+    
+    private void initWidgets()
+    {
+        titletext = (TextView) findViewById(R.id.titletext);
+        exitImg2 = (TextView) findViewById(R.id.exitImg2);
+        exitImg1 = (ImageView) findViewById(R.id.exitImg1);
+        gridviews = (GridView) findViewById(R.id.gridviews);
+        getUploadInfoLogic.setData(mHandler);
+        getUploadInfoLogic.requestPostUploadInfo();
+        
+        int titleLogo = this.getIntent().getIntExtra("titleLogo", 0);
+        
+        if (titleLogo == R.id.uploading)
+        {
+            titletext.setText("请选择视频");
+        }
+        exitImg1.setOnClickListener(this);
+        exitImg2.setClickable(true);
+        exitImg2.setOnClickListener(this);
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        super.onClick(v);
+        switch (v.getId())
+        {
+            case R.id.exitImg1:
+                finish();
+                break;
+            case R.id.exitImg2:
+                //先判断 ，然后开始上传视频
+                //判断有无视频
+                if (allVideoList == null)
+                {
+                    showToast("sorry ,there is no videos on your sdcard");
+                    return;
+                }
+                
+                //判断与服务器链接是否良好
+                if (ftpInfo == null)
+                {
+                    Log.i(TAG, "------ftpInfo ==null ,cannot upload movie");
+                    showToast("sorry ,cannot get upload info,please try again later");
+                    return;
+                }
+                //有无选中一个视频
+                if (gridViewPosition == -1)
+                {
+                    showToast("Please choose at least one video");
+                    return;
+                }
+                progressDialog =   ProgressDialog.show(this, "uploading", "Please wait.....");
+                LocalVideoInfo video = (LocalVideoInfo) localAdapter.getItem(gridViewPosition);
+                final UploadTask task = new UploadTask(video, ftpInfo, this,
+                        addShareSuccessLogic,progressDialog);
+                DialogInterface.OnDismissListener uploadDissmiss = new DialogInterface.OnDismissListener()
+                {
+                    @Override
+                    public void onDismiss(DialogInterface dialog)
+                    {
+                        task.cancel(true);
+                    }
+                };
+               
+                progressDialog.setCancelable(true);
+                if (null != uploadDissmiss)
+                {
+                    progressDialog.setOnDismissListener(uploadDissmiss);
+                }
+                task.execute();
+                break;
+            default:
+                break;
+        }
+        
+    }
+    
+    private void getVideoFile(final List<LocalVideoInfo> list, File file)
+    {// 获得视频文件  
+    
+        file.listFiles(new FileFilter()
+        {
+            
+            @Override
+            public boolean accept(File file)
+            {
+                // sdCard找到视频名称  
+                String name = file.getName();
+                int i = name.indexOf('.');
+                if (i != -1)
+                {
+                    name = name.substring(i);
+                    if (name.equalsIgnoreCase(".mp4")
+                            || name.equalsIgnoreCase(".3gp")
+                            || name.equalsIgnoreCase(".wmv")
+                            || name.equalsIgnoreCase(".ts")
+                            || name.equalsIgnoreCase(".rmvb")
+                            || name.equalsIgnoreCase(".mov")
+                            || name.equalsIgnoreCase(".m4v")
+                            || name.equalsIgnoreCase(".avi")
+                            || name.equalsIgnoreCase(".m3u8")
+                            || name.equalsIgnoreCase(".3gpp")
+                            || name.equalsIgnoreCase(".3gpp2")
+                            || name.equalsIgnoreCase(".mkv")
+                            || name.equalsIgnoreCase(".flv")
+                            || name.equalsIgnoreCase(".divx")
+                            || name.equalsIgnoreCase(".f4v")
+                            || name.equalsIgnoreCase(".rm")
+                            || name.equalsIgnoreCase(".asf")
+                            || name.equalsIgnoreCase(".ram")
+                            || name.equalsIgnoreCase(".mpg")
+                            || name.equalsIgnoreCase(".v8")
+                            || name.equalsIgnoreCase(".swf")
+                            || name.equalsIgnoreCase(".m2v")
+                            || name.equalsIgnoreCase(".asx")
+                            || name.equalsIgnoreCase(".ra")
+                            || name.equalsIgnoreCase(".ndivx")
+                            || name.equalsIgnoreCase(".xvid"))
+                    {
+                        LocalVideoInfo vi = new LocalVideoInfo();
+                        vi.setDisplayName(file.getName());
+                        vi.setPath(file.getAbsolutePath());
+                        list.add(vi);
+                        return true;
+                    }
+                }
+                else if (file.isDirectory())
+                {
+                    getVideoFile(list, file);
+                }
+                return false;
+            }
+        });
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        Log.i(TAG, "----------msg.what:" + msg.what);
+        switch (msg.what)
+        {
+            case HttpAction.FTP_UPLOAD_INFO_SUCCESS_GET:
+                Log.i(TAG, "001----successful get ftp upload server info");
+                ftpInfo = getUploadInfoLogic.ftpInfo;
+                if(ftpInfo==null){
+                    Log.i(TAG, "001---ftpInfo==null error happended");
+                }else{
+                    Log.i(TAG, "001---ftpInfo!=null ");
+                }
+                break;
+            case DATA_FORMAT_ERROR_MSGWHAT:
+                showToast("获取上传信息失败");
+                break;
+        }
+        super.handleMsg(msg);
+        
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // getMenuInflater().inflate(R.menu.activity_cinema_start, menu);
+        return true;
+    }
+    
+    @Override
+    public void initData()
+    {
+        if (null != GetUploadInfoLogic.getInstance())
+        {
+            getUploadInfoLogic = GetUploadInfoLogic.getInstance();
+        }
+        if (null != AddShareSuccessLogic.getInstance())
+        {
+            addShareSuccessLogic = AddShareSuccessLogic.getInstance();
+        }
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public void uploadFinished()
+    {
+        dismissDialog();
+    }
+    
+}

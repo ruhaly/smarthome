@@ -1,0 +1,399 @@
+package com.changhong.smarthome.phone.store.logic;
+
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.Message;
+import android.util.DisplayMetrics;
+
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+import com.changhong.smarthome.phone.store.entity.StoreConstant;
+import com.changhong.smarthome.phone.store.entity.StoreRequestId;
+import com.changhong.smarthome.phone.store.logic.bean.GoodsDetailInfo;
+import com.changhong.smarthome.phone.store.logic.bean.OrderInfoBean;
+import com.changhong.smarthome.phone.store.logic.bean.OrderInfoGroup;
+import com.changhong.smarthome.phone.store.logic.bean.PagerBean;
+import com.changhong.smarthome.phone.store.tools.StringUtil;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+@SuppressLint("SimpleDateFormat")
+public class OrderOldestLogic extends SuperLogic
+{
+    
+    private HttpHandler<String> httpHanlder;
+    
+    private Context mContext;
+    
+    public int screenHeight;
+    
+    public int screenWidth;
+    
+//    private BaseAccountInfo accountInfo;
+    
+    private static volatile OrderOldestLogic instance;
+    
+    public static OrderOldestLogic getInstance(Context context)
+    {
+        if (instance == null)
+        {
+            synchronized (MainLogic.class)
+            {
+                if (instance == null)
+                {
+                    instance = new OrderOldestLogic(context);
+                }
+            }
+        }
+        return instance;
+    }
+    
+    private OrderOldestLogic(Context context)
+    {
+        mContext = context;
+        getScreenSize();
+//        accountInfo = MainLogic.getInstance(context).getBaseAccountInfo();
+        
+    }
+    
+    private void getScreenSize()
+    {
+        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
+    }
+    
+    /**
+     * [订单查询]<BR>
+     * [功能详细描述]
+     * @param orderType    1 近期三个月 2 除近期三个月再往前推就个月
+     * @param pagerBean    分页信息
+     */
+    public void sendFindOrdersReq(String orderType, PagerBean pager, int mode,int state,
+            HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("orderType", orderType);
+        serviceInfo.put("state", state);
+        serviceInfo.put("pager", pager);
+        serviceInfo.put("accountInfo", LoginLogic.getInstance().getBaseAccountInfo());
+        fixRequestParams(params, serviceInfo, "findWaresOrders", "sc", "sc", "4100");//findOrders
+        //ACTION_LOGIN没有用到
+        int reqId = StoreRequestId.REQUESTID_GET_OLD_FINDORDERS;
+        
+        if (mode == 2)
+        {
+            reqId = StoreRequestId.REQUESTID_GET_OLD_MORE_FINDORDERS;
+        }
+        
+        httpHanlder = HttpSenderUtils.sendMsgImpl("ACTION",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                reqId,
+                this,
+                false,
+                StoreConstant.URL_STORE,
+                -1);
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is, int pos)
+    {
+        // TODO Auto-generated method stub
+        switch (requestId)
+        {
+            case StoreRequestId.REQUESTID_GET_OLD_FINDORDERS:
+                handleGetOldFindOrders(serviceRes);
+                break;
+            case StoreRequestId.REQUESTID_GET_OLD_MORE_FINDORDERS:
+                handleGetOldMoreFindOrders(serviceRes);
+                break;
+        }
+    }
+    
+    /**
+     * 处理查询历史订单的响应
+     * @param response
+     */
+    public void handleGetOldFindOrders(ServiceResponse response)
+    {
+        Message message = new Message();
+        if (StringUtil.isNotEmpty(response.getBody().getResult()))
+        {
+            if (response.getBody().getResult().equals("200"))
+            {
+                List<OrderInfoBean> dynamicBeans = parseGetFindOrdersRsp(response.getBody()
+                        .getParamsString());
+                
+                if (null != dynamicBeans)
+                {
+                    message.what = StoreConstant.GET_FINDORDERS_OLD_SUCCESS;
+                    message.obj = dynamicBeans;
+                }
+                else
+                {
+                    message.what = StoreConstant.GET_FINDORDERS_OLD_FAILED;
+                    
+                }
+            }
+            else
+            {
+                message.what = StoreConstant.GET_FINDORDERS_OLD_FAILED;
+            }
+            handler.sendMessage(message);
+        }
+    }
+    
+    /**
+     * 处理查询更多历史订单的响应
+     * @param response
+     */
+    public void handleGetOldMoreFindOrders(ServiceResponse response)
+    {
+        Message message = new Message();
+        if (StringUtil.isNotEmpty(response.getBody().getResult()))
+        {
+            if (response.getBody().getResult().equals("200"))
+            {
+                List<OrderInfoBean> dynamicBeans = parseGetFindOrdersRsp(response.getBody()
+                        .getParamsString());
+                
+                if (null != dynamicBeans)
+                {
+                    message.what = StoreConstant.GET_FINDORDERS_OLD_GETMORE_SUCCESS;
+                    message.obj = dynamicBeans;
+                }
+                else
+                {
+                    message.what = StoreConstant.GET_FINDORDERS_OLD_GETMORE_FAILED;
+                    
+                }
+            }
+            else
+            {
+                message.what = StoreConstant.GET_FINDORDERS_OLD_GETMORE_FAILED;
+            }
+            handler.sendMessage(message);
+        }
+    }
+    
+    /**
+     * 解析搜索商品信息返回 
+     */
+    public ArrayList<OrderInfoBean> parseGetFindOrdersRsp(String response)
+    {
+        if (StringUtil.isEmpty(response))
+        {
+            return null;
+        }
+        ArrayList<OrderInfoBean> list = new ArrayList<OrderInfoBean>();
+        try
+        {
+            JSONObject job = new JSONObject(response);
+            JSONObject jsonObject = null;
+            if (null != job)
+            {
+                JSONArray joa = job.optJSONArray("dataList");
+                
+                if (null != joa && joa.length() > 0)
+                {
+                    for (int i = 0; i < joa.length(); i++)
+                    {
+                        jsonObject = joa.optJSONObject(i);
+                        OrderInfoBean orderInfoBean = new OrderInfoBean();
+                        orderInfoBean.setAccountId(jsonObject.optString("accountId"));
+                        orderInfoBean.setIsDated(Integer.parseInt(jsonObject.optString("isDated")));
+                        orderInfoBean.setOrderId(jsonObject.optString("orderId"));
+                        orderInfoBean.setOrderType(Integer.parseInt(jsonObject.optString("orderType")));
+                        orderInfoBean.setPayTime(jsonObject.optString("payTime"));
+                        orderInfoBean.setPhoneNum(jsonObject.optString("phoneNum"));
+                        orderInfoBean.setPrice(Double.parseDouble(jsonObject.optString("price")));
+                        orderInfoBean.setState(Integer.parseInt(jsonObject.optString("state")));
+                        
+                        orderInfoBean.setTotalNum(Integer.parseInt(jsonObject.optString("totalNum")));
+                        orderInfoBean.setTotalPrice(Double.parseDouble(jsonObject.optString("totalPrice")));
+                        orderInfoBean.setUsed(Integer.parseInt(jsonObject.optString("used")));
+                        orderInfoBean.setUserId(jsonObject.optString("userId"));
+                        orderInfoBean.setSpId(jsonObject.optString("spId"));
+                        
+                        JSONObject goodsinfoobj = jsonObject.getJSONObject("wares");
+                        if(goodsinfoobj != null)
+                        {
+                            GoodsDetailInfo goodsDetailInfo = new GoodsDetailInfo();
+                            goodsDetailInfo.setId(goodsinfoobj.optString("waresId"));
+                            goodsDetailInfo.setOriginalPrice(Double.parseDouble(goodsinfoobj.optString("originalPrice")));
+                            goodsDetailInfo.setSalePrice(Double.parseDouble(goodsinfoobj.optString("salePrice")));
+                            goodsDetailInfo.setScore(Integer.parseInt(goodsinfoobj.optString("score")));
+                            goodsDetailInfo.setDesc(goodsinfoobj.optString("descriptions"));
+                            goodsDetailInfo.setName(goodsinfoobj.optString("waresName"));
+                            
+                            JSONArray urlArray = goodsinfoobj.optJSONArray("picUrls");
+                            if (null != urlArray && urlArray.length() > 0)
+                            {
+                                List<String> picList = new ArrayList<String>();
+                                for (int j = 0; j < urlArray.length(); j++)
+                                {
+                                    picList.add(urlArray.getString(j));
+                                }
+                                goodsDetailInfo.setPicURL(picList);
+                            }
+                            orderInfoBean.setGoodsDetailInfo(goodsDetailInfo);
+                        }
+                        
+                        
+                        list.add(orderInfoBean);
+                    }
+                    
+                }
+                
+            }
+        }
+        catch (Exception e)
+        {
+            //            list = null;
+            e.printStackTrace();
+        }
+//        ArrayList<OrderInfoGroup> gList = new ArrayList<OrderInfoGroup>();
+//        
+//        HashMap<String, List<OrderInfoBean>> map = GroupingByTime(list);
+//        Set<String> keys = map.keySet();
+//        OrderInfoGroup oGroup;
+//        if (keys != null)
+//        {
+//            Iterator<String> iterator = keys.iterator();
+//            while (iterator.hasNext())
+//            {
+//                String key = iterator.next();
+//                List<OrderInfoBean> value = map.get(key);
+//                oGroup = new OrderInfoGroup();
+//                oGroup.guoupname = key;
+//                oGroup.sList = value;
+//                gList.add(oGroup);
+//            }
+//        }
+//        
+//        //按时间排序
+//        Collections.sort(gList, new Comparator<OrderInfoGroup>()
+//        {
+//            @Override
+//            public int compare(OrderInfoGroup arg0, OrderInfoGroup arg1)
+//            {
+//                
+//                String user0 = arg0.guoupname;
+//                String user1 = arg1.guoupname;
+//                boolean flag = false;
+//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+//                        "yyyy-MM");
+//                try
+//                {
+//                    Date d1 = simpleDateFormat.parse(user0);
+//                    Date d2 = simpleDateFormat.parse(user1);
+//                    if (d2.getTime() > d1.getTime())
+//                    {
+//                        flag = true;
+//                    }
+//                }
+//                catch (ParseException e)
+//                {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+//                return flag == true ? 1 : -1;
+//            }
+//        });
+        return list;
+    }
+    
+//    private HashMap<String, List<OrderInfoBean>> GroupingByTime(
+//            List<OrderInfoBean> temp)
+//    {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+//        HashMap<String, List<OrderInfoBean>> map = new HashMap<String, List<OrderInfoBean>>();
+//        OrderInfoBean sBean = null;
+//        //按时间分组
+//        for (int i = 0; i < temp.size(); i++)
+//        {
+//            sBean = temp.get(i);
+//            String ordertime ="";// sBean.getOrderTime();
+//            
+//            try
+//            {
+//                Date date = sdf.parse(ordertime);
+//                //                String dayofweek = CommonUtil.getWeekOfDate(date);
+//                
+//                ordertime = sdf.format(date);
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTime(date);
+//                System.out.println("ordertime" + ordertime);
+//                int month = cal.get(Calendar.MONTH);
+//                System.out.println("yue == " + month);
+//                //                String key = month + "月";
+//                if (map.containsKey(ordertime))
+//                {
+//                    map.get(ordertime).add(sBean);
+//                }
+//                else
+//                {
+//                    List<OrderInfoBean> list1 = new ArrayList<OrderInfoBean>();
+//                    list1.add(sBean);
+//                    map.put(ordertime, list1);
+//                }
+//            }
+//            catch (ParseException e)
+//            {
+//                e.printStackTrace();
+//            }
+//        }
+//        return map;
+//    }
+//    
+    @Override
+    public void clear()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void stopRequest()
+    {
+        // TODO Auto-generated method stub
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+            httpHanlder = null;
+        }
+        
+    }
+    
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        handler.sendEmptyMessage(com.changhong.sdk.baseapi.SuperMsgWhat.DATA_FORMAT_ERROR_MSGWHAT);
+    }
+    
+}

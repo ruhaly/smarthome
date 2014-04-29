@@ -1,0 +1,11 @@
+<resources>
+
+    <!-- +++++++++++++++++++720p距离像素 begin++++++++++++++++++++++++ -->
+	<dimen name="font_size_title">36px</dimen>
+	<dimen name="view_back_btn_margin_left">30px</dimen>
+	<dimen name="font_size_search_btn">40px</dimen>
+	<dimen name="view_search_input_margin_left">25px</dimen>
+	<dimen name="view_search_input_padding_left">30px</dimen>
+    <!-- +++++++++++++++++++720P距离像素 end++++++++++++++++++++++++ -->
+
+</resources>

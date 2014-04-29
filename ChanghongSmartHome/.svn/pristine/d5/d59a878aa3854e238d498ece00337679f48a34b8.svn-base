@@ -1,0 +1,144 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.os.Bundle;
+import android.os.Message;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.sdk.baseapi.AppLog;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.logic.SendFeedBackLogic;
+import com.lidroid.xutils.HttpUtils;
+
+/**
+ * 
+ * 意见反馈界面
+ * [功能详细描述]
+ * @author hanliangru
+ * @version [智慧社区-终端底座, 2014年4月18日]
+ */
+public class FeedbackActivity extends BaseActivity
+{
+    
+    private EditText editFeedBack;
+    
+    private TextView feedBack_Submit;
+    
+    private ImageView back_list;
+    
+    private String content;
+    
+    private SendFeedBackLogic logic;
+    
+    private HttpUtils httpUtil;
+    
+    /**
+     * 
+     * 初始化数据<BR>
+     * [功能详细描述]
+     * @see com.changhong.sdk.activity.SuperActivity#initData()
+     */
+    @Override
+    public void initData()
+    {
+        logic = SendFeedBackLogic.getInstance();
+    }
+    
+    /**
+     * 
+     * 初始化布局文件<BR>
+     * [功能详细描述]
+     * @param paramBundle
+     * @see com.changhong.sdk.activity.SuperActivity#initLayout(android.os.Bundle)
+     */
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.feed_back);
+        editFeedBack = (EditText) findViewById(R.id.feedBackText);
+        feedBack_Submit = (TextView) findViewById(R.id.submit_feedBack);
+        back_list = (ImageView) findViewById(R.id.img_back);
+        
+        back_list.setOnClickListener(this);
+        feedBack_Submit.setOnClickListener(this);
+        
+    }
+    
+    /**
+     * 
+     * 发送请求<BR>
+     * [功能详细描述]
+     */
+    public void requestSendFeadBack()
+    {
+        httpUtil = new HttpUtils();
+        logic.setData(mHandler);
+        String userId = getUser().getUid();
+        content = editFeedBack.getText().toString();
+        logic.requestSendFeedBack(userId, content, httpUtil);
+    }
+    
+    /**
+     * 
+     * 重写onclick事件<BR>
+     * [功能详细描述]
+     * @param v
+     * @see com.changhong.sdk.activity.SuperActivity#onClick(android.view.View)
+     */
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
+            case R.id.img_back:
+            {
+                finish();
+                break;
+            }
+            case R.id.submit_feedBack:
+            {
+                requestSendFeadBack();
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+        
+    };
+    
+    /**
+     * 处理响应<BR>
+     * [功能详细描述]
+     * @param msg
+     * @see com.changhong.sdk.activity.SuperActivity#handleMsg(android.os.Message)
+     */
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case MSGWHAT_ADD_COMMUNITY_SUCCESS:
+            {
+                AppLog.out("feedback------------",
+                        "success",
+                        AppLog.LEVEL_DEBUG);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    };
+    
+    @Override
+    public void clearData()
+    {
+        logic.clear();
+    }
+    
+}

@@ -1,0 +1,302 @@
+package com.changhong.smarthome.phone.store.adapter;
+
+import java.util.List;
+
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.store.activity.ClassifyshowActivity;
+import com.changhong.smarthome.phone.store.entity.StoreConstant;
+import com.changhong.smarthome.phone.store.logic.bean.GoodsColumnBean;
+import com.changhong.smarthome.phone.store.logic.bean.GoodsColumnGroup;
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
+import com.lidroid.xutils.bitmap.core.BitmapSize;
+
+public class Expandadapter extends BaseExpandableListAdapter
+{
+    private final static String TAG = "Expandadapter";
+    
+    private Context context;
+    
+    private List<GoodsColumnGroup> mgroups;
+    
+    private BitmapUtils mBitmapUtils;
+    
+    private int itemHeight = 136;
+    
+    private int groupHeight = 76;
+    
+    private int screenHeight;
+    
+    private int screenWidth;
+    
+    private BitmapDisplayConfig bigPicDisplayConfig;
+    
+    private int selecedIndex = -1;
+    
+    public Expandadapter(Context context, BitmapUtils bitmapUtils,
+            List<GoodsColumnGroup> groups)
+    {
+        this.context = context;
+        mBitmapUtils = bitmapUtils;
+        mgroups = groups;
+        mBitmapUtils.configDefaultLoadFailedImage(R.drawable.ic_launcher);
+        mBitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+        
+        bigPicDisplayConfig = new BitmapDisplayConfig();
+        BitmapSize bitmapSize = new BitmapSize((screenWidth * 38) / 720,
+                (screenHeight * 38) / 1280);
+        bigPicDisplayConfig.setBitmapMaxSize(bitmapSize);
+        
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
+        
+        itemHeight = (screenHeight * 85) / 1280;
+        
+        groupHeight = (screenHeight * 88) / 1280;
+    }
+    
+//    public void setList(List<GoodsColumnGroup> groups)
+//    {
+//        this.mgroups = groups;
+//    }
+    
+    public Object getChild(int groupPosition, int childPosition)
+    {
+        if(mgroups == null )
+        {
+            return null;
+        }
+        if(mgroups.get(groupPosition).getValue() == null)
+        {
+            return null;
+        }
+        return mgroups.get(groupPosition).getValue().get(childPosition);
+    }
+    
+    public long getChildId(int groupPosition, int childPosition)
+    {
+        return childPosition;
+    }
+    
+    public int getChildrenCount(int groupPosition)
+    {
+        if(mgroups == null )
+        {
+            return 0;
+        }
+        if(mgroups.get(groupPosition).getValue() == null)
+        {
+            return 0;
+        }
+        return mgroups.get(groupPosition).getValue().size();
+    }
+    
+    public View getChildView(int groupPosition,final int childPosition,
+            boolean isLastChild, View convertView, ViewGroup parent)
+    {
+        ChildViewHolder holder = null;
+        if (convertView == null)
+        {
+            
+            holder = new ChildViewHolder();
+            convertView = View.inflate(context, R.layout.childlist, null);
+            holder.subLayout = (RelativeLayout) convertView.findViewById(R.id.sub_child_layout);
+            android.widget.AbsListView.LayoutParams layoutParams = new android.widget.AbsListView.LayoutParams(
+                    screenWidth * 326 / 720, itemHeight);
+            holder.subLayout.setLayoutParams(layoutParams);
+           
+            holder.childtext = (TextView) convertView.findViewById(R.id.child_text_id);
+            RelativeLayout.LayoutParams childtextparams = (android.widget.RelativeLayout.LayoutParams) holder.childtext.getLayoutParams();
+            childtextparams.leftMargin = (screenWidth * 28) / 720;
+            holder.childtext.setLayoutParams(childtextparams);
+                
+            holder.childtext.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    (screenWidth * 30) / 720);
+            convertView.setTag(holder);
+            
+        }
+        else
+        {
+            holder = (ChildViewHolder) convertView.getTag();
+        }
+        
+        //convertView.setOnClickListener(new );
+        final GoodsColumnBean item = mgroups.get(groupPosition)
+                .getValue()
+                .get(childPosition);
+        if (item != null)
+        {
+            holder.childtext.setText(item.getColumnName());
+            
+        }
+        convertView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // TODO Auto-generated method stub
+              Log.d(TAG, "onItemClick | childPosition = " + childPosition);
+              Intent intent = new Intent(context, ClassifyshowActivity.class);
+//              intent.putExtra(StoreConstant.SEARCH_TYPE, StoreConstant.COLUMN_SHOW);
+              Bundle bundle = new Bundle();
+              bundle.putSerializable(StoreConstant.GOODS_COLUMN, item);
+              intent.putExtras(bundle);
+              context.startActivity(intent);
+            }
+        });
+        return convertView;
+    }
+    
+    // group method stub
+    
+    public Object getGroup(int groupPosition)
+    {
+        if(mgroups == null )
+        {
+            return null;
+        }
+        return mgroups.get(groupPosition);
+    }
+    
+    public int getGroupCount()
+    {
+        if(mgroups == null )
+        {
+            return 0;
+        }
+        return mgroups.size();
+    }
+    
+    public long getGroupId(int groupPosition)
+    {
+        if(mgroups == null )
+        {
+            return 0;
+        }
+        return groupPosition;
+    }
+    
+    public View getGroupView(int groupPosition, boolean isExpanded,
+            View convertView, ViewGroup parent)
+    {
+        GroupViewHolder holder = null;
+        if (convertView == null)
+        {
+            
+            holder = new GroupViewHolder();
+            
+            convertView = View.inflate(context, R.layout.grouplist, null);
+            
+            holder.subLayout = (RelativeLayout) convertView.findViewById(R.id.column_group_layout);
+            android.widget.AbsListView.LayoutParams layoutParams = new android.widget.AbsListView.LayoutParams(
+                    screenWidth * 326 / 720, groupHeight);
+            holder.subLayout.setLayoutParams(layoutParams);
+            
+            holder.grouptext = (TextView) convertView.findViewById(R.id.group_text_id);
+            
+            holder.imageView = (ImageView) convertView.findViewById(R.id.group_image_id);
+            
+            holder.arrowImageView = (ImageView)convertView.findViewById(R.id.group_arrow_image);
+            
+            holder.grouptext.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    (screenWidth * 30) / 720);
+            
+            RelativeLayout.LayoutParams params1 = (android.widget.RelativeLayout.LayoutParams) holder.imageView.getLayoutParams();
+            params1.height = (screenHeight * 38) / 1280;
+            params1.width = (screenWidth * 38) / 720;
+            params1.leftMargin = (screenWidth * 36) / 720;
+            holder.imageView.setLayoutParams(params1);
+            
+            RelativeLayout.LayoutParams params2 = (android.widget.RelativeLayout.LayoutParams) holder.grouptext.getLayoutParams();
+            
+            params2.leftMargin = (screenWidth * 18) / 720;
+            holder.grouptext.setLayoutParams(params2);
+            
+            
+            RelativeLayout.LayoutParams params3 = (android.widget.RelativeLayout.LayoutParams) holder.arrowImageView.getLayoutParams();
+            params3.height = (screenHeight * 26) / 1280;
+            params3.width = params3.height;
+            params3.rightMargin = (screenWidth * 18) / 720;
+            holder.arrowImageView.setLayoutParams(params3);
+            
+            convertView.setTag(holder);
+        }
+        else
+        {
+            holder = (GroupViewHolder) convertView.getTag();
+        }
+        final GoodsColumnBean item = mgroups.get(groupPosition).getKey();
+        if(item != null)
+        {
+            holder.grouptext.setText(item.getColumnName());
+            String picurl = item.getColumnIcon();
+            mBitmapUtils.display(holder.imageView,
+                    picurl,
+                    bigPicDisplayConfig,
+                    null);
+        }
+        
+        if (selecedIndex == groupPosition)
+        {
+            holder.arrowImageView.setBackgroundResource(R.drawable.icon_arrow_selected);
+        }
+        else
+        {
+            holder.arrowImageView.setBackgroundResource(R.drawable.icon_arrow_default);
+        }
+        
+        return convertView;
+    }
+    
+    // View stub to create Group/Children 's View
+    
+    public boolean hasStableIds()
+    {
+        return false;
+    }
+    
+    public boolean isChildSelectable(int groupPosition, int childPosition)
+    {
+        return true;
+    }
+    
+    public void setSelected(int index)
+    {
+        selecedIndex = index;
+    }
+    
+    final class GroupViewHolder
+    {
+        private ImageView imageView;
+        
+        private RelativeLayout subLayout;
+        
+        private TextView grouptext;
+        
+        
+        private ImageView arrowImageView;
+    }
+    
+    final class ChildViewHolder
+    {
+        private RelativeLayout subLayout;
+        
+        private TextView childtext;
+        
+    }
+}

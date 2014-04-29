@@ -1,0 +1,223 @@
+package com.changhong.smarthome.phone.sns.adapter;
+
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.List;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.sdk.baseapi.DateUtil;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.sns.Constant;
+import com.changhong.smarthome.phone.sns.bean.ShareBean;
+import com.changhong.smarthome.phone.store.tools.StringUtil;
+import com.lidroid.xutils.BitmapUtils;
+
+/**
+ * <功能详细描述>
+ * 
+ * @author wanghonghong
+ * @version [版本号, 2014-2-25]
+ * @see [相关类/方法]
+ * @since [产品/模块版本]
+ */
+public class MySharingAdapter extends BaseAdapter
+{
+    private static final String TAG = "MySharingAdapter";
+    
+    private Context context;
+    
+    private List<ShareBean> shareBeans;
+    
+    private LayoutInflater mInflater;
+    
+    private BitmapUtils bitmapUtilsHead;
+    
+    public MySharingAdapter(Context context, List<ShareBean> shareBeans)
+    {
+        this.context = context;
+        this.shareBeans = shareBeans;
+        mInflater = LayoutInflater.from(context);
+        bitmapUtilsHead = new BitmapUtils(context);
+        bitmapUtilsHead.configDefaultLoadingImage(R.drawable.picture);
+        bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.picture);
+        bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+        
+    }
+    
+    @Override
+    public int getCount()
+    {
+        // TODO Auto-generated method stub
+        return shareBeans.size();
+    }
+    
+    @Override
+    public Object getItem(int arg0)
+    {
+        // TODO Auto-generated method stub
+        return shareBeans.get(arg0);
+    }
+    
+    @Override
+    public long getItemId(int position)
+    {
+        // TODO Auto-generated method stub
+        return position;
+    }
+    
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        // TODO Auto-generated method stub
+        ViewHolder viewHolder;
+        if (null == convertView)
+        {
+            convertView = mInflater.inflate(R.layout.my_sharing_item, null);
+            viewHolder = new ViewHolder();
+            viewHolder.date = (TextView) convertView.findViewById(R.id.date_tv);
+            viewHolder.month = (TextView) convertView.findViewById(R.id.month_tv);
+            viewHolder.pic = (ImageView) convertView.findViewById(R.id.pic_iv);
+            viewHolder.content = (TextView) convertView.findViewById(R.id.content_tv);
+            viewHolder.today = (TextView) convertView.findViewById(R.id.today_tv);
+            convertView.setTag(viewHolder);
+        }
+        else
+        {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        ShareBean shareBean = shareBeans.get(position);
+        if (shareBean.getPostType().equals(Constant.POSTTYPE_FORWARD))
+        {
+            if (StringUtil.isEmpty(shareBean.getForwardContent()))
+            {
+                viewHolder.content.setText(context.getResources()
+                        .getString(R.string.interact_share_forward));
+            }
+            else
+            {
+                viewHolder.content.setText(shareBean.getForwardContent());
+            }
+            
+        }
+        else
+        {
+            viewHolder.content.setText(shareBean.getTitle());
+        }
+        if (null == shareBean.getPics() || shareBean.getPics().size() == 0)
+        {
+            viewHolder.pic.setVisibility(View.GONE);
+        }
+        else
+        {
+            viewHolder.pic.setVisibility(View.VISIBLE);
+            String url = Constant.URL_iconUrl
+                    + shareBean.getPics().get(0).getPicPath();
+            bitmapUtilsHead.display(viewHolder.pic, url);
+        }
+        try
+        {
+            String timeY = DateUtil.Y_DF.format(DateUtil.STANDARD_DF.parse(shareBean.getCreateTime()));
+            String timeM = DateUtil.M_DF.format(DateUtil.STANDARD_DF.parse(shareBean.getCreateTime()));
+            String timeD = DateUtil.D_DF.format(DateUtil.STANDARD_DF.parse(shareBean.getCreateTime()));
+            final Calendar c = Calendar.getInstance();
+            
+            int mYear = c.get(Calendar.YEAR); //获取当前年份 
+            
+            int mMonth = c.get(Calendar.MONTH) + 1;//获取当前月份 
+            
+            int mDay = c.get(Calendar.DAY_OF_MONTH);//获取当前月份的日期号码 
+            if (timeM.startsWith("0"))
+            {
+                timeM = timeM.substring(1, timeM.length());
+            }
+            if (timeD.startsWith("0"))
+            {
+                timeD = timeD.substring(1, timeD.length());
+            }
+            if (position != 0)
+            {
+                String timeCur = DateUtil.M_D_ONLY_DF.format(DateUtil.STANDARD_DF.parse(shareBean.getCreateTime()));
+                String timePre = DateUtil.M_D_ONLY_DF.format(DateUtil.STANDARD_DF.parse(shareBeans.get(position - 1)
+                        .getCreateTime()));
+                if (timeCur.equals(timePre))
+                {
+                    viewHolder.date.setVisibility(View.INVISIBLE);
+                    viewHolder.month.setVisibility(View.INVISIBLE);
+                    viewHolder.today.setVisibility(View.GONE);
+                }
+                else
+                {
+                    if (timeY.equals(String.valueOf(mYear))
+                            && timeM.equals(String.valueOf(mMonth))
+                            && timeD.equals(String.valueOf(mDay)))
+                    {
+                        viewHolder.month.setVisibility(View.GONE);
+                        viewHolder.date.setVisibility(View.GONE);
+                        viewHolder.today.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        viewHolder.date.setVisibility(View.VISIBLE);
+                        viewHolder.month.setVisibility(View.VISIBLE);
+                        viewHolder.today.setVisibility(View.GONE);
+                        viewHolder.month.setText(timeM
+                                + context.getResources()
+                                        .getString(R.string.unit_month));
+                        viewHolder.date.setText(timeD);
+                    }
+                    
+                }
+            }
+            
+            else
+            {
+                if (timeY.equals(String.valueOf(mYear))
+                        && timeM.equals(String.valueOf(mMonth))
+                        && timeD.equals(String.valueOf(mDay)))
+                {
+                    viewHolder.today.setVisibility(View.VISIBLE);
+                    viewHolder.month.setVisibility(View.GONE);
+                    viewHolder.date.setVisibility(View.GONE);
+                }
+                else
+                {
+                    viewHolder.date.setVisibility(View.VISIBLE);
+                    viewHolder.month.setVisibility(View.VISIBLE);
+                    viewHolder.today.setVisibility(View.GONE);
+                    viewHolder.date.setText(timeD);
+                    viewHolder.month.setText(timeM
+                            + context.getResources()
+                                    .getString(R.string.unit_month));
+                }
+                
+            }
+        }
+        catch (ParseException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return convertView;
+    }
+    
+    class ViewHolder
+    {
+        private TextView date;
+        
+        private TextView month;
+        
+        private ImageView pic;
+        
+        private TextView today;
+        
+        private TextView content;
+    }
+}

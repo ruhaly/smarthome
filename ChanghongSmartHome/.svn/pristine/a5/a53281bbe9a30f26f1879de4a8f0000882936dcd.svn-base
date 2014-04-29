@@ -1,0 +1,47 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-4-25 上午9:57:41 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.cinema.activity;
+
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+
+import com.changhong.sdk.activity.SuperActivity;
+
+/**
+* @author yang_jun
+*@Date:2014-4-25 上午9:57:41  
+* @ClassName: CinemaSuperActivity 
+* @Description: TODO(这里用一句话描述这个类的作用)  
+*/
+public class CinemaSuperActivity extends SuperActivity
+{
+    
+    
+    
+    @Override
+    public void initData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+}

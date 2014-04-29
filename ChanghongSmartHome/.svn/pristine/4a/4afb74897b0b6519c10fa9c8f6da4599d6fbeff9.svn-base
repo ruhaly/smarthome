@@ -1,0 +1,47 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.os.Bundle;
+import android.view.View;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class ModifyAccountActivity extends BaseActivity
+{
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.modify_account_layout);
+        ViewUtils.inject(this);
+    }
+    
+    @OnClick(R.id.tvSave)
+    public void tvSaveClick(View view)
+    {
+        showTipDialog(getString(R.string.warn_update_account), new CallBack()
+        {
+            
+            @Override
+            public void update(Object object)
+            {
+                showToast("1111111");
+            }
+        }, true, null);
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+}

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg" >
+
+    <include
+        android:id="@+id/exitLayoutInlcude"
+        android:layout_width="fill_parent"
+        android:layout_height="48dip"
+        layout="@layout/intergration_top" >
+    </include>
+
+    <RelativeLayout
+        android:id="@+id/detailRulesLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="120dip"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dip" >
+
+        <ImageButton
+            android:id="@+id/detailRulesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/rules_detail_button" />
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/integrationrule_details" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/detailRulesLayout"
+        android:layout_below="@id/exitLayoutInlcude"
+        android:background="@drawable/bg"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/integration_goods_bg"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/TextViewTitleStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dip"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="@string/accountInfo" />
+           
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dip"
+                android:layout_margin="10dip"
+                android:background="@drawable/integration_bg1"
+                android:gravity="top" >
+
+                <com.changhong.sdk.widget.RoundImageView
+                android:id="@+id/userImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="20dip"
+                android:src="@drawable/header" />
+
+                <TextView
+                    android:id="@+id/nulltexeview"
+                    style="@style/TextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dip"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dip"
+                    android:layout_toRightOf="@id/userImg" />
+
+                <LinearLayout
+                    android:id="@+id/usernamelinearlayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/nulltexeview"
+                    android:layout_marginLeft="10dip"
+                    android:layout_toRightOf="@id/userImg" >
+
+                    <TextView
+                        android:id="@+id/userName"
+                        style="@style/TextViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/user_name" />
+
+                    <TextView
+                        android:id="@+id/userNameValue"
+                        style="@style/TextViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="张三" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/nulltexeview"
+                    android:layout_marginLeft="10dip"
+                    android:layout_toRightOf="@id/userImg" >
+
+                    <TextView
+                        android:id="@+id/userIntegtation"
+                        style="@style/TextViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/total_integration" />
+
+                    <TextView
+                        android:id="@+id/userIntegtationvalue"
+                        style="@style/TextViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="05000分" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <TextView
+                style="@style/TextViewTitleStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dip"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="@string/recent_accountStated" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dip"
+                android:background="@drawable/integration_bg2" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="30dip" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/originOrpurpose" />
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/date" />
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/integration_change" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:background="@drawable/split_line_horizonal" />
+
+                <ListView
+                    android:id="@+id/listViewIntegrationDetail"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:paddingBottom="10dip"
+                    android:paddingTop="10dip" >
+                </ListView>
+                
+               
+
+                
+            </LinearLayout>
+            
+             <RelativeLayout
+                    android:id="@+id/check_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:paddingRight="30dip"
+                     >
+
+                    <TextView
+                        android:id="@+id/detailTextView"
+                        style="@style/TextViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/check_detail" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@id/detailTextView"
+                        android:layout_alignRight="@id/detailTextView"
+                        android:layout_below="@id/detailTextView"
+                        android:background="@drawable/split_line_horizonal" />
+                </RelativeLayout>
+            
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,336 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.changhong.sdk.entity.Pager;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.baseapi.MsgWhat;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.bean.Community;
+import com.changhong.smarthome.phone.foundation.logic.AddCommunityLogic;
+import com.changhong.smarthome.phone.foundation.logic.DeleteCommunityLogic;
+import com.changhong.smarthome.phone.foundation.logic.GetCommunityLogic;
+import com.lidroid.xutils.HttpUtils;
+
+public class CommunityManageActivity extends BaseActivity
+{
+    
+    private RelativeLayout addCommunity;
+    
+    private ImageView backCommunity;
+    
+    private RelativeLayout remove;
+    
+    private TextView defaultText;
+    
+    private GridView communityGridView;
+    
+    private List<Community> list = new ArrayList<Community>();;
+    
+    private MyAdapter adapter;
+    
+    private int typeSrc = 1;
+    
+    private AddCommunityLogic addLogic;
+    
+    private HttpUtils addHttpUtil;
+    
+    private DeleteCommunityLogic deleteLogic;
+    
+    private HttpUtils deleteHttpUtil;
+    
+    private GetCommunityLogic getCommunityLogic;
+    
+    private HttpUtils getCommuntityHttpUtil;
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.community_management);
+        addCommunity = (RelativeLayout) findViewById(R.id.add_communty);
+        backCommunity = (ImageView) findViewById(R.id.community_back_list);
+        remove = (RelativeLayout) findViewById(R.id.defaut);
+        defaultText = (TextView) findViewById(R.id.default_text);
+        communityGridView = (GridView) findViewById(R.id.community_gridview);
+        backCommunity.setOnClickListener(this);
+        addCommunity.setOnClickListener(this);
+        remove.setOnClickListener(this);
+        initAdapter();
+        getCommuntityDate();
+    }
+    
+    /**
+     *
+     *  初始化adapter<BR>
+     * [功能详细描述]
+     */
+    public void initAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new MyAdapter();
+            communityGridView.setAdapter(adapter);
+            communityGridView.setOnItemLongClickListener(new OnItemLongClickListener()
+            {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                        final int arg2, long arg3)
+                {
+                    showTipDialog(adapter.getItem(arg2).getName(),
+                            new CallBack()
+                            {
+                                @Override
+                                public void update(Object object)
+                                {
+                                    deleteCommunityData(getCommunityLogic.list.get(arg2)
+                                            .getId());
+                                    list.remove(arg2);
+                                    adapter = new MyAdapter();
+                                    communityGridView.setAdapter(adapter);
+                                }
+                            },
+                            false,
+                            "解除绑定");
+                    return true;
+                }
+            });
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    /**
+     * 
+     * 请求及响应的消息处理<BR>
+     * [功能详细描述]
+     * @param msg
+     * @see com.changhong.sdk.activity.SuperActivity#handleMsg(android.os.Message)
+     */
+    @Override
+    public void handleMsg(android.os.Message msg)
+    {
+        switch (msg.what)
+        {
+            case MsgWhat.MSGWHAT_GET_COMMUNITY_SUCCESS:
+            {
+                for (int i = 0; i < getCommunityLogic.list.size(); i++)
+                {
+                    Community cc = new Community();
+                    cc.setId(getCommunityLogic.list.get(i).getId());
+                    cc.setName(getCommunityLogic.list.get(i).getName());
+                    cc.setPicUrl(R.drawable.community_default_picture);
+                    list.add(cc);
+                }
+                initAdapter();
+                break;
+            }
+            case MsgWhat.MSGWHAT_DELETE_COMMUNITY_SUCCESS:
+            {
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    };
+    
+    /**
+     * 
+     * 从服务端接收该用户已经添加的小区数据<BR>
+     * [功能详细描述]
+     */
+    public void getCommuntityDate()
+    {
+        getCommunityLogic = new GetCommunityLogic();
+        getCommuntityHttpUtil = new HttpUtils();
+        getCommunityLogic.setData(mHandler);
+        Boolean isRefresh = true;
+        int currentPage = 0;
+        Pager pager = new Pager();
+        pager.setPageId(isRefresh ? 1 : currentPage + 1);
+        pager.setPageSize(20);
+        String userId = "2";
+        getCommunityLogic.requestCommunity(userId, pager, getCommuntityHttpUtil);
+    }
+    
+    /**
+     * 
+     * 从服务端删除数据<BR>
+     * [功能详细描述]
+     * @param position
+     */
+    public void deleteCommunityData(String id)
+    {
+        deleteLogic = DeleteCommunityLogic.getInstance();
+        deleteHttpUtil = new HttpUtils();
+        deleteLogic.setData(mHandler);
+        deleteLogic.requestDeleteCommunity(id, deleteHttpUtil);
+    }
+    
+    /**
+     * 
+     * 按钮 的onclick事件
+     * [功能详细描述]
+     * @param v
+     * @see com.changhong.sdk.activity.SuperActivity#onClick(android.view.View)
+     */
+    @Override
+    public void onClick(View v)
+    {
+        super.onClick(v);
+        switch (v.getId())
+        {
+            case R.id.community_back_list:
+            {
+                finish();
+                break;
+            }
+            case R.id.add_communty:
+            {
+                Intent intent = new Intent();
+                intent.putExtra("typeSrc", typeSrc);
+                intent.setClass(CommunityManageActivity.this,
+                        CitySelectActivity.class);
+                startActivityForResult(intent, 0);
+                break;
+            }
+            case R.id.defaut:
+            {
+                showTipDialog(defaultText.getText().toString(), new CallBack()
+                {
+                    @Override
+                    public void update(Object object)
+                    {
+                        
+                    }
+                }, false, "解除绑定");
+                break;
+            }
+            
+            default:
+            {
+                break;
+            }
+        }
+    }
+    
+    /**
+     * 取得选择小区页面返回的值
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     * @see android.support.v4.app.FragmentActivity#onActivityResult(int, int, android.content.Intent)
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (data == null)
+        {
+            return;
+        }
+        else
+        {
+            //将添加的小区数据保存到服务端
+            addLogic = AddCommunityLogic.getInstance();
+            addHttpUtil = new HttpUtils();
+            addLogic.setData(mHandler);
+            String userId = "2";
+            String name = data.getStringExtra("name");
+            Integer image = data.getIntExtra("image",
+                    R.drawable.community_default_picture);
+            String communityId = data.getStringExtra("communityId");
+            Community community_add = new Community();
+            community_add.setPicUrl(image);
+            community_add.setName(name);
+            list.add(community_add);
+            addLogic.requestAddCommunity(userId, communityId, addHttpUtil);
+            communityGridView.setAdapter(new MyAdapter());
+        }
+    };
+    
+    @Override
+    public void initData()
+    {
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    /**
+     * 自定义适配器
+     * @version [智慧社区-终端底座, 2014年4月1日]
+     */
+    class MyAdapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return list.size();
+        }
+        
+        @Override
+        public Community getItem(int position)
+        {
+            return list.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            ViewHolder viewHolder = null;
+            if (convertView == null)
+            {
+                viewHolder = new ViewHolder();
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.community_add_layout, null);
+                viewHolder.image = (ImageView) convertView.findViewById(R.id.add_img);
+                viewHolder.testName = (TextView) convertView.findViewById(R.id.add_text);
+                convertView.setTag(viewHolder);
+            }
+            else
+            {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.image.setImageResource(getItem(position).getPicUrl());
+            viewHolder.testName.setText(getItem(position).getName());
+            
+            return convertView;
+            
+        }
+        
+        class ViewHolder
+        {
+            public ImageView image;
+            
+            public TextView testName;
+            
+        }
+    }
+}

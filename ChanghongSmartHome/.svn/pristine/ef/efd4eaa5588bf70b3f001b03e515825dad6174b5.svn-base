@@ -1,0 +1,132 @@
+package com.changhong.smarthome.phone.YellowPages.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.smarthome.phone.YellowPages.entry.LineTelephone;
+import com.changhong.smarthome.phone.cinema.entry.Pager;
+import com.changhong.smarthome.phone.YellowPages.http.HttpAction;
+import com.changhong.smarthome.phone.YellowPages.http.RequestId;
+import com.changhong.smarthome.phone.cinema.logic.GetCinemaTitleLogic;
+import com.google.gson.JsonArray;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+public class GetPropertyServiceLineLogic extends SuperLogic {
+	
+	HttpHandler<String> httpHanlder;
+	
+	public ArrayList<LineTelephone> lineTelephoneeList;
+	
+	private static GetPropertyServiceLineLogic ins;
+	
+	public static synchronized GetPropertyServiceLineLogic getInstance(){
+		if(null == ins){
+			ins = new GetPropertyServiceLineLogic();
+		}
+		return ins;
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void stopRequest() {
+		// TODO Auto-generated method stub
+
+	}
+	
+	//获取物业服务的热线电话
+    public void requestGetProPertyServiceLineList(HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        
+        Map serviceInfo = new HashMap();
+        
+        fixRequestParams(params, serviceInfo, "propertyServiceLine","sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl("propertyServiceLine",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.YELLOWPAGE_GET,
+                this,
+                false, HttpAction.url);
+        
+    }
+
+	@Override
+	public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+			InputStream is) {
+		switch (requestId)
+        {
+            case RequestId.YELLOWPAGE_GET:
+                handleGetPropertyServiceLineData(serviceRes);
+                break;
+        
+        }
+	}
+
+	private void handleGetPropertyServiceLineData(ServiceResponse response) {
+
+		if (response.getBody().getResult().equals("0"))
+		{
+			//给对象赋值
+			lineTelephoneeList = josonparsePPSL(response.getBody().getParamsString());
+			handler.sendEmptyMessage(HttpAction.YELLOWPAGE_LINE_SUCCESS_GET);
+		}
+		else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+		
+	}
+
+	//解析数据
+	private ArrayList<LineTelephone> josonparsePPSL(String response) {
+		// TODO Auto-generated method stub
+		ArrayList<LineTelephone> list_lineTelephone = new ArrayList<LineTelephone>();
+		if (StringUtils.isEmpty(response))
+        {
+            return null;
+        }
+		try {
+			JSONObject jsonObj = new JSONObject(response);
+			if(jsonObj != null){
+				JSONArray array = jsonObj.optJSONArray("datalist");
+				for(int i = 1;i< array.length();i++){
+					LineTelephone  lineTelephone = new LineTelephone();
+					JSONObject obj =  array.getJSONObject(i);
+					System.out.println("获取到了数据");
+					
+					lineTelephone.setLine_name(obj.optString("line_name"));
+					lineTelephone.setLine_telephoneNumber(obj.optString("line_telephoneNumber"));
+					lineTelephone.setWork_time(obj.optString("work_time"));
+					list_lineTelephone.add(lineTelephone);
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+    
+    
+    
+}

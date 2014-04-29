@@ -1,0 +1,26 @@
+package com.changhong.smarthome.phone.property.http;
+
+public class HttpAction
+{
+    public static final int TSUPDATE_SUCCESS_MSGWHAT = 0;
+    public static String url = "http://172.17.184.55:8080/cbs/msg";
+    
+
+    public static final int BXLIST_SUCCESS_MSGWHAT_ALL = 10000;
+    public static final int BXLIST_SUCCESS_MSGWHAT = 10001;
+    public static final int BXLIST_SUCCESS_MSGWHAT_W = 10002;
+    public static final int BXADD_SUCCESS_MSGWHAT = 10003;
+    public static final int BXUPDATE_SUCCESS_MSGWHAT = 10004;
+    public static final int BXDELETE_SUCCESS_MSGWHAT = 10005;
+    public static final int BXDELETE_SUCCESS_MSGWHAT_W = 10006;
+    public static final int BXDELETEALL_SUCCESS_MSGWHAT = 10007;
+    public static final int TSADD_SUCCESS_MSGWHAT = 200001;
+    public static final int TSDELETEALL_SUCCESS_MSGWHAT = 20002;
+    public static final int TSDELETE_SUCCESS_MSGWHAT = 20003;
+    public static final int TSDELETE_SUCCESS_MSGWHAT_W = 20004;
+    public static final int TSLIST_SUCCESS_MSGWHAT_ALL = 20005;
+    public static final int TSLIST_SUCCESS_MSGWHAT = 20006;
+    public static final int TSLIST_SUCCESS_MSGWHAT_W = 20007;
+    
+    
+}

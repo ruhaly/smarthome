@@ -1,0 +1,100 @@
+package com.changhong.smarthome.phone.cinema.activity;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+
+import com.changhong.sdk.baseapi.AppLog;
+import com.changhong.sdk.entity.User;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.fragment.ContentFragment;
+import com.changhong.smarthome.phone.cinema.fragment.TitleFragment;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.logic.BillLogic;
+import com.changhong.smarthome.phone.cinema.view.LeftSliderLayout;
+import com.changhong.smarthome.phone.cinema.view.LeftSliderLayout.OnLeftSliderLayoutStateListener;
+import com.changhong.smarthome.phone.foundation.baseapi.UserUtils;
+import com.changhong.smarthome.phone.sns.Constant;
+
+/**
+* @ClassName: MainActivity
+* @author yang_jun
+* @Description: 社区影院主界面
+*/
+public class CinemaMainActivity extends FragmentActivity implements
+        OnLeftSliderLayoutStateListener, OnClickListener
+{
+    private Fragment mContent;
+    
+    LeftSliderLayout leftSliderLayout;
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        String userId = "yhx";
+        String account = "yhx";
+        AppLog.out("CinemaStartActivity",
+                "HttpAction.url=" + HttpAction.url,
+                AppLog.LEVEL_INFO);
+        String communityCode = Constant.COMMUNITYID;
+        User user = UserUtils.getUser();
+        BillLogic.accountInfo.setAccountId(user.getAccount());
+        BillLogic.accountInfo.setUserId(user.getUid());
+        //        BillLogic.accountInfo.setAccountId("101");
+        //        BillLogic.accountInfo.setUserId("101");
+        BillLogic.accountInfo.setCommunityCode("11091315263400010000");
+        BillLogic.accountInfo.setFlag(1);//�ն˱�ʶ1�ֻ�2 TV 3 PAD
+        BillLogic.accountInfo.setResolution("720p");
+        BillLogic.accountInfo.setType("SONY");
+        
+        //overridePendingTransition(R.anim.anim_enter, R.anim.anim_exit);
+        // set the Above View
+        
+        setContentView(R.layout.content_frame);
+        
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, new ContentFragment())
+                .commit();
+        // set the Behind View
+        //        setBehindContentView(R.layout.menu_frame);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.menu_frame, new TitleFragment())
+                .commit();
+        
+        // customize the SlidingMenu
+        //        getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        
+        leftSliderLayout = (LeftSliderLayout) findViewById(R.id.main_slider_layout);
+        leftSliderLayout.setOnLeftSliderLayoutListener(this);
+        
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.activity_cinema_start, menu);
+        return true;
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        
+    }
+    
+    @Override
+    public void OnLeftSliderLayoutStateChanged(boolean bIsOpen)
+    {
+    }
+    
+    @Override
+    public boolean OnLeftSliderLayoutInterceptTouch(MotionEvent ev)
+    {
+        return true;
+    }
+}

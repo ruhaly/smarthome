@@ -1,0 +1,44 @@
+package com.changhong.smarthome.phone.cinema;
+
+import android.os.Bundle;
+import android.view.View.OnClickListener;
+import android.view.Window;
+
+import com.changhong.smarthome.phone.cinema.activity.SlideSuperActivity;
+
+/**  
+* @author yang_jun
+* @date 2014-3-17 下午4:57:10 
+*/
+public class MyShareActivity extends SlideSuperActivity implements OnClickListener
+{
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        setContentView(R.layout.sharePlayer);
+    }
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+}

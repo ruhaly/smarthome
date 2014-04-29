@@ -1,0 +1,286 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Dialog;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.baidu.location.BDLocation;
+import com.changhong.sdk.entity.User;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.bean.Room;
+import com.changhong.smarthome.phone.foundation.logic.NewMemberLogic;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class NewMemberActivity extends BaseActivity
+{
+    @ViewInject(R.id.listView)
+    private ListView listView;
+    
+    private Adapter adapter;
+    
+    private NewMemberLogic logic;
+    
+    private RoomAdapter roomAdapter;
+    
+    private List<Room> roomList = new ArrayList<Room>();
+    
+    @Override
+    public void initData()
+    {
+        logic = NewMemberLogic.getInstance();
+        
+        User user1 = new User();
+        user1.setMobile("13823654879");
+        
+        User user2 = new User();
+        user2.setMobile("15823654878");
+        
+        User user3 = new User();
+        user3.setMobile("15823654877");
+        
+        User user4 = new User();
+        user4.setMobile("15823654875");
+        
+        User user5 = new User();
+        user5.setMobile("15823654872");
+        
+        logic.userList.add(user1);
+        logic.userList.add(user2);
+        logic.userList.add(user3);
+        logic.userList.add(user4);
+        logic.userList.add(user5);
+        
+        Room room1 = new Room();
+        room1.setNum("2-1-1208");
+        
+        Room room2 = new Room();
+        room2.setNum("3-2-303");
+        roomList.add(room1);
+        roomList.add(room2);
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.new_member_layout);
+        ViewUtils.inject(this);
+        initAdapter();
+    }
+    
+    public void initAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter();
+            listView.setAdapter(adapter);
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    class Adapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return logic.userList.size();
+        }
+        
+        @Override
+        public User getItem(int position)
+        {
+            return logic.userList.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            final ViewHolder viewHolder;
+            if (null == convertView)
+            {
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.new_member_item_layout, null);
+                viewHolder = new ViewHolder();
+                viewHolder.imgHead = (ImageView) convertView.findViewById(R.id.imgHead);
+                viewHolder.btnIgnore = (Button) convertView.findViewById(R.id.btnIgnore);
+                viewHolder.btnAccept = (Button) convertView.findViewById(R.id.btnAccept);
+                viewHolder.tvPhone = (TextView) convertView.findViewById(R.id.tvPhone);
+                viewHolder.tvState = (TextView) convertView.findViewById(R.id.tvState);
+                convertView.setTag(viewHolder);
+            }
+            else
+            {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.btnIgnore.setOnClickListener(new OnClickListener()
+            {
+                
+                @Override
+                public void onClick(View v)
+                {
+                    viewHolder.btnIgnore.setVisibility(View.GONE);
+                    viewHolder.btnAccept.setVisibility(View.GONE);
+                    viewHolder.tvState.setVisibility(View.VISIBLE);
+                    viewHolder.tvState.setText(getString(R.string.has_ignore));
+                }
+            });
+            viewHolder.btnAccept.setOnClickListener(new OnClickListener()
+            {
+                
+                @Override
+                public void onClick(View v)
+                {
+                    
+                    showSelectRoomListDialog(new CallBack()
+                    {
+                        
+                        @Override
+                        public void update(BDLocation location)
+                        {
+                            
+                        }
+                        
+                        @Override
+                        public void update(Object object)
+                        {
+                            viewHolder.btnIgnore.setVisibility(View.GONE);
+                            viewHolder.btnAccept.setVisibility(View.GONE);
+                            viewHolder.tvState.setVisibility(View.VISIBLE);
+                            viewHolder.tvState.setText(getString(R.string.has_accept));
+                        }
+                    });
+                }
+            });
+            viewHolder.tvPhone.setText(getItem(position).getMobile());
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            public ImageView imgHead;
+            
+            public Button btnIgnore;
+            
+            public Button btnAccept;
+            
+            public TextView tvPhone;
+            
+            public TextView tvState;
+        }
+    }
+    
+    @Override
+    public void clearData()
+    {
+        logic.userList.clear();
+        roomList.clear();
+    }
+    
+    /**
+     * 
+     * 选择房间
+     * [功能详细描述]
+     */
+    public void showSelectRoomListDialog(final CallBack callBack)
+    {
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.room_select_layout, null);
+        final Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        
+        ListView lvRoom = (ListView) view.findViewById(R.id.lvRoom);
+        roomAdapter = new RoomAdapter();
+        lvRoom.setAdapter(roomAdapter);
+        lvRoom.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                showToast(roomAdapter.getItem(position).getNum());
+                dialog.dismiss();
+                callBack.update(null);
+            }
+        });
+        dialog.show();
+    }
+    
+    class RoomAdapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return roomList.size();
+        }
+        
+        @Override
+        public Room getItem(int position)
+        {
+            return roomList.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            final ViewHolder viewHolder;
+            if (null == convertView)
+            {
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.room_select_item_layout, null);
+                viewHolder = new ViewHolder();
+                viewHolder.tvRoomNum = (TextView) convertView.findViewById(R.id.tvRoomNum);
+                convertView.setTag(viewHolder);
+            }
+            else
+            {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.tvRoomNum.setText(getItem(position).getNum());
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            public TextView tvRoomNum;
+        }
+    }
+    
+    @OnClick(R.id.tvClear)
+    public void tvClearClick(View view)
+    {
+        logic.userList.clear();
+        initAdapter();
+    }
+}

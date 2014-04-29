@@ -1,0 +1,199 @@
+package com.changhong.smarthome.phone.cinema.logic;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.smarthome.phone.cinema.callback.IHttpRequestCallback;
+import com.changhong.smarthome.phone.cinema.entry.MediaOrderVO;
+import com.changhong.smarthome.phone.cinema.entry.NewOrderResultVO;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.http.RequestId;
+import com.google.gson.Gson;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+/**  
+* @author yang_jun
+* @date 2014-3-21 下午4:18:47 
+* 有关电影播放的信息，查询用户付费情况
+*/
+public class GetMediaPlayLogic extends SuperLogic
+
+{
+    HttpHandler<String> httpHanlder;
+    
+    private IHttpRequestCallback callback;
+    
+    public MediaOrderVO mediaOrderVO;
+    
+    public NewOrderResultVO newOrderResultVO;
+    
+    private static GetMediaPlayLogic ins;
+    
+    public static synchronized GetMediaPlayLogic getInstance()
+    {
+        if (null == ins)
+        {
+            ins = new GetMediaPlayLogic();
+        }
+        return ins;
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is)
+    {
+        switch (requestId)
+        {
+            case RequestId.MEDIA_ORDER_SITUATION:
+                handleMediaOrderSituationData(serviceRes);
+                break;
+            case RequestId.MEDIA_NEW_ORDER:
+                handleMediaNewOrderDataSituation(serviceRes);
+                break;
+        }
+        
+    }
+    
+    /**
+     * @param serviceRes
+     */
+    private void handleMediaNewOrderDataSituation(ServiceResponse response)
+    {
+        if (response.getBody()
+                .getResult()
+                .equals(HttpAction.HTTP_RESPONSE_STATUS_OK))
+        {
+            //给对象赋值
+            String resp = response.getBody().getParamsString();
+            if (resp != null && resp.length() > 0)
+            {
+                newOrderResultVO = new Gson().fromJson(resp,
+                        NewOrderResultVO.class);
+            }
+            //TODO 这里应该根据具体情况判断
+            handler.sendEmptyMessage(HttpAction.NewOrderData_SUCCESS_GET);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+    /**
+     * @param serviceRes
+     */
+    private void handleMediaOrderSituationData(ServiceResponse serviceRes)
+    {
+        String resp = null;
+        if (serviceRes.getBody()
+                .getResult()
+                .equals(HttpAction.HTTP_RESPONSE_STATUS_OK))
+        {
+            //给对象赋值
+            resp = serviceRes.getBody().getParamsString();
+            if (resp != null && resp.length() > 0)
+            {
+                mediaOrderVO = new Gson().fromJson(resp, MediaOrderVO.class);
+            }
+            handler.sendEmptyMessage(HttpAction.MEDIA_ORDER_INFO_SUCCESS_GET);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+        callback.callback(resp);
+    }
+    
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        handler.sendEmptyMessage(SuperLogic.DATA_FORMAT_ERROR_MSGWHAT);
+    }
+    
+    //视频是否订购，订购情况
+    public void requestVideoOrderSituation(long contentId,
+            IHttpRequestCallback callback)
+    {
+        this.callback = callback;
+        RequestParams params = new RequestParams();
+        
+        Map serviceInfo = new HashMap();
+        serviceInfo.put("contentId", contentId);
+        serviceInfo.put("accountInfo", BillLogic.accountInfo);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.MEDIA_ORDER_SITUATION,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.MEDIA_ORDER_SITUATION,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                new HttpUtils(),
+                RequestId.MEDIA_ORDER_SITUATION,//MEDIA_ORDER_COMMAND
+                this,
+                false,
+                HttpAction.pay_test_url);
+    }
+    
+    /**
+     * @param contentId
+     * @param id_pay
+     * @param name_pay
+     * @param money_pay
+     */
+ 
+    //视频新订购
+    public void requestVideoNewOrder(long contentId, long id_pay,
+            String name_pay, float money_pay)
+    {
+        RequestParams params = new RequestParams();
+        
+        Map serviceInfo = new HashMap();
+        serviceInfo.put("accountInfo", BillLogic.accountInfo);
+        serviceInfo.put("contentId", contentId);
+        serviceInfo.put(HttpAction.strategyID, id_pay);
+        serviceInfo.put("strategyName", name_pay);
+        serviceInfo.put("money", money_pay);
+        
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.MEDIA_NEW_ORDER,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.MEDIA_NEW_ORDER,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                new HttpUtils(),
+                RequestId.MEDIA_NEW_ORDER,//MEDIA_ORDER_COMMAND
+                this,
+                false,
+                HttpAction.pay_test_url);
+        
+    }
+    
+    @Override
+    public void clear()
+    {
+        
+    }
+    
+    @Override
+    public void stopRequest()
+    {
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+        }
+    }
+    
+}

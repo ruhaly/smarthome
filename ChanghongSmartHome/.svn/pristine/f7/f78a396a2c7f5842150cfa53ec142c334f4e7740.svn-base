@@ -1,0 +1,61 @@
+package com.changhong.smarthome.phone.cinema.dao;
+
+import java.util.List;
+
+import android.database.SQLException;
+
+import com.changhong.smarthome.phone.cinema.entry.VideoFile;
+import com.j256.ormlite.dao.Dao;
+
+public interface SimpleDataDao
+{
+    /**
+     * ��Ӽ�¼
+     * 
+     * @param simpledatadao
+     * @param name
+     * @param pwd
+     * @throws SQLException
+     */
+    public int addSimpleData(Dao<VideoFile, String> simpledatadao,
+            String contentId, String path, String name, long time,
+            String sqlNum,String picUrl) throws SQLException;
+    
+    /**
+     * @param simpledatadao
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+    public List<VideoFile> findSimpleDataforid(
+            Dao<VideoFile, String> simpledatadao, String contentId, String path, String name, long time,
+            String sqlNum) throws SQLException;
+    
+    /**
+     * @param simpledatadao
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+    public int updateSimpleDataforid(Dao<VideoFile, String> simpledatadao,
+            VideoFile videoFile) throws SQLException;
+    
+    /**
+     * @param simpledatadao
+     * @return
+     * @throws Exception
+     */
+    public List<VideoFile> findallSimpleData(
+            Dao<VideoFile, String> simpledatadao) throws Exception;
+    
+    /**
+     * ɾ��ָ��id�ļ�¼
+     * @param simpledatadao
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public int deleteSimpleDataforid(Dao<VideoFile, String> simpledatadao,
+            String id) throws Exception;
+    
+}

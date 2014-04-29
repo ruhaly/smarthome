@@ -1,0 +1,886 @@
+package com.changhong.smarthome.phone.sns.activity;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Message;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.animation.Animation;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Gallery;
+import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
+
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.sdk.baseapi.CHUtils;
+import com.changhong.sdk.baseapi.DateUtil;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.sdk.widget.CustomGallery;
+import com.changhong.sdk.widget.InnerScrollViewPullRefreshListView;
+import com.changhong.sdk.widget.InnerScrollViewPullRefreshListView.NewScrollerListener;
+import com.changhong.sdk.widget.MCloudProgressDialog;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.sns.Constant;
+import com.changhong.smarthome.phone.sns.adapter.ImageAdapter;
+import com.changhong.smarthome.phone.sns.adapter.ShareInfoAdapter;
+import com.changhong.smarthome.phone.sns.bean.ShareBean;
+import com.changhong.smarthome.phone.sns.bean.TSnsReply;
+import com.changhong.smarthome.phone.sns.bean.TSnsThemePic;
+import com.changhong.smarthome.phone.sns.logic.IntShareLogic;
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.HttpUtils;
+
+/**
+ * <功能详细描述>
+ * 二手信息/活动的分享详情界面
+ * @author wanghonghong
+ * @version [版本号, 2014-2-21]
+ * @see [相关类/方法]
+ * @since [产品/模块版本]
+ */
+public class ShareBusinessActivity extends SuperActivity implements
+        OnClickListener, OnItemLongClickListener
+{
+    
+    private static final String TAG = "ShareInfoActivity";
+    
+    /**
+     * 图片下载工具
+     */
+    private BitmapUtils bitmapUtilsPic;
+    
+    /**
+     * 需要展示哪种详情 2--随拍 3--二手买卖 4---活动 5--转发
+     */
+    private String whichInfo;
+    
+    private String themeId;
+    
+    private String codeId;
+    
+    private String replyCount;
+    
+    private String iconUrl;
+    
+    private String userName;
+    
+    private String postType;
+    
+    private String rangeType;
+    
+    private ShareBean shareBean = new ShareBean();
+    
+    private HttpUtils httpUtil;
+    
+    private IntShareLogic logic;
+    
+    private MCloudProgressDialog progressDialog;
+    
+    /**
+     * 一页请求的个数
+     */
+    private int pageSize = 20;
+    
+    /**
+     * 当前请求的是第几页(真正数据从1开始)
+     */
+    private int curPage = 1;
+    
+    private RelativeLayout btnRl;
+    
+    private TextView shareTitle;
+    
+    private TextView sharePrice;
+    
+    private TextView shareNum;
+    
+    private TextView shareEndTime;
+    
+    private TextView shareDescription;
+    
+    private TextView shareContact;
+    
+    private TextView shareContactMethod;
+    
+    //    private ImageView picIV;
+    
+    private LinearLayout commentLL;
+    
+    private LinearLayout forwardLL;
+    
+    private InnerScrollViewPullRefreshListView list;
+    
+    private LinearLayout frame_gallery;
+    
+    private Gallery gallery;
+    
+    public LinearLayout frame_dian;
+    
+    private LinearLayout listLl;
+    
+    private ScrollView scrollContent;
+    
+    private ImageView commentIv;
+    
+    private TextView commentContent;
+    
+    /**
+     * 标记加载更多
+     */
+    private boolean isMore = false;
+    
+    /**
+     * 标记是否有加载更多请求
+     */
+    private boolean isLoadingMore = false;
+    
+    /**
+     * 标记是否有更多
+     */
+    private boolean hasMore = true;
+    
+    /**
+     * 回复的总个数
+     */
+    private int replyTotalNum;
+    
+    private List<TSnsReply> replies = new ArrayList<TSnsReply>();
+    
+    private ShareInfoAdapter adapter;
+    
+    private ImageAdapter picAdapter;
+    
+    /**
+     * 标记是否是自己的动态或者评论
+     */
+    private boolean isMe = false;
+    
+    /**
+     * 删除的是第几个
+     */
+    private int pos;
+    
+    private List<TSnsThemePic> pics = new ArrayList<TSnsThemePic>();
+    
+    private List<ImageView> imgViews = new ArrayList<ImageView>();
+    
+    private TextView titleTextView;
+    
+    private LinearLayout pagerLayout;
+    
+    private ViewPager pagerImage;
+    
+    private ArrayList<ImageView> viewlist=new ArrayList<ImageView>();
+    
+    private Animation animationsmall_big;
+    
+    private Animation animationbig_small;
+    
+    /**
+     * lisView滑动加载监听
+     * @return
+     */
+    public NewScrollerListener createScroller()
+    {
+        NewScrollerListener scroller = new NewScrollerListener()
+        {
+            private boolean isLoadMoreFile = false;
+            
+            @Override
+            public void newScrollChanged(AbsListView view, int scrollState)
+            {
+                if ((scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING)
+                        && isLoadMoreFile)
+                {
+                    
+                    startToLoadMore();
+                }
+            }
+            
+            @Override
+            public void newScroll(AbsListView view, int firstVisibleItem,
+                    int visibleItemCount, int totalItemCount)
+            {
+                isLoadMoreFile = (firstVisibleItem + visibleItemCount == totalItemCount) ? true
+                        : false;
+            }
+        };
+        return scroller;
+    }
+    
+    @Override
+    public void onCreate(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        super.onCreate(paramBundle);
+        setContentView(R.layout.second_business);
+        logic = IntShareLogic.getInstance();
+        bitmapUtilsPic = new BitmapUtils(ShareBusinessActivity.this);
+        bitmapUtilsPic.configDefaultLoadingImage(R.drawable.picture);
+        bitmapUtilsPic.configDefaultLoadFailedImage(R.drawable.picture);
+        bitmapUtilsPic.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+        initView();
+        Intent intent = getIntent();
+        if (null != intent)
+        {
+            whichInfo = intent.getStringExtra("whichInfo");
+            themeId = intent.getStringExtra("themeId");
+            codeId = intent.getStringExtra("codeId");
+            replyCount = intent.getStringExtra("replyCount");
+            userName = intent.getStringExtra("nickName");
+            iconUrl = intent.getStringExtra("userIcon");
+            postType = intent.getStringExtra("postType");
+            rangeType = intent.getStringExtra("rangeType");
+            Log.d(TAG, "rangeType--->" + rangeType);
+            shareBean.setId(themeId);
+            if (intent.getStringExtra("userId").equals(Constant.UserId))
+            {
+                isMe = true;
+            }
+            else
+            {
+                isMe = false;
+            }
+        }
+        if (rangeType.equals(String.valueOf(Constant.PRIVATE_RANGE)))
+        {
+            btnRl.setVisibility(View.GONE);
+        }
+        else
+        {
+            btnRl.setVisibility(View.VISIBLE);
+        }
+        if (null == progressDialog)
+        {
+            progressDialog = new MCloudProgressDialog(
+                    ShareBusinessActivity.this,
+                    getResources().getString(R.string.loading));
+        }
+        progressDialog.show();
+        //        curPage = 1;
+        //        getDetail(curPage);
+        Constant.isNeedToRefreshReplyList = true;
+        replyCount = String.valueOf(Integer.parseInt(replyCount) - 1);
+    }
+    
+    private void getDetail(int curPager)
+    {
+        httpUtil = new HttpUtils();
+        logic.setData(mHandler);
+        logic.requestShareDetails(themeId,
+                codeId,
+                postType,
+                curPage,
+                pageSize,
+                replyCount,
+                httpUtil);
+    }
+    
+    private void initView()
+    {
+        btnRl = (RelativeLayout) findViewById(R.id.btn_rl);
+        shareTitle = (TextView) findViewById(R.id.share_title);
+        sharePrice = (TextView) findViewById(R.id.share_price);
+        shareNum = (TextView) findViewById(R.id.share_num);
+        shareEndTime = (TextView) findViewById(R.id.share_end_time);
+        shareDescription = (TextView) findViewById(R.id.description_content);
+        shareContact = (TextView) findViewById(R.id.contact_content);
+        shareContactMethod = (TextView) findViewById(R.id.contact_method_content);
+        //        picIV = (ImageView) findViewById(R.id.pic_iv);
+        listLl = (LinearLayout) findViewById(R.id.list_ll);
+        scrollContent = (ScrollView) findViewById(R.id.scroll_content);
+        titleTextView = (TextView) findViewById(R.id.comment_title);
+        list = (InnerScrollViewPullRefreshListView) findViewById(R.id.share_list);
+        pagerLayout = (LinearLayout) findViewById(R.id.pagerLayout);
+        pagerImage = (ViewPager) findViewById(R.id.pagerImage);
+        list.setOnItemLongClickListener(this);
+        list.setParentScrollView(scrollContent);
+        list.setMaxHeight(400);
+        list.setNewScrollerListener(createScroller());
+        frame_gallery = (LinearLayout) findViewById(R.id.frame_gallery);
+        frame_gallery.setLayoutParams(new LinearLayout.LayoutParams(
+                CHUtils.getScreenWidth(getBaseContext()), 500));
+        frame_dian = (LinearLayout) findViewById(R.id.frame_dian);
+        gallery = (CustomGallery) findViewById(R.id.gallery);
+        commentLL = (LinearLayout) findViewById(R.id.comment_ll);
+        forwardLL = (LinearLayout) findViewById(R.id.forward_ll);
+        commentIv = (ImageView) findViewById(R.id.comment_iv);
+        commentContent = (TextView) findViewById(R.id.comment_content);
+        commentLL.setOnClickListener(this);
+        forwardLL.setOnClickListener(this);
+        initAdAdapter();
+    }
+    
+    private void Data()
+    {
+        TSnsThemePic pic = new TSnsThemePic();
+        pics.add(pic);
+        pic = new TSnsThemePic();
+        pics.add(pic);
+        pic = new TSnsThemePic();
+        pics.add(pic);
+    }
+    
+    final PagerAdapter pagerAdapter = new PagerAdapter()
+    {
+        
+        @Override
+        public int getCount()
+        {
+            // TODO Auto-generated method stub
+            return viewlist.size();
+        }
+        
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1)
+        {
+            return arg0 == arg1;
+        }
+        
+        @Override
+        public void destroyItem(View container, int position, Object object)
+        {
+            ((ViewPager) container).removeView(viewlist.get(position));
+        }
+        
+        @Override
+        public Object instantiateItem(View container, int position)
+        {
+            // TODO Auto-generated method stub
+            ((ViewPager) container).addView(viewlist.get(position));
+            return viewlist.get(position);
+        }
+        
+    };
+    
+    public void initAdAdapter()
+    {
+        Data();
+        for (int i = 0; i < pics.size(); i++)
+        {
+            ImageView iv = new ImageView(getBaseContext());
+            LayoutParams lp = (LayoutParams) iv.getLayoutParams();
+            if (null == lp)
+            {
+                lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
+                        LayoutParams.WRAP_CONTENT);
+            }
+            //            iv.setImageResource(R.drawable.dian);
+            lp.rightMargin = 5;
+            iv.setLayoutParams(lp);
+            frame_dian.addView(iv);
+            imgViews.add(iv);
+            
+        }
+        
+        if (null == picAdapter)
+        {
+            picAdapter = new ImageAdapter(ShareBusinessActivity.this, pics);
+            gallery.setAdapter(picAdapter);
+            gallery.setSelection(0);
+            gallery.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id)
+                {
+                    
+                }
+            });
+            
+            gallery.setOnItemSelectedListener(new OnItemSelectedListener()
+            {
+                
+                @Override
+                public void onItemSelected(AdapterView<?> arg0, View arg1,
+                        int position, long arg3)
+                {
+                    //                    if (position == 0)
+                    //                    {
+                    //                        getActivity().runOnUiThread(new Runnable()
+                    //                        {
+                    //                            @Override
+                    //                            public void run()
+                    //                            {
+                    //                                ((BaseActivity) getActivity()).setSlideMenu(SlidingMenu.TOUCHMODE_FULLSCREEN);
+                    //                            }
+                    //                        });
+                    //                    }
+                    //                    else
+                    //                    {
+                    //                        getActivity().runOnUiThread(new Runnable()
+                    //                        {
+                    //                            @Override
+                    //                            public void run()
+                    //                            {
+                    //                                ((BaseActivity) getActivity()).setSlideMenu(SlidingMenu.TOUCHMODE_NONE);
+                    //                            }
+                    //                        });
+                    //                    }
+                    // ((ImageView)
+                    // frame_dian.getChildAt(index)).setImageResource(R.drawable.dian);
+                    // ((ImageView)
+                    // frame_dian.getChildAt(position)).setImageResource(R.drawable.dian_h);
+                    // index = position;
+                }
+                
+                @Override
+                public void onNothingSelected(AdapterView<?> arg0)
+                {
+                    
+                }
+            });
+            gallery.setOnTouchListener(new OnTouchListener()
+            {
+                
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    switch (event.getAction())
+                    {
+                        case MotionEvent.ACTION_DOWN:
+                            //                            int postion = gallery.getSelectedItemPosition();
+                            //                            if (postion == 0)
+                            //                            {
+                            //                                getActivity().runOnUiThread(new Runnable()
+                            //                                {
+                            //                                    @Override
+                            //                                    public void run()
+                            //                                    {
+                            //                                        ((BaseActivity) getActivity()).setSlideMenu(SlidingMenu.TOUCHMODE_FULLSCREEN);
+                            //                                    }
+                            //                                });
+                            //                            }
+                            //                            else
+                            //                            {
+                            //                                getActivity().runOnUiThread(new Runnable()
+                            //                                {
+                            //                                    @Override
+                            //                                    public void run()
+                            //                                    {
+                            //                                        ((BaseActivity) getActivity()).setSlideMenu(SlidingMenu.TOUCHMODE_NONE);
+                            //                                    }
+                            //                                });
+                            //                            }
+                            break;
+                    }
+                    return false;
+                    
+                }
+            });
+        }
+        else
+        {
+            picAdapter.notifyDataSetChanged();
+        }
+    }
+    
+    /**
+     * 加载更多
+     */
+    protected void startToLoadMore()
+    {
+        if (hasMore)
+        {
+            if (!isLoadingMore)
+            {
+                
+                list.showLoading();
+                curPage = curPage + 1;
+                isLoadingMore = true;
+                isMore = true;
+                Log.d(TAG, "startToLoadMore--->");
+                getDetail(curPage);
+            }
+        }
+    }
+    
+    private void updateView()
+    {
+        shareTitle.setText(shareBean.getTitle());
+        if (whichInfo.equals(Constant.DYNAMIC_TYPE_ID_ACTIVITY))
+        {
+            try
+            {
+                
+                String timeString = DateUtil.H_M_DF.format(DateUtil.STANDARD_DF.parse(shareBean.getActivityStartTime()));
+                String timeEndString = DateUtil.H_M_DF.format(DateUtil.STANDARD_DF.parse(shareBean.getActivityEndTime()));
+                String startTimeString = getResources().getString(R.string.interact_share_start_time)
+                        + ": " + timeString;
+                String endTimeString = getResources().getString(R.string.interact_share_end_time)
+                        + ": " + timeEndString;
+                SpannableString spannableString = new SpannableString(
+                        startTimeString);
+                spannableString.setSpan((new ForegroundColorSpan(
+                        getResources().getColor(R.color.list_content_text_color))),
+                        5,
+                        startTimeString.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                SpannableString spannableString1 = new SpannableString(
+                        endTimeString);
+                spannableString1.setSpan((new ForegroundColorSpan(
+                        getResources().getColor(R.color.list_content_text_color))),
+                        5,
+                        endTimeString.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sharePrice.setText(spannableString);
+                shareEndTime.setText(spannableString1);
+            }
+            catch (ParseException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            String placeString = getResources().getString(R.string.interact_share_place)
+                    + ": " + shareBean.getPlace();
+            SpannableString spannableString2 = new SpannableString(placeString);
+            spannableString2.setSpan((new ForegroundColorSpan(
+                    getResources().getColor(R.color.list_content_text_color))),
+                    3,
+                    placeString.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            shareNum.setText(spannableString2);
+            shareContact.setText(shareBean.getActivitycontact());
+            shareContactMethod.setText(shareBean.getActivitytel());
+            listLl.setVisibility(View.VISIBLE);
+            initAdapter();
+        }
+        else if (whichInfo.equals(Constant.DYNAMIC_TYPE_ID_SECOND))
+        {
+            listLl.setVisibility(View.GONE);
+            
+            shareEndTime.setVisibility(View.GONE);
+            String priceString = getResources().getString(R.string.interact_share_product_sale)
+                    + ": "
+                    + shareBean.getPrice()
+                    + getResources().getString(R.string.interact_share_unit_element);
+            SpannableString spannableString2 = new SpannableString(priceString);
+            spannableString2.setSpan((new ForegroundColorSpan(
+                    getResources().getColor(R.color.list_content_text_color))),
+                    5,
+                    priceString.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            
+            String numString = getResources().getString(R.string.interact_share_product_num)
+                    + ": "
+                    + shareBean.getCount()
+                    + getResources().getString(R.string.interact_share_unit_piece);
+            SpannableString spannableString3 = new SpannableString(numString);
+            spannableString3.setSpan((new ForegroundColorSpan(
+                    getResources().getColor(R.color.list_content_text_color))),
+                    5,
+                    numString.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sharePrice.setText(spannableString2);
+            
+            shareNum.setText(spannableString3);
+            shareContact.setText(shareBean.getBusinessContact());
+            shareContactMethod.setText(shareBean.getBusinessTel());
+            commentLL.setVisibility(View.GONE);
+        }
+        
+        shareDescription.setText(shareBean.getContent());
+        pics = shareBean.getPics();
+        for (int h = 0; h < pics.size(); h++)
+        {
+            ImageView imageView_pic = new ImageView(this);
+            String url = Constant.URL_iconUrl
+            + shareBean.getPics().get(0).getPicPath();
+            bitmapUtilsPic.display(imageView_pic,
+                   Constant.URL_iconUrl+pics);
+            viewlist.add(imageView_pic);
+        }
+        if (null != shareBean.getPics() && shareBean.getPics().size() > 0)
+        {
+            String url = Constant.URL_iconUrl
+                    + shareBean.getPics().get(0).getPicPath();
+            Log.d(TAG, "url-->" + url);
+            //            bitmapUtilsPic.display(picIV, url);
+        }
+        initAdAdapter();
+    }
+    
+    @Override
+    public void initData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        // TODO Auto-generated method stub
+        super.onResume();
+        if (Constant.isNeedToRefreshReplyList)
+        {
+            curPage = 1;
+            replies.clear();
+            isMore = false;
+            replyCount = String.valueOf(Integer.parseInt(replyCount) + 1);
+            getDetail(curPage);
+            Constant.isNeedToRefreshReplyList = false;
+        }
+        
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        // TODO Auto-generated method stub
+        Intent intent = new Intent();
+        
+        switch (v.getId())
+        {
+            case R.id.comment_ll:
+                //                intent.setClass(ShareBusinessActivity.this,
+                //                        CommentActivity.class);
+                intent.putExtra("isForWard", false);
+                intent.putExtra("themeId", themeId);
+                break;
+            case R.id.forward_ll:
+                //                intent.setClass(ShareBusinessActivity.this,
+                //                        CommentActivity.class);
+                intent.putExtra("isForWard", true);
+                intent.putExtra("shareBean", shareBean);
+                intent.putExtra("userName", userName);
+                intent.putExtra("iconUrl", iconUrl);
+                intent.putExtra("whichInfo", whichInfo);
+                if (postType.equals(Constant.POSTTYPE_FORWARD))
+                {
+                    intent.putExtra("title", shareBean.getForwardContent());
+                }
+                intent.putExtra("postType", postType);
+                break;
+            case R.id.share_info_icon:
+                //                intent.setClass(ShareBusinessActivity.this,
+                //                        FriendInfoActivity.class);
+                intent.putExtra("userId", shareBean.getCreatorId());
+                break;
+            default:
+                break;
+        }
+        //        startActivity(intent);
+    }
+    
+    private void initAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new ShareInfoAdapter(ShareBusinessActivity.this, replies);
+            list.setAdapter(adapter);
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+            
+        }
+        
+    }
+    
+    /**
+     * 删除请求
+     * @param themeOrReplyId
+     */
+    private void deleteComment(String themeOrReplyId)
+    {
+        if (null == progressDialog)
+        {
+            progressDialog = new MCloudProgressDialog(
+                    ShareBusinessActivity.this,
+                    getResources().getString(R.string.common_pagetip_deleting));
+        }
+        progressDialog.show();
+        httpUtil = new HttpUtils();
+        logic.setData(mHandler);
+        logic.requestDelete(themeOrReplyId, Constant.DELETE_COMMENT, httpUtil);
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        // TODO Auto-generated method stub
+        super.handleMsg(msg);
+        if (null != progressDialog)
+        {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+        switch (msg.what)
+        {
+            case Constant.SHARE_DETAILS_SUCCESS:
+                list.showLoadFinish();
+                shareBean = (ShareBean) msg.obj;
+                
+                isLoadingMore = false;
+                if (!isMore)
+                {
+                    replies.clear();
+                }
+                replies.addAll(shareBean.getReplies());
+                if (replies.size() < replyTotalNum)
+                {
+                    hasMore = true;
+                }
+                else
+                {
+                    hasMore = false;
+                }
+                
+                replyCount = shareBean.getCount();
+                //                numContent.setText(shareBean.getCount());
+                //                Log.d(TAG, "shareBean--->" + shareBean + "  replies,size--->"
+                //                        + replies.size());
+                if (!isMore)
+                {
+                    updateView();
+                }
+                else
+                {
+                    initAdapter();
+                }
+                
+                break;
+            case Constant.SHARE_DETAILS_FAILED:
+                //                list.showLoadFinish();
+                //                if (!isLoadingMore)
+                //                {
+                Toast.makeText(ShareBusinessActivity.this,
+                        getResources().getString(R.string.detail_req_failed),
+                        Toast.LENGTH_SHORT).show();
+                //                }
+                //                else
+                //                {
+                //                Toast.makeText(ShareBusinessActivity.this,
+                //                        getResources().getString(R.string.detail_reply_req_failed),
+                //                        Toast.LENGTH_SHORT)
+                //                        .show();
+                //                }
+                break;
+            case Constant.DELETE_SUCCESS:
+                Toast.makeText(ShareBusinessActivity.this,
+                        getResources().getString(R.string.delete_success),
+                        Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "deleteHandler   pos-->" + pos);
+                replies.remove(pos);
+                initAdapter();
+                replyTotalNum = replyTotalNum - 1;
+                if (replies.size() < replyTotalNum)
+                {
+                    hasMore = true;
+                }
+                else
+                {
+                    hasMore = false;
+                }
+                Constant.isNeedToRefreshPagerList = true;
+                break;
+            case Constant.DELETE_FAILED:
+                Toast.makeText(ShareBusinessActivity.this,
+                        getResources().getString(R.string.delete_failed),
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case SuperLogic.CONNECT_ERROR_MSGWHAT:
+                Toast.makeText(ShareBusinessActivity.this,
+                        getResources().getString(R.string.req_failed),
+                        Toast.LENGTH_SHORT).show();
+                //                list.showLoadFinish();
+                break;
+            default:
+                break;
+        }
+    }
+    
+    @Override
+    public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
+            long arg3)
+    {
+        // TODO Auto-generated method stub
+        pos = arg2 - 1;
+        if (isMe)
+        {
+            showAlertDialog(0,
+                    getString(R.string.tip),
+                    getString(R.string.delete_tip_comment),
+                    null,
+                    new DialogInterface.OnClickListener()
+                    {
+                        
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            // TODO Auto-generated method stub
+                            
+                            deleteComment(String.valueOf(replies.get(pos)
+                                    .getId()));
+                        }
+                    }, DEFAULT_BTN, null, true, false);
+        }
+        else
+        {
+            String cuUserId = replies.get(pos).getUser().getUserId();
+            if (cuUserId.equals(Constant.UserId))
+            {
+                showAlertDialog(0,
+                        getString(R.string.tip),
+                        getString(R.string.delete_tip_comment),
+                        null,
+                        new DialogInterface.OnClickListener()
+                        {
+                            
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                    int which)
+                            {
+                                // TODO Auto-generated method stub
+                                
+                                deleteComment(String.valueOf(replies.get(pos)
+                                        .getId()));
+                            }
+                        }, DEFAULT_BTN, null, true, false);
+            }
+        }
+        
+        return false;
+    }
+}

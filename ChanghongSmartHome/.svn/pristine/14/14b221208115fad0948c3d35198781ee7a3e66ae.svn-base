@@ -1,0 +1,115 @@
+package com.changhong.smarthome.phone.cinema.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.smarthome.phone.cinema.entry.Cinema;
+import com.changhong.smarthome.phone.cinema.entry.Pager;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.http.RequestId;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+/**  
+* @author yang_jun
+* @date 2014-3-17 下午8:40:34 
+*/
+public class AddShareSuccessLogic extends SuperLogic
+{
+    HttpHandler<String> httpHanlder;
+    
+    private static AddShareSuccessLogic ins;
+    
+    public static synchronized AddShareSuccessLogic getInstance()
+    {
+        if (null == ins)
+        {
+            ins = new AddShareSuccessLogic();
+        }
+        return ins;
+    }
+    
+    //表示上传完毕
+    public void requestSendAddShareSuccess()
+    {
+        HttpUtils httpUtils = new HttpUtils();
+        RequestParams params = new RequestParams();
+        Map serviceInfo = new HashMap();
+        serviceInfo.put("accountInfo", BillLogic.accountInfo);
+        serviceInfo.put("fileName", "I am superman");
+        
+        fixRequestParams(params,
+                serviceInfo,
+                "addMediaShare",
+                "sc",
+                "sc",
+                "4100");
+        String url = "http://172.17.184.135:8080/cbs/msg";
+        httpHanlder = HttpSenderUtils.sendMsgImpl("addMediaShare",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.MOVIE_UPLOAD_SUCCESS,
+                this,
+                false,
+                url);
+        //simulate anthor request
+        HttpSenderUtils.sendMsgImpl("findMediaContent",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.CINEMA_GET,
+                this,
+                false, url);
+        
+        
+        
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is)
+    {
+        switch (requestId)
+        {
+            case RequestId.MOVIE_UPLOAD_SUCCESS:
+                break;
+        }
+        
+    }
+    
+    //解析数据
+   
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        handler.sendEmptyMessage(SuperLogic.DATA_FORMAT_ERROR_MSGWHAT);
+    }
+    
+    @Override
+    public void clear()
+    {
+        
+    }
+    
+    public void stopRequest()
+    {
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+        }
+    }
+}

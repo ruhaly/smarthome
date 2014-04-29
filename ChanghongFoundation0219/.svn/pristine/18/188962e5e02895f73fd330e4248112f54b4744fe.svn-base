@@ -1,0 +1,52 @@
+package com.changhong.foundation.baseapi;
+
+public abstract interface HttpAction
+{
+    public static final String ACTION_FOUNDATION_CHECK_UPDATE = "QueryVersionInfo";
+    
+    public static final String ACTION_LOGIN = "UserLoginAction";
+    
+    public static final String ACTION_REGISTER = "UserRegAction";
+    
+    public static final String ACTION_GET_PROVINCE = "QueryProvince";
+    
+    public static final String ACTION_GET_CITY = "QueryCityByProvince";
+    
+    public static final String ACTION_GET_COMMUNITY = "QueryOrgByCity";
+    
+    public static final String ACTION_GET_ZUTUAN = "QueryGroupByOrg";
+    
+    public static final String ACTION_GET_BUILDING = "QueryBuildingByGroup";
+    
+    public static final String ACTION_GET_DOORPLATE = "QueryHouseByBudUnit";
+    
+    public static final String ACTION_REGISTER_VALICODE = "SMSCodeAction";
+    
+    public static final String ACTION_EXIT = "/account/end_session";
+    
+    public static final String ACTION_GET_MSGLIST = "findMsgList";
+    
+    public static final String ACTION_DELETE_MSG = "deleteMsg";
+    
+    public static final String ACTION_CLEAN_MSG = "cleanMsg";
+    
+    public static final String ACTION_GETRECORDS = "GetRecordsAction";
+    
+    public static final String ACTION_PAY_INFOS = "DunningAction";
+    
+    public static final String ACTION_PAYSUCCESS_TO_SEVER = "DetaileRecordsAction";
+    
+    public static final String ACTION_FINDPWD_VALICODE = "SMSCodeAction";
+    
+    public static final String ACTION_FINDPWD = "PwdRecoverAction";
+    
+    public static final String ACTION_MODIFYPWD = "changePwdAction";
+    
+    public static final String ACTION_AD_LIST = "findAd";
+    
+    public static final String ACTION_AD_CLICK = "modifyAdClick";
+    
+    public static final String ACTION_INTEGRALEXCHANGE = "findIntegralExchange";
+    
+    public static final String ACTION_PERSON_INFO = "UserInfoAction";
+}

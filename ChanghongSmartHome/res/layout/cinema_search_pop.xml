@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <EditText
+            android:id="@+id/seacrhing_park_et"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_search_bg"
+            android:drawableLeft="@drawable/search_bar_icon_search"
+            android:drawablePadding="10dip"
+            android:gravity="center_vertical"
+            android:hint="@string/park_place_edit_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingLeft="15dip"
+            android:singleLine="false"
+            android:textColor="@color/search_text_color"
+            android:textSize="15sp"
+            />
+
+</LinearLayout>

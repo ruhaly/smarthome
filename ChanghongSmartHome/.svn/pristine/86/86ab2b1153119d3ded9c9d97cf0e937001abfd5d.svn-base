@@ -1,0 +1,342 @@
+package com.changhong.smarthome.phone.foundation.fragment;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.Gallery;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import com.changhong.sdk.baseapi.CHUtils;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.sdk.fragment.SuperFragment;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.baseapi.MsgWhat;
+import com.changhong.smarthome.phone.foundation.bean.Ad;
+import com.changhong.smarthome.phone.foundation.logic.AdLogic;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+import com.changhong.smarthome.phone.property.PropertyMainActivity;
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
+import com.lidroid.xutils.bitmap.callback.BitmapLoadCallBack;
+import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class ProManageFragment extends SuperFragment
+{
+    
+    private View convertView;
+    
+    //报修标识
+    public static String BXBZ = "frameRepair";
+    
+    //投诉标识
+    public static String TSBZ = "frameSuggestionBox";
+    
+    @ViewInject(R.id.frame01)
+    private LinearLayout frame01;
+    
+    @ViewInject(R.id.gallery)
+    private Gallery gallery;
+    
+    public HttpUtils httpUtils;
+    
+    private ImageAdapter adapter;
+    
+    @ViewInject(R.id.frame_gallery)
+    private LinearLayout frame_gallery;
+    
+    @ViewInject(R.id.frame_dian)
+    public LinearLayout frame_dian;
+    
+    private BitmapUtils bitmaputils;
+    
+    public AdLogic adLogic;
+    
+    @Override
+    public void updateView(Message msg)
+    {
+    }
+    
+    @Override
+    public void updateView(Intent intent)
+    {
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        adLogic = AdLogic.getInstance();
+    }
+    
+    @Override
+    public View initLayout(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        convertView = inflater.inflate(R.layout.promanage_layout,
+                container,
+                false);
+        ViewUtils.inject(this, convertView);
+        frame_gallery.setLayoutParams(new LinearLayout.LayoutParams(
+                CHUtils.getScreenWidth(getActivity().getBaseContext()), 500));
+        bitmaputils = new BitmapUtils(getActivity().getBaseContext());
+        //        bitmaputils.configDefaultLoadingImage(R.drawable.defaultloadingimage);
+        bitmaputils.configDefaultLoadFailedImage(R.drawable.defaultloadingimage);
+        bitmaputils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+        initAdAdapter();
+        requestAds();
+        return convertView;
+    }
+    
+    public void requestAds()
+    {
+        httpUtils = new HttpUtils();
+        adLogic.setData(fHandler);
+        adLogic.requestAds(LoginLogic.getInstance().baseAccountInfo, httpUtils);
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case MsgWhat.MSGWHAT_ADLIST_SUCCESS:
+            {
+                initAdAdapter();
+                break;
+            }
+            
+            default:
+                break;
+        }
+        super.handleMsg(msg);
+    }
+    
+    public void initAdAdapter()
+    {
+        
+        // for (int i = 0; i < purls.length; i++) {
+        // ImageView iv = new ImageView(getActivity().getBaseContext());
+        // LayoutParams lp = (LayoutParams) iv.getLayoutParams();
+        // if (null == lp) {
+        // lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
+        // LayoutParams.WRAP_CONTENT);
+        // }
+        // iv.setImageResource(R.drawable.dian);
+        // lp.rightMargin = 5;
+        // iv.setLayoutParams(lp);
+        // frame_dian.addView(iv);
+        // imgViews.add(iv);
+        //
+        // }
+        
+        if (null == adapter)
+        {
+            adapter = new ImageAdapter();
+            gallery.setAdapter(adapter);
+            gallery.setSelection(0);
+            gallery.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id)
+                {
+                    goToInternet(adapter.getItem(position).getLink());
+                }
+            });
+            
+            gallery.setOnItemSelectedListener(new OnItemSelectedListener()
+            {
+                
+                @Override
+                public void onItemSelected(AdapterView<?> arg0, View arg1,
+                        int position, long arg3)
+                {
+                    // frame_dian.getChildAt(index)).setImageResource(R.drawable.dian);
+                    // frame_dian.getChildAt(position)).setImageResource(R.drawable.dian_h);
+                    // index = position;
+                }
+                
+                @Override
+                public void onNothingSelected(AdapterView<?> arg0)
+                {
+                    
+                }
+            });
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    public void goToInternet(String link)
+    {
+        if (!StringUtils.isEmpty(link))
+        {
+            Uri uri = Uri.parse(link);
+            startActivity(new Intent(Intent.ACTION_VIEW, uri));
+        }
+    }
+    
+    /**
+     * 
+     * 报修
+     * [功能详细描述]
+     * @param view
+     */
+    @OnClick(R.id.frameRepair)
+    public void frameRepairClick(View view)
+    {
+        Intent intent = new Intent();
+        intent.putExtra("bz", BXBZ);
+        intent.setClass(getActivity(), PropertyMainActivity.class);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.anim_enter,
+                R.anim.anim_exit);
+    }
+    
+    /**
+     * 
+     * 意见箱
+     * [功能详细描述]
+     * @param view
+     */
+    @OnClick(R.id.frameSuggestionBox)
+    public void frameSuggestionBoxClick(View view)
+    {
+        Intent intent = new Intent();
+        intent.putExtra("bz", TSBZ);
+        intent.setClass(getActivity(), PropertyMainActivity.class);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.anim_enter,
+                R.anim.anim_exit);
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public class ImageAdapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return adLogic.adList.size();
+        }
+        
+        @Override
+        public Ad getItem(int position)
+        {
+            return adLogic.adList.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            final ViewHolder holder;
+            if (null == convertView)
+            {
+                convertView = LayoutInflater.from(getActivity().getBaseContext())
+                        .inflate(R.layout.ad_item_layout, null);
+                holder = new ViewHolder();
+                holder.img_ad = (ImageView) convertView.findViewById(R.id.img_ad);
+                holder.frame = (FrameLayout) convertView.findViewById(R.id.frame);
+                holder.progressBarFrame = (FrameLayout) convertView.findViewById(R.id.progressBarFrame);
+                
+                convertView.setTag(holder);
+                
+            }
+            else
+            {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.frame.setLayoutParams(new LinearLayout.LayoutParams(
+                    CHUtils.getScreenWidth(getActivity().getBaseContext()), 500));
+            //            holder.img_ad.setOnTouchListener(new OnTouchListener()
+            //            {
+            //                
+            //                @Override
+            //                public boolean onTouch(View v, MotionEvent event)
+            //                {
+            //                    //提交给gallery处理  
+            //                    gallery.onTouchEvent(event);
+            //                    return false;
+            //                }
+            //            });
+            //            holder.img_ad.setTag(position);
+            //            holder.img_ad.setOnClickListener(new OnClickListener()
+            //            {
+            //                
+            //                @Override
+            //                public void onClick(View v)
+            //                {
+            //                    goToInternet(adLogic.adList.get((Integer) v.getTag())
+            //                            .getLink());
+            //                    
+            //                }
+            //            });
+            bitmaputils.display(holder.img_ad,
+                    getItem(position).getUrl(),
+                    new BitmapLoadCallBack<View>()
+                    {
+                        @Override
+                        public void onLoadCompleted(View container, String uri,
+                                Bitmap bitmap, BitmapDisplayConfig config,
+                                BitmapLoadFrom from)
+                        {
+                            ((ImageView) container).setImageBitmap(bitmap);
+                            holder.progressBarFrame.setVisibility(View.GONE);
+                        }
+                        
+                        @Override
+                        public void onLoadFailed(View container, String uri,
+                                Drawable drawable)
+                        {
+                            ((ImageView) container).setImageDrawable(drawable);
+                            holder.progressBarFrame.setVisibility(View.GONE);
+                            
+                        }
+                        
+                    });
+            
+            // holder.img_ad.setImageResource(R.drawable.defaultloadingimage);
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            private ImageView img_ad;
+            
+            private FrameLayout frame;
+            
+            private FrameLayout progressBarFrame;
+        }
+    }
+}

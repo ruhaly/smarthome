@@ -1,0 +1,328 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.sdk.baseapi.PreferencesUtils;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.sdk.entity.User;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.baseapi.MsgWhat;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.bean.Community;
+import com.changhong.smarthome.phone.foundation.bean.MsgTip;
+import com.changhong.smarthome.phone.foundation.bean.MyDialogBean;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+
+/**
+ * 
+ * 抽象基类，所有Activity继承此类
+ * [功能详细描述]
+ * @author hanliangru
+ * @version [智慧社区-终端底座, 2014年4月18日]
+ */
+public abstract class BaseActivity extends SuperActivity implements MsgWhat
+{
+    /**
+     * 
+     * 获取登录dialog
+     * [功能详细描述]
+     * @param callBack 回调参数，定义登陆完成之后要处理的操作
+     * @return
+     */
+    public MyDialogBean getLoginDialog(CallBack callBack)
+    {
+        MyDialogBean myDialog = new MyDialogBean(callBack);
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.login_layout, null);
+        TextView tvForgetPwd = (TextView) view.findViewById(R.id.tvForgetPwd);
+        TextView tvRegister30 = (TextView) view.findViewById(R.id.tvRegister30);
+        final EditText etAccount = (EditText) view.findViewById(R.id.etAccount);
+        ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
+        
+        EditText etPwd = (EditText) view.findViewById(R.id.etPwd);
+        Button btLogin = (Button) view.findViewById(R.id.btLogin);
+        imgDelete.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                etAccount.setText("");
+            }
+        });
+        Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        myDialog.setBtLogin(btLogin);
+        myDialog.setDialog(dialog);
+        myDialog.setEtAccount(etAccount);
+        myDialog.setEtPwd(etPwd);
+        myDialog.setTvRegister30(tvRegister30);
+        myDialog.setTvForgetPwd(tvForgetPwd);
+        return myDialog;
+    }
+    
+    /**
+     * 
+     * 通用自定义提示框
+     * [功能详细描述]
+     * @param tip 显示内容
+     * @param callBack 点击确定按钮做的事
+     * @param hasCancelBtn 是否有取消按钮
+     * @param okTitle TODO
+     */
+    public void showTipDialog(String tip, final CallBack callBack,
+            boolean hasCancelBtn, String okTitle)
+    {
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.tipdialog_layout, null);
+        TextView tvContent = (TextView) view.findViewById(R.id.tvContent);
+        if (!StringUtils.isEmpty(tip))
+        {
+            tvContent.setText(tip);
+        }
+        Button btnCancel = (Button) view.findViewById(R.id.btnCancel);
+        Button btnConfirm = (Button) view.findViewById(R.id.btnConfirm);
+        if (!StringUtils.isEmpty(okTitle))
+        {
+            btnConfirm.setText(okTitle);
+        }
+        View divideView = view.findViewById(R.id.divide);
+        if (!hasCancelBtn)
+        {
+            btnCancel.setVisibility(View.GONE);
+            divideView.setVisibility(View.GONE);
+            btnConfirm.setTextColor(getResources().getColor(R.color.red));
+        }
+        final Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        dialog.show();
+        btnCancel.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+            }
+        });
+        
+        btnConfirm.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                callBack.update(null);
+            }
+        });
+    }
+    
+    /**
+     * 
+     * 获取消息提示所有的数据
+     * [功能详细描述]
+     * @return
+     */
+    public List<MsgTip> getMsgTipList()
+    {
+        List<MsgTip> list = new ArrayList<MsgTip>();
+        String[] array = getResources().getStringArray(R.array.array_msg_tip);
+        for (int i = 0; i < array.length; i++)
+        {
+            MsgTip mt = new MsgTip();
+            mt.setName(array[i]);
+            mt.setState(PreferencesUtils.getInt(getBaseContext(), array[i], 0));
+            list.add(mt);
+        }
+        return list;
+        
+    }
+    
+    /**
+     * 
+     * 显示切换小区dialog
+     * [功能详细描述]
+     * @param list
+     * @param callBack
+     * @param anchor
+     */
+    public void showChangeCommunityDialog(List<Community> list,
+            final CallBack callBack, View anchor)
+    {
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.change_community_layout, null);
+        ListView listView = (ListView) view.findViewById(R.id.listView);
+        
+        int width = getResources().getDrawable(R.drawable.change_community_bg)
+                .getIntrinsicWidth();
+        final PopupWindow pw = new PopupWindow(view, width,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+        final Adapter adapter = new Adapter(list);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                
+                for (int i = 0; i < adapter.getCount(); i++)
+                {
+                    adapter.getItem(i).setSelect(false);
+                }
+                
+                adapter.getItem(position).setSelect(true);
+                
+                showToast(adapter.getItem(position).getName());
+                pw.dismiss();
+                callBack.update((Community) adapter.getItem(position));
+            }
+        });
+        
+        pw.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        pw.setOutsideTouchable(true);
+        pw.setFocusable(true);
+        // 计算x轴方向的偏移量，使得PopupWindow在Title的正下方显示，此处的单位是pixels  
+        int xoffInPixels = width - 42 - anchor.getWidth() / 2;
+        pw.showAsDropDown(anchor, -xoffInPixels, 20);
+        pw.update();
+    }
+    
+    class Adapter extends BaseAdapter
+    {
+        
+        private List<Community> list;
+        
+        public Adapter(List<Community> list)
+        {
+            super();
+            this.list = list;
+        }
+        
+        @Override
+        public int getCount()
+        {
+            return list.size();
+        }
+        
+        @Override
+        public Community getItem(int position)
+        {
+            return list.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            final ViewHolder viewHolder;
+            if (null == convertView)
+            {
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.change_community_item_layout, null);
+                viewHolder = new ViewHolder();
+                viewHolder.imgView = (ImageView) convertView.findViewById(R.id.imgView);
+                viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+                convertView.setTag(viewHolder);
+            }
+            else
+            {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.tvName.setText(getItem(position).getName());
+            if (getItem(position).isSelect())
+            {
+                viewHolder.imgView.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                viewHolder.imgView.setVisibility(View.GONE);
+            }
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            public ImageView imgView;
+            
+            public TextView tvName;
+        }
+    }
+    
+    /**
+     * 
+     * 更新头像选择框
+     * [功能详细描述]
+     * @param callBack
+     */
+    public void showUpdateHeadChooseDialog(final CallBack callBack)
+    {
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.update_head_choose, null);
+        final Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        
+        TextView tvCamera = (TextView) view.findViewById(R.id.tvCamera);
+        TextView tvLocal = (TextView) view.findViewById(R.id.tvLocal);
+        tvCamera.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                callBack.update(0);
+            }
+        });
+        tvLocal.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                callBack.update(1);
+            }
+        });
+        dialog.show();
+    }
+    
+    /**
+     * 
+     * 用户基本信息
+     * [功能详细描述]
+     * @return
+     */
+    public User getUser()
+    {
+        //        User user = new User();
+        //        user.setUid("7");
+        //        user.setCommuntyId("6000");
+        //        return user;
+        return null == LoginLogic.getInstance().user ? new User()
+                : LoginLogic.getInstance().user;
+    }
+}

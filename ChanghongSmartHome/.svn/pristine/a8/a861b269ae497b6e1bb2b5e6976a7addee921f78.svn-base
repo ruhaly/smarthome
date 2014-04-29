@@ -1,0 +1,215 @@
+package com.changhong.smarthome.phone.cinema;
+
+import java.io.File;
+import java.io.IOException;
+
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Message;
+import android.util.Log;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.sdk.activity.SuperActivity;
+import com.changhong.sdk.http.ContinueFTP;
+import com.changhong.sdk.http.ContinueFTP.UploadStatus;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.cinema.adapter.ChildCinemaAdapter;
+import com.changhong.smarthome.phone.cinema.http.HttpAction;
+import com.changhong.smarthome.phone.cinema.logic.AddShareSuccessLogic;
+import com.changhong.smarthome.phone.cinema.logic.BillLogic;
+import com.changhong.smarthome.phone.cinema.logic.GetUploadInfoLogic;
+import com.changhong.smarthome.phone.cinema.logic.MediaShareFtpInfo;
+
+public class UploadingActivity extends SuperActivity
+{
+    private static final String TAG = "UploadingActivity";
+    
+    MediaShareFtpInfo ftpInfo = null;
+    
+    private GridView gridviews;
+    
+    private TextView titletext;
+    
+    private ImageView exitImg1;
+    
+    private Button exitImg2;//完成按钮
+    
+    private GetUploadInfoLogic getUploadInfoLogic;// 上传logic
+    
+    private AddShareSuccessLogic addShareSuccessLogic;
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.uploading);
+        titletext = (TextView) findViewById(R.id.titletext);
+        exitImg2 = (Button) findViewById(R.id.exitImg2);
+        exitImg1 = (ImageView) findViewById(R.id.exitImg1);
+        int titleLogo = this.getIntent().getIntExtra("titleLogo", 0);
+        
+        if (titleLogo == R.id.uploading)
+        {
+            titletext.setText("上传视频中");
+        }
+        
+        gridviews = (GridView) findViewById(R.id.gridviews);
+        
+        ChildCinemaAdapter hotAdapter = new ChildCinemaAdapter(this,
+                BillLogic.getInstance().cinemaList);
+        gridviews.setAdapter(hotAdapter);
+        getUploadInfoLogic.setData(mHandler);
+        getUploadInfoLogic.requestPostUploadInfo();
+        //
+        //        addShareSuccessLogic.requestSendAddShareSuccess();
+        
+        exitImg1.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                finish();
+                
+            }
+        });
+        exitImg2.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                //				Intent intent = new Intent();
+                //				intent.setClass(UploadingActivity.this, SearchActivity.class);
+                //				startActivity(intent);
+                //TODO 上传视频
+                
+                ftpInfo = getUploadInfoLogic.getInstance().ftpInfo;
+                if (ftpInfo == null)
+                {
+                    Log.i(TAG, "------ftpInfo ==null ,cannot upload movie");
+                    showToast("sorry ,cannot get upload info,please try again later");
+                    return;
+                }
+                
+                new Thread()
+                {
+                    
+                    @Override
+                    public void run()
+                    {
+                        super.run();
+                        ContinueFTP continueTP = new ContinueFTP();
+                        String hostname = "172.17.184.80";
+                        int port = 21;
+                        String username = "oracle";
+                        String password = "oracle";
+                        String local = Environment.getExternalStorageDirectory()
+                                .getAbsolutePath()
+                                + File.separator
+                                + "tickbox.jpg";
+                        
+                        ;
+                        String remote = "/opt/oracle/ftptest/0023.jar";
+                        try
+                        {
+                            Log.i(TAG, "---------try");
+                            boolean hasConnect = continueTP.connect(hostname,
+                                    port,
+                                    username,
+                                    password);
+                            
+                            if (hasConnect)
+                            {
+                                Log.i(TAG, "---------hasConnect");
+                                UploadStatus status = continueTP.upload(local,
+                                        remote);
+                                switch (status)
+                                {
+                                    case Upload_From_Break_Success:
+                                        //TODO
+                                        addShareSuccessLogic.requestSendAddShareSuccess();
+                                        break;
+                                    case Upload_From_Break_Failed:
+                                        
+                                        break;
+                                    case File_Exits:
+                                        
+                                        break;
+                                    
+                                    default:
+                                        break;
+                                }
+                            }
+                            
+                        }
+                        catch (IOException e)
+                        {
+                            Log.i(TAG, "---------IOException");
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                    
+                }.start();
+            }
+        });
+        
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case HttpAction.FTP_UPLOAD_INFO_SUCCESS_GET:
+                Log.i(TAG, "001----successful get ftp upload server info");
+                break;
+            case DATA_FORMAT_ERROR_MSGWHAT:
+                showToast("获取上传信息失败");
+                break;
+        }
+        super.handleMsg(msg);
+        
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // getMenuInflater().inflate(R.menu.activity_cinema_start, menu);
+        return true;
+    }
+    
+    @Override
+    public void initData()
+    {
+        if (null != GetUploadInfoLogic.getInstance())
+        {
+            getUploadInfoLogic = GetUploadInfoLogic.getInstance();
+        }
+        if (null != AddShareSuccessLogic.getInstance())
+        {
+            addShareSuccessLogic = AddShareSuccessLogic.getInstance();
+        }
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void clearData()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+}

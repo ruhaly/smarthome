@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/left_title"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@drawable/menu_bg" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/menu_bg_shade" >
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dip"
+        android:layout_marginTop="50dip"
+        android:layout_marginLeft="50dip"
+        android:layout_centerVertical="true"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="45dip"
+            android:layout_height="45dip"
+            android:layout_marginBottom="12dip"
+            android:src="@drawable/title_fragment_share" />
+
+        <TextView
+            style="@style/TextViewTitleStyle_write"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的分享"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/record"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/share"
+        android:layout_marginLeft="50dip"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="45dip"
+            android:layout_height="45dip"
+            android:layout_marginBottom="12dip"
+            android:src="@drawable/title_fragment_record" />
+
+        <TextView
+            style="@style/TextViewTitleStyle_write"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="播放记录"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/uploading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/share"
+        android:layout_marginLeft="50dip"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="45dip"
+            android:layout_height="45dip"
+            android:layout_marginBottom="12dip"
+            android:src="@drawable/title_fragment_upload" />
+
+        <TextView
+            style="@style/TextViewTitleStyle_write"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="上传"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+</RelativeLayout>

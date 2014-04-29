@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/hotLayout"
+        android:layout_width="match_parent"
+        android:layout_height="150dip"
+        android:background="@drawable/classify_content" >
+
+        <ImageView
+            android:id="@+id/hotimage"
+            android:layout_width="match_parent"
+            android:layout_height="148dip"
+            android:layout_alignBottom="@+id/hotLayout"
+            android:layout_margin="2dip" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="148dip"
+            android:layout_margin="2dip"
+            android:background="@drawable/classify_content_shadow" >
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/hottitle_name"
+            style="@style/TextViewTitleStyle_write27"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dip"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/hotLayout_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="150dip"
+        android:background="@drawable/classify_content_price"
+        android:visibility="gone" >
+
+        <com.changhong.smarthome.phone.cinema.view.MyTextView
+            android:id="@+id/mytextview"
+            style="@style/TextViewTitleStyle_write27"
+            android:layout_width="25dip"
+            android:layout_height="25dip"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="￥5"
+            android:visibility="gone" >
+        </com.changhong.smarthome.phone.cinema.view.MyTextView>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/hottitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hotLayout" >
+
+        <TextView
+            android:id="@+id/hottitle_name"
+            style="@style/TextViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:maxLines="2"
+            android:text="评分：" />
+
+        <TextView
+            android:id="@+id/hottitle_point"
+            style="@style/TextViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dip"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="9.5" />
+    </LinearLayout>
+
+</RelativeLayout>

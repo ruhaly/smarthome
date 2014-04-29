@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/ll_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bg"
+        android:gravity="center_vertical"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/img_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="3dp"
+                android:clickable="true"
+                android:onClick="imgBackClick"
+                android:src="@drawable/back_bg" />
+
+            <TextView
+                android:id="@+id/tv_msg_center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/msg_center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_body"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/ll_foot"
+        android:layout_below="@+id/ll_header"
+        android:orientation="vertical" >
+
+        <com.changhong.foundation.widget.MsgCustomViewPager
+            android:id="@+id/vp"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:background="#ffffff"
+            android:flipInterval="30"
+            android:focusable="false"
+            android:persistentDrawingCache="animation" >
+        </com.changhong.foundation.widget.MsgCustomViewPager>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_foot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/ibt_msg_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bottom_bar_icon_quanbu_selected" />
+
+        <ImageButton
+            android:id="@+id/ibt_msg_huimin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bottom_bar_icon_huimin_default" />
+
+        <ImageButton
+            android:id="@+id/ibt_msg_wuye"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bottom_bar_icon_wuye_default" />
+
+        <ImageButton
+            android:id="@+id/ibt_msg_anfang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bottom_bar_icon_anfang_default" />
+
+        <ImageButton
+            android:id="@+id/ibt_msg_system"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bottom_bar_icon_xitong_default" />
+    </LinearLayout>
+
+</RelativeLayout>

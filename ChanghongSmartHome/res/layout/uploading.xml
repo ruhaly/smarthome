@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/exitLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip" >
+
+        <ImageView
+            android:id="@+id/exitImg1"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_alignLeft="@id/exitLayout"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"
+            android:background="@drawable/drawable_expand_finish" />
+
+        <TextView
+            android:id="@+id/titletext"
+            style="@style/TextViewTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="please choose videos" />
+
+        <TextView
+            android:id="@+id/exitImg2"
+            style="@style/TextViewTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dip"
+            android:text="完成" />
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gridviews"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="5dip"
+        android:horizontalSpacing="10dip"
+        android:numColumns="2"
+        android:verticalSpacing="10dip" >
+    </GridView>
+
+</LinearLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="OrderDetailItem">  
+        <attr name="key" format="string" />  
+       <attr name="originalHeight" format="integer" /> 
+       <attr name="originalTop" format="integer" /> 
+       <attr name="originalBottom" format="integer" /> 
+       <attr name="lineVisibility" format="boolean" /> 
+    </declare-styleable>
+    <!-- name="OrderDetailItem"控件名称 得到TypedArray时用 -->  
+<!-- name="textColor" 对应test:textColor -->  
+<!-- format="color" 对应构造方法里a.getColor(R.styleable.CustomView2_textColor, 0xFFFFFFFF); -->  
+    <declare-styleable name="titleItem">  
+        <attr name="titlename" format="string" />  
+        <attr name="othername" format="string" />  
+        <attr name="otherVisibility" format="boolean" /> 
+    </declare-styleable>
+
+</resources>

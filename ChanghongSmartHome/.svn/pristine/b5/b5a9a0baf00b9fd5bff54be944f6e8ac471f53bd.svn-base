@@ -1,0 +1,154 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.MainActivity;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.bean.Community;
+import com.changhong.smarthome.phone.foundation.logic.CitySelectLogic;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+
+public class CommunitySelectActivity extends BaseActivity
+{
+    @ViewInject(R.id.etSearch)
+    private EditText etSearch;
+    
+    @ViewInject(R.id.btnSearch)
+    private Button btnSearch;
+    
+    @ViewInject(R.id.listView)
+    private ListView listView;
+    
+    private CitySelectLogic logic;
+    
+    private Adapter adapter;
+    
+    @Override
+    public void initData()
+    {
+        logic = CitySelectLogic.getInstance();
+        Community c = new Community();
+        c.setName("青年创意产业园");
+        c.setArea("锦江区");
+        c.setAddress("红星路一段35号院");
+        logic.communityList.add(c);
+        c = new Community();
+        c.setName("长城锦园");
+        c.setArea("锦江区");
+        c.setAddress("三槐树路3号附29");
+        logic.communityList.add(c);
+        c = new Community();
+        c.setName("上锦美地");
+        c.setArea("锦江区");
+        c.setAddress("玉皇观街3号");
+        logic.communityList.add(c);
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.community_select_layout);
+        ViewUtils.inject(this);
+        initAdater();
+    }
+    
+    public void initAdater()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter();
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id)
+                {
+                    startActivity(new Intent(getBaseContext(),
+                            MainActivity.class));
+                }
+            });
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    class Adapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return logic.communityList.size();
+        }
+        
+        @Override
+        public Community getItem(int position)
+        {
+            return logic.communityList.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            ViewHolder viewHolder = null;
+            if (convertView == null)
+            {
+                viewHolder = new ViewHolder();
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.community_item_layout, null);
+                viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+                viewHolder.tvArear = (TextView) convertView.findViewById(R.id.tvArear);
+                viewHolder.tvAddress = (TextView) convertView.findViewById(R.id.tvAddress);
+                convertView.setTag(viewHolder);
+            }
+            else
+            {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.tvName.setText(getItem(position).getName());
+            viewHolder.tvArear.setText(getItem(position).getArea());
+            viewHolder.tvAddress.setText(getItem(position).getAddress());
+            return convertView;
+            
+        }
+        
+        class ViewHolder
+        {
+            public TextView tvName;
+            
+            public TextView tvArear;
+            
+            public TextView tvAddress;
+        }
+    }
+    
+}

@@ -1,0 +1,219 @@
+/**
+ * RecentBillFragment.java
+ * com.pactera.ch_bedframe.fragment
+ *
+ * Function： TODO 
+ *
+ *   ver     date      		author
+ * ──────────────────────────────────
+ *   		 2013-12-5 		b
+ *
+ * Copyright (c) 2013, TNT All Rights Reserved.
+ */
+
+package com.changhong.foundation.fragment;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.changhong.foundation.R;
+import com.changhong.foundation.baseapi.MsgWhat;
+import com.changhong.foundation.entity.BillInfo;
+import com.changhong.foundation.logic.LoginLogic;
+import com.changhong.foundation.logic.RecentBillLogic;
+import com.changhong.sdk.fragment.SuperFragment;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+
+/**
+ * ClassName:RecentBillFragment Function: TODO ADD FUNCTION
+ * 
+ * @author ruhaly
+ * @version
+ * @since Ver 1.1
+ * @Date 2013-12-5 下午2:27:29
+ */
+public class RecentBillFragment extends SuperFragment
+{
+    
+    private RecentBillLogic logic;
+    
+    private Adapter adapter;
+    
+    @ViewInject(R.id.listview)
+    private ListView listview;
+    
+    View convertView;
+    
+    public void initAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter();
+            listview.setAdapter(adapter);
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    class Adapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return logic.rList.size();
+        }
+        
+        @Override
+        public BillInfo getItem(int arg0)
+        {
+            return logic.rList.get(arg0);
+        }
+        
+        @Override
+        public long getItemId(int arg0)
+        {
+            return arg0;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup arg2)
+        {
+            ViewHolder holder;
+            if (convertView == null)
+            {
+                convertView = LayoutInflater.from(getActivity().getBaseContext())
+                        .inflate(R.layout.bill_info_item_layout, null);
+                holder = new ViewHolder();
+                holder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+                holder.tv_content = (TextView) convertView.findViewById(R.id.tv_content);
+                holder.tv_integral = (TextView) convertView.findViewById(R.id.tv_integral);
+                holder.tv_date = (TextView) convertView.findViewById(R.id.tv_date);
+                holder.tv_paymoney = (TextView) convertView.findViewById(R.id.tv_paymoney);
+                convertView.setTag(holder);
+            }
+            else
+            {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.tv_name.setText(getItem(position).getName());
+            holder.tv_content.setText(getItem(position).getContent());
+            holder.tv_integral.setText(getItem(position).getIntegral());
+            holder.tv_paymoney.setText(getItem(position).getPaymoney());
+            holder.tv_date.setText(getItem(position).getDate());
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            TextView tv_name;
+            
+            TextView tv_content;
+            
+            TextView tv_integral;
+            
+            TextView tv_date;
+            
+            TextView tv_paymoney;
+        }
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void updateView(Message msg)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public View initLayout(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        convertView = inflater.inflate(R.layout.recent_bill_layout,
+                container,
+                false);
+        ViewUtils.inject(this, convertView);
+        initAdapter();
+        requestRecentBill(true);
+        return convertView;
+        
+    }
+    
+    @Override
+    public void initData()
+    {
+        logic = RecentBillLogic.getInstance();
+    }
+    
+    DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            logic.stopRequest();
+        }
+    };
+    
+    private HttpUtils httpUtils;
+    
+    public void requestRecentBill(boolean showDialog)
+    {
+        httpUtils = new HttpUtils();
+        logic.setData(fHandler);
+        if (showDialog)
+            showProcessDialog(dismiss);
+        logic.reqeustRecentBills(LoginLogic.getInstance().user.getAccount(),
+                httpUtils);
+        
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case MsgWhat.MSGWHAT_RECENT_BILL_SUCCESS:
+            {
+                initAdapter();
+                break;
+            }
+            
+            default:
+                break;
+        }
+        super.handleMsg(msg);
+    }
+    
+    @Override
+    public void onDestroy()
+    {
+        logic.clear();
+        super.onDestroy();
+    }
+
+    @Override
+    public void updateView(Intent intent)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+}

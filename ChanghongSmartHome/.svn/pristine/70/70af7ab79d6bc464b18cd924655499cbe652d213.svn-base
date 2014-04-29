@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="100dip"
+    android:layout_margin="10dip"
+    android:orientation="horizontal"
+    android:padding="10dip" >
+
+    <TextView
+        style="@style/TextViewStyle"
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="收费模式：" />
+
+    <TextView
+         style="@style/TextViewStyle"
+        android:id="@+id/payType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="----" />
+
+    <TextView
+         style="@style/TextViewStyle"
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dip"
+        android:text="收费标准：" />
+
+    <TextView
+         style="@style/TextViewStyle"
+        android:id="@+id/payMoneyNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="----" />
+
+</LinearLayout> <!-- 付费方式的item,按次，按年，按月 -->

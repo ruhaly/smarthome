@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_content_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bg" >
+
+        <LinearLayout
+            android:id="@+id/frameCitySelect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/modify_pwd"
+                android:textColor="@color/gray_font"
+                android:textSize="@dimen/font_36" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/page_bg"
+        android:orientation="vertical"
+        android:padding="7dp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/modify_pwd_bg"
+            android:orientation="vertical"
+            android:paddingBottom="8dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="8dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="7dp"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/editAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/modify_account_input"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:hint="@string/please_input_old_pwd"
+                    android:paddingLeft="5dp"
+                    android:textColorHint="@color/gray_a8a8a8"
+                    android:textSize="@dimen/font_28" />
+
+                <Button
+                    android:id="@+id/btnForgetPwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_valicode_bg"
+                    android:text="@string/forget_pwd"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_28" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/editText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/modify_account_input"
+                    android:hint="@string/please_input_new_pwd"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/gray_a8a8a8"
+                    android:textColorHint="@color/gray_a8a8a8"
+                    android:textSize="@dimen/font_28" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="7dp"
+                android:text="@string/warn_modify_pwd"
+                android:textColor="@color/gray_919191"
+                android:textSize="@dimen/font_24" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/editText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/modify_account_input"
+                    android:hint="@string/please_input_new_pwd_again"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/gray_a8a8a8"
+                    android:textColorHint="@color/gray_a8a8a8"
+                    android:textSize="@dimen/font_28" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center" >
+
+                <Button
+                    android:id="@+id/btnConfirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_valicode_bg"
+                    android:text="@string/confirm"
+                    android:textColor="@color/color_White"
+                    android:textSize="@dimen/font_28" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,680 @@
+package com.changhong.smarthome.phone;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Message;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.baidu.location.BDLocation;
+import com.changhong.sdk.baseapi.CHUtils;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.sdk.fragment.SuperFragment;
+import com.changhong.sdk.widget.CustomViewPager;
+import com.changhong.smarthome.phone.foundation.activity.BaseActivity;
+import com.changhong.smarthome.phone.foundation.activity.CitySelectActivity;
+import com.changhong.smarthome.phone.foundation.activity.RegisterActivity;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.bean.MyDialogBean;
+import com.changhong.smarthome.phone.foundation.fragment.MineFragment;
+import com.changhong.smarthome.phone.foundation.fragment.ProManageFragment;
+import com.changhong.smarthome.phone.foundation.fragment.SmartFragment;
+import com.changhong.smarthome.phone.foundation.fragment.WeLifeFragment;
+import com.changhong.smarthome.phone.foundation.logic.CitySelectLogic;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+import com.changhong.smarthome.phone.sns.Constant;
+import com.changhong.smarthome.phone.sns.activity.PrivateLetterActivity;
+import com.changhong.smarthome.phone.sns.bean.DynamicBean;
+import com.changhong.smarthome.phone.sns.logic.IntShareLogic;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class MainActivity extends BaseActivity
+{
+    
+    @ViewInject(R.id.customViewPager)
+    private CustomViewPager customViewPager;
+    
+    @ViewInject(R.id.tvProManage)
+    private TextView tvProManage;
+    
+    @ViewInject(R.id.tvWeLife)
+    private TextView tvWeLife;
+    
+    @ViewInject(R.id.tvSmart)
+    private TextView tvSmart;
+    
+    @ViewInject(R.id.tvMine)
+    private TextView tvMine;
+    
+    @ViewInject(R.id.tvCity)
+    private TextView tvCity;
+    
+    private Adapter adapter;
+    
+    private int lastViewId = R.id.tvProManage;
+    
+    //私信
+    @ViewInject(R.id.btn_msg)
+    private ImageView btnMsg;
+    
+    private HttpUtils httpUtils;
+    
+    private IntShareLogic snsLogic;
+    
+    private static int MODE = MODE_PRIVATE;//定义访问模式为私有模式
+    
+    private static final String PREFERENCE_NAME = "private_letter";//设置保存时的文件的名称
+    
+    private LoginLogic logic;
+    
+    private HttpUtils httpUtil;
+    
+    private MyDialogBean dialogBean;
+    
+    //登录完成后的回调
+    private CallBack callBack = new CallBack()
+    {
+        
+        @Override
+        public void update()
+        {
+            updateView();
+        }
+        
+        @Override
+        public void update(BDLocation location)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+    };
+    
+    @Override
+    public void initData()
+    {
+        logic = LoginLogic.getInstance();
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.main_layout);
+        ViewUtils.inject(this);
+        tvCity.setText(CitySelectLogic.getInstance().address.getName());
+        tvProManage.setOnClickListener(this);
+        tvSmart.setOnClickListener(this);
+        tvWeLife.setOnClickListener(this);
+        tvMine.setOnClickListener(this);
+        btnMsg.setOnClickListener(this);
+        setLayout(tvProManage);
+        setLayout(tvWeLife);
+        setLayout(tvSmart);
+        setLayout(tvMine);
+        initAdapter();
+        //SNS
+        create();
+        //        User u = UserUtils.getUser();
+        //        Constant.UserId = u.getUid();
+        //        Constant.URL_SNS = HttpUrl.SNS + Constant.URL_service;
+        //        Constant.URL_iconUrl = HttpUrl.SNS.substring(0,
+        //                HttpUrl.SNS.length() - 4) + Constant.icon;
+        //        Constant.COMMUNITYID = u.getCommuntyId();
+        //        Constant.TEL = u.getMobile();
+        //        Constant.TELNAME = u.getNickName();
+        snsLogic = new IntShareLogic();
+        showAuthenticationDialog();
+    }
+    
+    @OnClick(R.id.frameCitySelect)
+    public void frameCitySelectClick(View view)
+    {
+        Intent intent = new Intent(getBaseContext(), CitySelectActivity.class);
+        intent.putExtra("fromMainActivity", true);
+        startActivityForResult(intent,
+                com.changhong.sdk.baseapi.Constant.CITY_SELECT);
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            case com.changhong.sdk.baseapi.Constant.CITY_SELECT:
+            {
+                tvCity.setText(CitySelectLogic.getInstance().address.getName());
+                break;
+            }
+            
+            default:
+                break;
+        }
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        super.onClick(v);
+        switch (v.getId())
+        {
+            case R.id.tvProManage:
+            {
+                changeViewPager(v.getId());
+                break;
+            }
+            case R.id.tvWeLife:
+            {
+                changeViewPager(v.getId());
+                break;
+            }
+            case R.id.tvSmart:
+            {
+                changeViewPager(v.getId());
+                break;
+            }
+            case R.id.tvMine:
+            {
+                changeViewPager(v.getId());
+                break;
+            }
+            case R.id.btn_msg:
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, PrivateLetterActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    public void initAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter(getSupportFragmentManager());
+            customViewPager.setAdapter(adapter);
+            customViewPager.setScrollable(true);
+            customViewPager.setOnPageChangeListener(new OnPageChangeListener()
+            {
+                
+                @Override
+                public void onPageSelected(int position)
+                {
+                    switch (position)
+                    {
+                        case 0:
+                        {
+                            changeViewPager(R.id.tvProManage);
+                            break;
+                        }
+                        case 1:
+                        {
+                            changeViewPager(R.id.tvWeLife);
+                            break;
+                        }
+                        case 2:
+                        {
+                            changeViewPager(R.id.tvSmart);
+                            break;
+                        }
+                        case 3:
+                        {
+                            changeViewPager(R.id.tvMine);
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                }
+                
+                @Override
+                public void onPageScrolled(int position, float positionOffset,
+                        int positionOffsetPixels)
+                {
+                    
+                }
+                
+                @Override
+                public void onPageScrollStateChanged(int state)
+                {
+                    
+                }
+            });
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    /**
+     * 
+     * 点击tab切换viewpager
+     * [功能详细描述]
+     * @param viewId
+     */
+    public void changeViewPager(int viewId)
+    {
+        
+        switch (lastViewId)
+        {
+            case R.id.tvProManage:
+            {
+                findViewById(lastViewId).setBackgroundResource(R.drawable.wg_def);
+                break;
+            }
+            case R.id.tvWeLife:
+            {
+                findViewById(lastViewId).setBackgroundResource(R.drawable.welife_def);
+                break;
+            }
+            case R.id.tvSmart:
+            {
+                findViewById(lastViewId).setBackgroundResource(R.drawable.smart_def);
+                break;
+            }
+            case R.id.tvMine:
+            {
+                findViewById(lastViewId).setBackgroundResource(R.drawable.mine_def);
+                break;
+            }
+            default:
+                break;
+        }
+        switch (viewId)
+        {
+            case R.id.tvProManage:
+            {
+                customViewPager.setCurrentItem(0, true);
+                findViewById(viewId).setBackgroundResource(R.drawable.wg_press);
+                break;
+            }
+            case R.id.tvWeLife:
+            {
+                customViewPager.setCurrentItem(1, true);
+                findViewById(viewId).setBackgroundResource(R.drawable.weilife_press);
+                break;
+            }
+            case R.id.tvSmart:
+            {
+                customViewPager.setCurrentItem(2, true);
+                findViewById(viewId).setBackgroundResource(R.drawable.smart_press);
+                break;
+            }
+            case R.id.tvMine:
+            {
+                customViewPager.setCurrentItem(3, true);
+                findViewById(viewId).setBackgroundResource(R.drawable.mine_press);
+                break;
+            }
+            default:
+                break;
+        }
+        lastViewId = viewId;
+        
+    }
+    
+    /**
+     * 获取动态类型
+     */
+    private void getDynamicType()
+    {
+        httpUtils = new HttpUtils();
+        snsLogic.setData(mHandler);
+        snsLogic.requestGetDynamicType(httpUtils);
+        
+    }
+    
+    /**
+     * 创建SharedPreferences
+     */
+    private void create()
+    {
+        if (null == getSharedPreferences(PREFERENCE_NAME, MODE))
+        {
+            SharedPreferences sharedpreferences = this.getSharedPreferences(PREFERENCE_NAME,
+                    MODE);//通过getSharedPreferences(String name,int mode)得到SharedPreferences接口。该方法的第一个参数是文件名称，第二个参数是操作模式
+            SharedPreferences.Editor editor = sharedpreferences.edit();//调用SharedPreferences.Editor方法对SharedPreferences进行修改
+            //用户Id
+            editor.putString("UserId", Constant.UserId);//往editor对象塞值
+            //当前私信个数
+            editor.putInt("num", 0);
+            //当前是否有新私信
+            editor.putBoolean("statue", false);
+            editor.commit();
+        }
+        
+    }
+    
+    /**
+     * 保存数据
+     * @param num
+     * @param statue
+     */
+    private void save(int num, boolean statue)
+    {
+        SharedPreferences sPreferences = getSharedPreferences(PREFERENCE_NAME,
+                MODE);
+        SharedPreferences.Editor editor = sPreferences.edit();//调用SharedPreferences.Editor方法对SharedPreferences进行修改
+        //用户Id
+        editor.putString("UserId", Constant.UserId);//往editor对象塞值
+        //当前私信个数
+        editor.putInt("num", num);
+        //当前是否有新私信
+        editor.putBoolean("statue", statue);
+        editor.commit();
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    public void setLayout(View view)
+    {
+        int width = CHUtils.getScreenWidth(getBaseContext()) / 4;
+        view.setLayoutParams(new LinearLayout.LayoutParams(width,
+                LinearLayout.LayoutParams.MATCH_PARENT));
+    }
+    
+    class Adapter extends FragmentPagerAdapter
+    {
+        List<SuperFragment> listFragment = new ArrayList<SuperFragment>();
+        
+        public Adapter(FragmentManager fm)
+        {
+            super(fm);
+            SuperFragment proManageFragment = new ProManageFragment();
+            SuperFragment weiLifeFragment = new WeLifeFragment();
+            SuperFragment smartFragment = new SmartFragment();
+            SuperFragment mineFragment = new MineFragment();
+            listFragment.add(proManageFragment);
+            listFragment.add(weiLifeFragment);
+            listFragment.add(smartFragment);
+            listFragment.add(mineFragment);
+            
+        }
+        
+        @Override
+        public SuperFragment getItem(int arg0)
+        {
+            return listFragment.get(arg0);
+        }
+        
+        @Override
+        public int getCount()
+        {
+            return listFragment.size();
+        }
+        
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object)
+        {
+            
+        }
+        
+        @Override
+        public void destroyItem(View container, int position, Object object)
+        {
+            
+        }
+        
+    }
+    
+    @Override
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case Constant.GET_DYNAMIC_TYPE_SUCCESS:
+                DynamicBean dBean = (DynamicBean) msg.obj;
+                int num = dBean.getPrivateLetterNum();
+                String userId = getSharedPreferences(PREFERENCE_NAME, MODE).getString("UserId",
+                        Constant.UserId);
+                int privateNum = getSharedPreferences(PREFERENCE_NAME, MODE).getInt("num",
+                        0);
+                boolean statue = getSharedPreferences(PREFERENCE_NAME, MODE).getBoolean("statue",
+                        false);
+                Log.d(TAG, "num--->" + num + "  ,privateNum-->" + privateNum
+                        + "  ,statue--->" + statue);
+                if (Constant.UserId.equals(userId))
+                {
+                    if (!statue)
+                    {
+                        if (num > privateNum)
+                        {
+                            statue = true;
+                            btnMsg.setBackgroundResource(R.drawable.new_msg);
+                        }
+                        else
+                        {
+                            statue = false;
+                            btnMsg.setImageResource(R.drawable.private_letter);
+                        }
+                    }
+                    save(num, statue);
+                }
+                break;
+            case Constant.GET_DYNAMIC_TYPE_FAILED:
+                //                if (null != progressDialog)
+                //                {
+                //                    progressDialog.dismiss();
+                //                    progressDialog = null;
+                //                }
+                break;
+            case MSGWHAT_LOGIN_SUCCESS:
+            {
+                showToast(getString(R.string.login_success));
+                if (null != dialogBean && dialogBean.getDialog().isShowing())
+                {
+                    dialogBean.getDialog().dismiss();
+                }
+                CHApplication.LOGIN = true;
+                dialogBean.update();
+                saveData();
+                break;
+            }
+            case MSGWHAT_PWD_ERROR:
+            {
+                showToast(getString(R.string.pwd_error));
+                break;
+            }
+            case MSGWHAT_USER_NOT_EXIST:
+            {
+                showToast(getString(R.string.user_not_exit));
+                break;
+            }
+            case MSGWHAT_USER_NOT_ACTIVATE:
+            {
+                showToast(getString(R.string.user_not_activate));
+                break;
+            }
+        }
+        super.handleMsg(msg);
+    }
+    
+    private void saveData()
+    {
+        saveUser(logic.user);
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        
+        getDynamicType();
+        
+        String userId = getSharedPreferences(PREFERENCE_NAME, MODE).getString("UserId",
+                Constant.UserId);
+        boolean statue = getSharedPreferences(PREFERENCE_NAME, MODE).getBoolean("statue",
+                false);
+        if (null != Constant.UserId)
+        {
+            if (Constant.UserId.equals(userId))
+            {
+                if (statue)
+                {
+                    btnMsg.setImageResource(R.drawable.new_msg);
+                }
+                else
+                {
+                    btnMsg.setBackgroundResource(R.drawable.private_letter);
+                }
+            }
+        }
+        
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            showLogoutDialog();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+        
+    }
+    
+    /**
+     * 
+     * 登录成功后更新界面
+     * [功能详细描述]
+     */
+    public void updateView()
+    {
+        if (CHApplication.LOGIN)
+        {
+            findViewById(R.id.tvLogin).setVisibility(View.GONE);
+        }
+        
+        TextView tv = new TextView(getBaseContext());
+        tv.setBackgroundColor(getResources().getColor(R.color.color_White));
+        tv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT));
+        tv.setPadding(0, 50, 0, 50);
+        tv.setGravity(Gravity.CENTER);
+        tv.setTextColor(getResources().getColor(R.color.black));
+        tv.setText("您好，" + logic.user.getNickName() + ",欢迎回家！");
+        final Dialog dialog = getDialog(tv, false, R.style.MyDialog);
+        dialog.show();
+        mHandler.postDelayed(new Runnable()
+        {
+            
+            @Override
+            public void run()
+            {
+                if (null != dialog && dialog.isShowing())
+                {
+                    dialog.dismiss();
+                }
+            }
+        }, 2000);
+    }
+    
+    @OnClick(R.id.tvLogin)
+    public void tvLoginClick(View view)
+    {
+        
+        dialogBean = getLoginDialog(callBack);
+        dialogBean.getDialog().show();
+        dialogBean.getBtLogin().setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                if (StringUtils.isEmpty(dialogBean.getEtAccount()
+                        .getText()
+                        .toString())
+                        || StringUtils.isEmpty(dialogBean.getEtPwd()
+                                .getText()
+                                .toString()))
+                {
+                    showToast(getString(R.string.please_input_all));
+                    return;
+                }
+                toLogin(dialogBean);
+            }
+        });
+        dialogBean.getTvRegister30().setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getBaseContext(),
+                        RegisterActivity.class));
+                dialogBean.getDialog().dismiss();
+            }
+        });
+        dialogBean.getTvForgetPwd().setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                
+            }
+        });
+    }
+    
+    DialogInterface.OnDismissListener loginDismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            logic.stopRequest();
+        }
+    };
+    
+    public void toLogin(MyDialogBean dialogBean)
+    {
+        showProcessDialog(loginDismiss);
+        httpUtil = new HttpUtils();
+        logic.setData(mHandler);
+        logic.requestLogin(dialogBean.getEtAccount()
+                .getText()
+                .toString()
+                .trim(),
+                dialogBean.getEtPwd().getText().toString().trim(),
+                httpUtil);
+    }
+    
+    /**
+     * 
+     * 显示   认证框
+     * [功能详细描述]
+     */
+    public void showAuthenticationDialog()
+    {
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.authentication_layout, null);
+        Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        dialog.show();
+    }
+}

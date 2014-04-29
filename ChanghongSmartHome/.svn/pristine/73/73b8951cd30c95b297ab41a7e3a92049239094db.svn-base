@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_content_bg" >
+
+    <RelativeLayout
+        android:id="@+id/title_rl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_bg" >
+
+        <ImageView
+            android:id="@+id/exit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dip"
+            android:background="@drawable/drawable_expand_finish"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/top_height"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/interact_share_private_letter_text"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size" />
+
+        <TextView
+            android:id="@+id/bt_interact_share_publish"
+            android:layout_width="@dimen/btn_width"
+            android:layout_height="@dimen/btn_width"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dip"
+            android:gravity="center"
+            android:text="@string/bottom_pub"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/show_all_rl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_rl"
+        android:layout_marginBottom="13.3dip"
+        android:layout_marginTop="-5dip"
+        android:background="@drawable/type_bg" >
+
+        <TextView
+            android:id="@+id/show_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dip"
+            android:text="@string/all"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/pub_title_size" />
+
+        <TextView
+            android:id="@+id/show_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dip"
+            android:background="@drawable/more_btn" />
+    </RelativeLayout>
+
+    <com.changhong.sdk.widget.PullRefreshListView
+        android:id="@+id/share_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/show_all_rl"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none" />
+
+    <com.changhong.sdk.widget.PullRefreshListView
+        android:id="@+id/my_share_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/show_all_rl"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none"
+        android:visibility="gone" />
+
+</RelativeLayout>

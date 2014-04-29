@@ -1,0 +1,18 @@
+package com.changhong.smarthome.phone.foundation.bean;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.changhong.sdk.entity.User;
+
+public class MemberManage
+{
+    //新成员
+    public User user;
+    
+    //新成员个数
+    public String newCount;
+    
+    public List<Room> listRoom = new ArrayList<Room>();
+    
+}

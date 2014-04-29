@@ -1,0 +1,192 @@
+package com.changhong.smarthome.phone.property.logic;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.os.Message;
+
+import com.changhong.sdk.baseapi.HttpUrl;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.sdk.entity.Pager;
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.changhong.smarthome.phone.foundation.logic.LoginLogic;
+import com.changhong.smarthome.phone.property.entry.HouseDescription;
+import com.changhong.smarthome.phone.property.http.HttpAction;
+import com.changhong.smarthome.phone.property.http.RequestId;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+
+/**
+ * [房屋托管逻辑类]<BR>
+ * [功能详细描述]
+ * @author 王磊
+ * @version [ChangHong SmartHome V100R001C03, 2014-4-22] 
+ */
+public class GetHouseDescriptionLogic extends SuperLogic
+{
+    
+    private HttpHandler<String> httpHanlder;
+    
+    private static GetHouseDescriptionLogic ins;
+    
+    public static synchronized GetHouseDescriptionLogic getInstance()
+    {
+        if (null == ins)
+        {
+            ins = new GetHouseDescriptionLogic();
+        }
+        return ins;
+    }
+    
+    public void getHouseDescriptionList(HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Pager pager = new Pager();
+        pager.setPageId(1);
+        pager.setPageSize(20);
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("pager", pager);
+        serviceInfo.put("accountInfo", LoginLogic.getInstance().getBaseAccountInfo());
+        
+        fixRequestParams(params,
+                serviceInfo,
+                "houseList",
+                "sc",
+                "sc",
+                "4100");
+        
+        httpHanlder = HttpSenderUtils.sendMsgImpl("houseList",
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.HOUSED,
+                this,
+                false,
+                HttpUrl.URL_CBS);
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(String response, int rspCode, int requestId)
+    {
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(String response, int requestId,
+            InputStream is)
+    {
+    }
+    
+    public void handlegetHousedListData(ServiceResponse response)
+    {
+        if (response.getBody().getResult().equals("200"))
+        {
+            Message msg = new Message();
+            
+            ArrayList<HouseDescription> housedList1 = Josonparse_HouseDescriptionList(response.getBody()
+                    .getParamsString());
+            msg.what = HttpAction.HOUSED_SUCCESS_MSGWHAT;
+            msg.obj = housedList1;
+            handler.sendMessage(msg);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+    }
+    
+    public ArrayList<HouseDescription> Josonparse_HouseDescriptionList(
+            String response)
+    {
+        // ArrayList<HouseDescription> list = null;
+        ArrayList<HouseDescription> list0 = new ArrayList<HouseDescription>();
+        if (StringUtils.isEmpty(response))
+        {
+            return list0;
+        }
+        // bx_property = new Wyfw();
+        try
+        {
+            
+            JSONObject job = new JSONObject(response);
+            JSONObject jobObject = null;
+            if (null != job)
+            {
+                
+                JSONArray joba = job.optJSONArray("data");
+                for (int i = 0; i < joba.length(); i++)
+                {
+                    HouseDescription housed_property = new HouseDescription();
+                    jobObject = joba.getJSONObject(i);
+                    housed_property.setId(jobObject.optString("id"));
+                    housed_property.setHouse_no(jobObject.optString("house_no"));
+                    housed_property.setDescription(jobObject.optString("description"));
+                    housed_property.setState(jobObject.optInt("state"));
+                    
+//                    System.out.println("获取数据到了数据");
+                    
+                    list0.add(housed_property);
+//                    list0.add(housed_property);
+                    
+                }
+                
+            }
+        }
+        catch (JSONException e)
+        {
+            // wyfwproperty = null;
+            e.printStackTrace();
+        }
+        
+        return list0;
+        
+    }
+    
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        handler.sendEmptyMessage(SuperLogic.DATA_FORMAT_ERROR_MSGWHAT);
+    }
+    
+    @Override
+    public void clear()
+    {
+        
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is)
+    {
+        switch (requestId)
+        {
+        
+            case RequestId.HOUSED:
+                handlegetHousedListData(serviceRes);
+                break;
+            default:
+                break;
+        }
+        
+    }
+    
+    public void stopRequest()
+    {
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+        }
+    }
+}

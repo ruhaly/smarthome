@@ -1,0 +1,236 @@
+/**
+* 
+*@Copyright: Copyright (c) 2014  
+* @author yang_jun
+*@Date:2014-4-8 下午7:35:01 
+*@QQ: 756427684 
+*/
+package com.changhong.smarthome.phone.sns.adapter;
+
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.Calendar;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.changhong.sdk.baseapi.DateUtil;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.sns.bean.GroupBuyingMyVO;
+import com.changhong.smarthome.phone.sns.bean.GroupBuyingMyVO.GroupBuyingMy;
+import com.changhong.smarthome.phone.sns.view.TimerTextView;
+import com.lidroid.xutils.BitmapUtils;
+
+public class GroupBuyMyAdapter extends BaseAdapter
+{
+    private static final String TAG = "GroupBuyMyAdapter";
+    
+    private Context context;
+    
+    private GroupBuyingMyVO groupBuyingMyVO;
+    
+    private boolean isMy;
+    
+    private BitmapUtils bitmapUtils;
+    
+    public GroupBuyMyAdapter(Context context, GroupBuyingMyVO myshareVO,
+            boolean isMy)
+    {
+        this.context = context;
+        this.groupBuyingMyVO = myshareVO;
+        this.isMy = isMy;
+        bitmapUtils = new BitmapUtils(context);
+        bitmapUtils.configDefaultLoadingImage(R.drawable.group_buy_pic_default);
+        bitmapUtils.configDefaultLoadFailedImage(R.drawable.group_buy_pic_default);
+        bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+        
+    }
+    
+    @Override
+    public int getCount()
+    {
+        // TODO Auto-generated method stub
+        return groupBuyingMyVO.getData() != null ? groupBuyingMyVO.getData()
+                .size() : 0;
+    }
+    
+    @Override
+    public Object getItem(int position)
+    {
+        // TODO Auto-generated method stub
+        return groupBuyingMyVO.getData() != null ? groupBuyingMyVO.getData()
+                .get(position) : null;
+    }
+    
+    @Override
+    public long getItemId(int position)
+    {
+        // TODO Auto-generated method stub
+        return position;
+    }
+    
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        // TODO Auto-generated method stub
+        ViewHolder viewHolder;
+        if (null == convertView)
+        {
+            convertView = LayoutInflater.from(context)
+                    .inflate(R.layout.group_buy, null);
+            viewHolder = new ViewHolder();
+            viewHolder.statueHot = (ImageView) convertView.findViewById(R.id.group_buy_statue_hot);
+            viewHolder.pic = (ImageView) convertView.findViewById(R.id.group_buy_pic);
+            viewHolder.shopNum = (TextView) convertView.findViewById(R.id.group_buy_buy_num);
+            viewHolder.shopTimeH = (TextView) convertView.findViewById(R.id.group_buy_surplus_time_h);
+            viewHolder.shopTimeM = (TextView) convertView.findViewById(R.id.group_buy_surplus_time_m);
+            viewHolder.shopTimeS = (TextView) convertView.findViewById(R.id.group_buy_surplus_time_s);
+            viewHolder.shopPriceLow = (TextView) convertView.findViewById(R.id.group_buy_price_low);
+            viewHolder.shopPriceOriginal = (TextView) convertView.findViewById(R.id.group_buy_price_original);
+            viewHolder.shopContent = (TextView) convertView.findViewById(R.id.group_buy_content);
+            viewHolder.shopContent = (TextView) convertView.findViewById(R.id.group_buy_content);
+            viewHolder.shopActivityTime = (TextView) convertView.findViewById(R.id.group_buy_activity_time);
+            viewHolder.shopLaunchBusiness = (TextView) convertView.findViewById(R.id.group_buy_activity_launch_business);
+            viewHolder.shopContactTel = (TextView) convertView.findViewById(R.id.group_buy_contact_tel);
+            viewHolder.goShopBtn = (TextView) convertView.findViewById(R.id.group_buy_go_shop_btn);
+            viewHolder.myBottomLL = (LinearLayout) convertView.findViewById(R.id.group_buy_num_ll_bottom);
+            viewHolder.allBuyNumLL = (LinearLayout) convertView.findViewById(R.id.group_buy_num_ll);
+            viewHolder.myNum = (TextView) convertView.findViewById(R.id.group_buy_buy_num_bottom);
+            viewHolder.mTimerTextView = (TimerTextView) convertView.findViewById(R.id.timerTextView);
+            convertView.setTag(viewHolder);
+        }
+        else
+        {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        final GroupBuyingMy bean = groupBuyingMyVO.getData().get(position);
+        viewHolder.myBottomLL.setVisibility(View.VISIBLE);
+        viewHolder.allBuyNumLL.setVisibility(View.GONE);
+        viewHolder.goShopBtn.setVisibility(View.GONE);
+        viewHolder.statueHot.setVisibility(View.GONE);
+        viewHolder.goShopBtn.setBackgroundResource(R.drawable.go_shop_btn_selector);
+        
+        viewHolder.shopNum.setText(bean.getNum());
+        viewHolder.shopPriceLow.setText(context.getResources()
+                .getString(R.string.order_unit_yuan_usa) + bean.getPrice());
+        viewHolder.shopPriceOriginal.setText(context.getResources()
+                .getString(R.string.order_unit_yuan_usa)
+                + bean.getOriginalcost());
+        viewHolder.shopContent.setText(bean.getDescripte());
+        viewHolder.shopActivityTime.setText(bean.getStarttime());
+        viewHolder.shopLaunchBusiness.setText(bean.getSeller());
+        viewHolder.shopContactTel.setText(bean.getPhone());
+        viewHolder.myNum.setText(bean.getNum());
+        try
+        {
+            long curTime = Calendar.getInstance().getTimeInMillis();
+            long surTime = DateUtil.STANDARD_NO_S_DF.parse(bean.getEndtime())
+                    .getTime();
+            Log.d("AOAO", "curTime---<" + curTime);
+            Log.d("AOAO", "surTime---<" + surTime);
+            long dif = (surTime - curTime) / 1000;
+            // 小时常数
+            long hourMarker = 60 * 60;
+            
+            // 分钟常数
+            long minuteMarker = 60;
+            
+            // 秒常数
+            long secondMarker = 1;
+            DecimalFormat decfmt = new DecimalFormat();
+            long h = dif / hourMarker;
+            long m = (dif - h * hourMarker) / minuteMarker;
+            long s = (dif - h * hourMarker - m * minuteMarker) / secondMarker;
+            if (h <= 0 && m <= 0 && s <= 0)
+            {
+                viewHolder.shopTimeH.setText("0");
+                viewHolder.shopTimeM.setText("0");
+                viewHolder.shopTimeS.setText("0");
+                viewHolder.goShopBtn.setBackgroundResource(R.drawable.activity_over);
+            }
+            else
+            {
+                viewHolder.shopTimeH.setText(decfmt.format(h));
+                viewHolder.shopTimeM.setText(decfmt.format(m));
+                viewHolder.shopTimeS.setText(decfmt.format(s));
+                Log.i(TAG, "-001----start to tun");
+                startCounter(h,
+                        m,
+                        s,
+                        viewHolder.mTimerTextView,
+                        viewHolder.goShopBtn,
+                        viewHolder.shopTimeH,
+                        viewHolder.shopTimeM,
+                        viewHolder.shopTimeS);
+            }
+            
+        }
+        catch (ParseException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //        bitmapUtils.display(viewHolder.pic, bean.getImg()[0]);
+        //
+        bitmapUtils.display(viewHolder.pic,
+                "http://172.17.184.150:8080/cbs/upload/21397032219000.jpg");
+        return convertView;
+    }
+    
+    private void startCounter(long h, long m, final long s,
+            TimerTextView hview, TextView goShopBtn, TextView tvH,
+            TextView tvM, TextView tvS)
+    {
+        hview.setTimes(h, m, s, goShopBtn, tvH, tvM, tvS);
+        if (!hview.isRun())
+        {
+            hview.run();
+        }
+        
+    }
+    
+    class ViewHolder
+    {
+        private TimerTextView mTimerTextView;
+        
+        private ImageView statueHot;
+        
+        private ImageView pic;
+        
+        private TextView shopNum;
+        
+        private TextView shopTimeH;
+        
+        private TextView shopTimeM;
+        
+        private TextView shopTimeS;
+        
+        private TextView shopPriceLow;
+        
+        private TextView shopPriceOriginal;
+        
+        private TextView shopContent;
+        
+        private TextView shopActivityTime;
+        
+        private TextView shopLaunchBusiness;
+        
+        private TextView shopContactTel;
+        
+        private TextView goShopBtn;
+        
+        private LinearLayout myBottomLL;
+        
+        private LinearLayout allBuyNumLL;
+        
+        private TextView myNum;
+    }
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg" >
+
+    <TextView
+        android:id="@+id/noticeTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:layout_marginBottom="20dip"
+        android:text="继续观看需要收费，请选下面的折收费方式"
+        android:textSize="@dimen/font_36" />
+
+    <ListView
+        android:id="@+id/popup_listview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/noticeTextView"
+        android:divider="@null"
+        android:gravity="center" >
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/popup_listview" >
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/color_Trans"
+            android:text="@string/cancel"
+            android:textColor="@color/red"
+            android:textSize="@dimen/font_36" />
+    </LinearLayout>
+
+</RelativeLayout>

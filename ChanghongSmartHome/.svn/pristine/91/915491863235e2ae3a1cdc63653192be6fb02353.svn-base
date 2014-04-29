@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/shot_detail_bg" >
+
+    <RelativeLayout
+        android:id="@+id/title_rl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_bg" >
+
+        <ImageView
+            android:id="@+id/exit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dip"
+            android:background="@drawable/drawable_expand_finish"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/comment_title"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/top_height"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/interact_share_private_letter_text"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/content_all"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/title_rl"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/frame_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:id="@+id/frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <com.changhong.sdk.widget.CustomGallery
+                    android:id="@+id/gallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/picture" />
+
+                <LinearLayout
+                    android:id="@+id/frame_dian"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="visible" >
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/list_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="80dip" >
+
+            <com.changhong.sdk.widget.PullRefreshListView
+                android:id="@+id/share_list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="15dip"
+                android:cacheColorHint="#00000000"
+                android:divider="@null"
+                android:drawSelectorOnTop="false"
+                android:listSelector="@android:color/transparent"
+                android:scrollbars="none" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom_all"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bottom_btn_bg"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip" >
+
+        <EditText
+            android:id="@+id/input_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dip"
+            android:background="@drawable/comment_input_bg"
+            android:hint="@string/input_hint_tip" />
+
+        <TextView
+            android:id="@+id/comment_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="40dip"
+            android:background="@drawable/send_btn_selector"
+            android:gravity="center"
+            android:text="@string/btn_send"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/title_size" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/pagerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pagerImage"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
+
+</RelativeLayout>

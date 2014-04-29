@@ -1,0 +1,45 @@
+package com.changhong.smarthome.phone.property.entry;
+
+import java.util.List;
+
+/**
+ * <功能详细描述>
+ * 用户积分详情列表和总积分的实体类
+ * @Copyright: Copyright (c) 2014  
+ * @author wang
+ * @date 2014年4月18日 下午2:20:43
+ */
+public class IntegrationDetailVO
+{
+	private int peResult;
+	
+    private long totalPoint;
+    
+    private List<IntegrationChangeItemVO> pointDetailList;
+    
+	public int getPeResult() {
+		return peResult;
+	}
+	
+	public void setPeResult(int peResult) {
+		this.peResult = peResult;
+	}
+	
+	public long getTotalPoint() {
+		return totalPoint;
+	}
+	
+	public void setTotalPoint(long totalPoint) {
+		this.totalPoint = totalPoint;
+	}
+	
+	public List<IntegrationChangeItemVO> getPointDetailList() {
+		return pointDetailList;
+	}
+	
+	public void setPointDetailList(List<IntegrationChangeItemVO> pointDetailList) {
+		this.pointDetailList = pointDetailList;
+	}
+    
+}
+

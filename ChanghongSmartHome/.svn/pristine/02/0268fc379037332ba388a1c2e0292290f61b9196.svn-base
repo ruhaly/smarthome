@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="48dip"
+        layout="@layout/title_top" >
+    </include>
+
+    <RelativeLayout
+        android:id="@+id/lineLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="48dip"
+        android:background="@drawable/classify_title" >
+
+        <TextView
+            android:id="@+id/linetext"
+            style="@style/TextViewStyle_popup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dip"
+            android:text="最近更新" />
+
+        <RelativeLayout
+            android:id="@+id/lineLayout1"
+            android:layout_width="100dip"
+            android:layout_height="48dip"
+            android:layout_alignParentRight="true" >
+
+            <ImageView
+                android:id="@+id/lineImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
+                android:background="@drawable/drawable_expand_close" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gridviews"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/bg"
+        android:horizontalSpacing="5dip"
+        android:numColumns="3"
+        android:verticalSpacing="5dip" >
+    </GridView>
+
+    <ListView
+        android:id="@+id/listviews"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="5dip"
+        android:visibility="gone" >
+    </ListView>
+
+</LinearLayout>

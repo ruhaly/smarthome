@@ -1,0 +1,232 @@
+package com.changhong.smarthome.phone.store.logic.bean;
+import java.io.Serializable;
+
+/**
+ * [订单详情]<BR>
+ * [功能详细描述]
+ * @author b
+ * @version [RCS Client V100R001C03, 2014-1-24] 
+ */
+public class OrderInfoBean implements Serializable
+{
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 商品图片
+     */
+    private String goodsIcon;
+    
+    /**
+     * 订单时间
+     */
+    private String orderTime;
+    
+    /**
+     * 商品名称
+     */
+    private String goodsName;
+    
+    /**
+     * 商品编号
+     */
+    private String goodsId;
+    
+    /**
+     * 商品价格
+     */
+    private double goodsPrice;
+    
+    /**
+     * 订单数量
+     */
+    private int orderQuantity;
+    
+    /**
+     * 收件人
+     */
+    private String address;
+    
+    /**
+     * 收件人的电话
+     */
+    private String phone;
+    
+    /**
+     * 送货地址
+     */
+    private String deliveryAddress;
+    
+    /**
+     * 订单日期
+     */
+//    private String orderDate;
+    
+    
+    /**
+     * 订单编号
+     */
+    private String orderNumber;
+    
+    /**
+     * 订单金额
+     */
+    private double orderMoney;
+    
+    /**
+     * 订单备注
+     */
+    private String orderRemark;
+    
+    /**
+     * sp编号
+     */
+    private String spId;
+    
+//    private String goodsCost;
+    
+    public String getGoodsId()
+    {
+        return goodsId;
+    }
+
+    public void setGoodsId(String goodsId)
+    {
+        this.goodsId = goodsId;
+    }
+    
+
+//    public String getGoodsCost()
+//    {
+//        return goodsCost;
+//    }
+//
+//    public void setGoodsCost(String goodsCost)
+//    {
+//        this.goodsCost = goodsCost;
+//    }
+
+    public String getSpId()
+    {
+        return spId;
+    }
+
+    public void setSpId(String spId)
+    {
+        this.spId = spId;
+    }
+
+    public int getOrderQuantity()
+    {
+        return orderQuantity;
+    }
+
+    public void setOrderQuantity(int orderQuantity)
+    {
+        this.orderQuantity = orderQuantity;
+    }
+
+    public String getAddress()
+    {
+        return address;
+    }
+
+    public void setAddress(String address)
+    {
+        this.address = address;
+    }
+
+    public String getPhone()
+    {
+        return phone;
+    }
+
+    public void setPhone(String phone)
+    {
+        this.phone = phone;
+    }
+
+    public String getDeliveryAddress()
+    {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress)
+    {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public String getOrderNumber()
+    {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber)
+    {
+        this.orderNumber = orderNumber;
+    }
+
+    public double getOrderMoney()
+    {
+        return orderMoney;
+    }
+
+    public void setOrderMoney(double orderMoney)
+    {
+        this.orderMoney = orderMoney;
+    }
+
+    public String getOrderRemark()
+    {
+        return orderRemark;
+    }
+
+    public void setOrderRemark(String orderRemark)
+    {
+        this.orderRemark = orderRemark;
+    }
+
+    public String getGoodsIcon()
+    {
+        return goodsIcon;
+    }
+
+    public void setGoodsIcon(String goodsIcon)
+    {
+        this.goodsIcon = goodsIcon;
+    }
+
+    public String getOrderTime()
+    {
+        return orderTime;
+    }
+
+    public void setOrderTime(String orderTime)
+    {
+        this.orderTime = orderTime;
+    }
+
+    public String getGoodsName()
+    {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName)
+    {
+        this.goodsName = goodsName;
+    }
+
+    public double getGoodsPrice()
+    {
+        return goodsPrice;
+    }
+
+    public void setGoodsPrice(double goodsPrice)
+    {
+        this.goodsPrice = goodsPrice;
+    }
+
+    
+}

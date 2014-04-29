@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/page_bg"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/view_promanage_plugin_margin_left"
+        android:layout_marginRight="@dimen/view_promanage_plugin_margin_left"
+        android:layout_marginTop="@dimen/view_promanage_plugin_margin_top"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <GridView
+            android:id="@+id/gvPlugin"
+            style="@style/gridview_style"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:horizontalSpacing="@dimen/view_promanage_plugin_gridview_horizontalspacing"
+            android:numColumns="4"
+            android:verticalSpacing="@dimen/view_promanage_plugin_gridview_verticalspacing" >
+        </GridView>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/darker_gray"
+    android:orientation="vertical"
+    android:padding="15dip" >
+
+    <Button
+        android:id="@+id/take_photo"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/graybtn_selector"
+        android:gravity="center"
+        android:text="@string/take_photo"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/title_text_size" />
+
+    <Button
+        android:id="@+id/gallery"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/graybtn_selector"
+        android:gravity="center"
+        android:text="@string/gallery"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/title_text_size" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dip"
+        android:background="@drawable/graybtn_selector"
+        android:gravity="center"
+        android:text="@string/no"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/title_text_size" />
+
+</LinearLayout>

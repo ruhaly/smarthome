@@ -1,0 +1,219 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.sdk.entity.User;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.bean.Relation;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+
+public class RelationGroupActivity extends BaseActivity
+{
+    
+    @ViewInject(R.id.gridView)
+    private GridView gridView;
+    
+    private Relation relation = new Relation();
+    
+    private Adapter adapter;
+    
+    private boolean isEdit = false;
+    
+    private int curPosition = -1;
+    
+    @Override
+    public void initData()
+    {
+        User user1 = new User();
+        user1.setNickName("爸爸");
+        
+        User user2 = new User();
+        user2.setNickName("爷爷");
+        
+        User user3 = new User();
+        user3.setNickName("婆婆");
+        
+        User user4 = new User();
+        user4.setNickName("儿子");
+        relation.userList.add(user1);
+        relation.userList.add(user2);
+        relation.userList.add(user3);
+        relation.userList.add(user4);
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.relationgroup_layout);
+        ViewUtils.inject(this);
+        initAdapter();
+    }
+    
+    public OnClickListener ok = new OnClickListener()
+    {
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            if (-1 != curPosition)
+            {
+                relation.userList.remove(curPosition);
+                initAdapter();
+            }
+        }
+    };
+    
+    public void initAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter();
+            gridView.setAdapter(adapter);
+            
+            gridView.setOnItemLongClickListener(new OnItemLongClickListener()
+            {
+                
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent,
+                        View view, int position, long id)
+                {
+                    isEdit = !isEdit;
+                    initAdapter();
+                    return false;
+                }
+            });
+            gridView.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int position, long id)
+                {
+                    if (isEdit)
+                    {
+                        curPosition = position;
+                        showAlertDialog(0,
+                                getString(R.string.tip),
+                                "确认删除?",
+                                null,
+                                ok,
+                                DEFAULT_BTN,
+                                null,
+                                true,
+                                true);
+                    }
+                    
+                }
+            });
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            if (isEdit)
+            {
+                isEdit = !isEdit;
+                initAdapter();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    class Adapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return relation.userList.size();
+        }
+        
+        @Override
+        public User getItem(int position)
+        {
+            return relation.userList.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            
+            ViewHolder holder = null;
+            
+            if (convertView == null)
+            {
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.relation_item_layout, parent, false);
+                holder = new ViewHolder();
+                holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+                holder.imgIcon = (ImageView) convertView.findViewById(R.id.imgIcon);
+                holder.imgDelete = (ImageView) convertView.findViewById(R.id.imgDelete);
+                holder.frameItem = (FrameLayout) convertView.findViewById(R.id.frameItem);
+                convertView.setTag(holder);
+            }
+            else
+            {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.tvName.setText(getItem(position).getNickName());
+            if (isEdit)
+            {
+                holder.imgDelete.setVisibility(View.VISIBLE);
+                holder.frameItem.startAnimation(AnimationUtils.loadAnimation(getBaseContext(),
+                        R.anim.item_rotate));
+            }
+            else
+            {
+                holder.imgDelete.setVisibility(View.GONE);
+                holder.frameItem.clearAnimation();
+            }
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            private ImageView imgIcon;
+            
+            private TextView tvName;
+            
+            private ImageView imgDelete;
+            
+            private FrameLayout frameItem;
+        }
+    }
+}

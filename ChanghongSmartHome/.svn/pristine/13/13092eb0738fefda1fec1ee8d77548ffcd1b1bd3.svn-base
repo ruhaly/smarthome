@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="2dp"
+        android:paddingTop="10dp" >
+
+        <com.changhong.sdk.widget.RoundImageView
+            android:id="@+id/imgHead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/header" />
+
+        <TextView
+            android:id="@+id/tvPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:text="13912568495"
+            android:textColor="@color/gray_5f5f5f"
+            android:textSize="@dimen/font_30" />
+
+        <Button
+            android:id="@+id/btnIgnore"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/btn_jieshou_bg"
+            android:text="@string/ignore"
+            android:textColor="@drawable/accept_bg_color"
+            android:textSize="@dimen/font_30" />
+
+        <Button
+            android:id="@+id/btnAccept"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_jieshou_bg"
+            android:text="@string/accept"
+            android:textColor="@drawable/accept_bg_color"
+            android:textSize="@dimen/font_30" />
+
+        <TextView
+            android:id="@+id/tvState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/has_accept"
+            android:textColor="@color/gray_5f5f5f"
+            android:textSize="@dimen/font_30"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>

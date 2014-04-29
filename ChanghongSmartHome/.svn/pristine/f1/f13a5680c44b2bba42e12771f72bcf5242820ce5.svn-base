@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 我积分兑换的物品的 item -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/integration_bg1"
+    android:orientation="horizontal"
+    android:padding="20dip" >
+
+    <ImageView
+        android:id="@+id/goodsImage"
+        android:layout_width="150dip"
+        android:layout_height="130dip"
+        android:layout_marginLeft="20dip" />
+
+    <RelativeLayout
+        android:id="@+id/hotRelative"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="40dip" >
+
+        <TextView
+            android:id="@+id/goodsName"
+            style="@style/TextViewIntegrationMyChangeStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:gravity="left"
+            android:maxLines="2"
+             />
+
+        <LinearLayout
+            android:id="@+id/costintegtaionscore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/goodsName"
+            android:layout_marginTop="5dip"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/needIntegration"
+                style="@style/TextViewIntegrationStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:maxLines="1"
+                android:text="25000" />
+
+            <TextView
+                android:id="@+id/textFen"
+                style="@style/TextViewIntegrationStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/point" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textyouxiaoqi"
+            style="@style/TextViewIntegrationStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/costintegtaionscore"
+            android:layout_marginTop="10dip"
+            android:gravity="left"
+            android:maxLines="1"
+            android:text="@string/expiry_Date" />
+
+        <LinearLayout
+            android:id="@+id/validityTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textyouxiaoqi"
+            android:layout_marginTop="5dip"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/validityTimeFrom"
+                style="@style/TextViewIntegrationMyChangeStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                 />
+
+            <TextView
+                android:id="@+id/textTo"
+               style="@style/TextViewIntegrationMyChangeStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="@string/split_symbol" />
+
+            <TextView
+                android:id="@+id/validityTimeTo"
+                style="@style/TextViewIntegrationMyChangeStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                 />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+     <LinearLayout
+        android:id="@+id/pay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/pay_bg"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/quarter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_text_register02"
+            android:textColor="@color/color_5f5f5f" />
+
+        <TextView
+            android:id="@+id/money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="55dip"
+            android:layout_marginRight="85dip"
+            android:textSize="@dimen/font_size_text_register02"
+            android:textColor="@color/color_5f5f5f"/>
+
+        <TextView
+            android:id="@+id/pay_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:textSize="@dimen/font_size_text_register02"
+            android:textColor="@color/color_5f5f5f"/>
+    </LinearLayout>
+
+</LinearLayout>

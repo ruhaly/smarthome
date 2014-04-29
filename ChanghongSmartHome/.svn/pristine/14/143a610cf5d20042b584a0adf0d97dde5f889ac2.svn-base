@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <io.vov.vitamio.widget.CenterLayout
+        android:id="@+id/centerLayout"
+        style="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <com.changhong.smarthome.phone.cinema.view.VideoView
+            android:id="@+id/surface_view"
+            style="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="bottom" />
+    </io.vov.vitamio.widget.CenterLayout>
+
+</LinearLayout>

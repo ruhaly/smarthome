@@ -1,0 +1,50 @@
+package com.changhong.smarthome.phone.property.entry;
+
+/**
+ * <功能详细描述>
+ * 积分详情的实体类
+ * @author wangbaocheng
+ * 
+ */
+public class IntegrationChangeItemVO {
+		
+	private long id;
+	
+	private String path;
+	
+	private String activeDate;
+	
+	private long point;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getActiveDate() {
+		return activeDate;
+	}
+
+	public void setActiveDate(String activeDate) {
+		this.activeDate = activeDate;
+	}
+
+	public long getPoint() {
+		return point;
+	}
+
+	public void setPoint(long point) {
+		this.point = point;
+	}
+}

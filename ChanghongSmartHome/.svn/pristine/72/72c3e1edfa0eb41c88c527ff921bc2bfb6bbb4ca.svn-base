@@ -1,0 +1,185 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/front"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/itembg"
+        android:orientation="vertical"
+        android:tag="front" >
+
+        <TextView
+            android:id="@+id/bx_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dip"
+            android:layout_marginTop="5dip"
+            android:text="我家灯坏了，快来修"
+            android:textColor="@color/title_text_black"
+            android:textSize="20sp" />
+
+        <RelativeLayout
+            android:id="@+id/bx_fwjdlayout"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_below="@id/bx_text"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/itemimagetitle" >
+
+            <TextView
+                android:id="@id/bx_fwjd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dip"
+                android:layout_marginLeft="30dip"
+                android:layout_marginTop="10dip"
+                android:text="@string/wyff_tab_1_group_p1"
+                android:textColor="@color/red"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/bx_fwztl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="5dip"
+                android:layout_marginRight="25dip"
+                android:layout_marginTop="10dip"
+                android:text="@string/wyff_tab_1_group_p2"
+                android:textColor="@color/red"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/bx_fwjd0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bx_fwjdlayout"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:background="@drawable/itemimgebg" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="0dip"
+                android:layout_marginTop="0dip"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dip"
+                    android:layout_marginRight="0dip" >
+
+                    <TextView
+                        android:id="@+id/time1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/title_text_black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/time2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/title_text_black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/time3"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textColor="@color/title_text_black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/time4"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textColor="@color/title_text_black"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginRight="25dip"
+                    android:layout_marginTop="10dip" >
+
+                    <ImageView
+                        android:id="@+id/imgview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dip"
+                        android:background="@drawable/progressbar1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip" >
+
+                    <TextView
+                        android:id="@+id/text1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/wyff_tab_1_group_2_1"
+                        android:textColor="@color/title_text_gay"
+                        android:textSize="30px" />
+
+                    <TextView
+                        android:id="@+id/text2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/wyff_tab_1_group_2_2"
+                        android:textColor="@color/title_text_gay"
+                        android:textSize="30px" />
+
+                    <TextView
+                        android:id="@+id/text3"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/wyff_tab_1_group_2_3"
+                        android:textColor="@color/title_text_gay"
+                        android:textSize="30px" />
+
+                    <TextView
+                        android:id="@+id/text4"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/wyff_tab_1_group_2_4"
+                        android:textColor="@color/title_text_gay"
+                        android:textSize="30px" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bx_fwjd0"
+            android:text="已完成"
+            android:textSize="5sp"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+</FrameLayout>

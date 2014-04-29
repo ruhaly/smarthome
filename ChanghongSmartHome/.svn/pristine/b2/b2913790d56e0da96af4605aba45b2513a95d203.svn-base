@@ -1,0 +1,81 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+
+    <RelativeLayout
+        android:id="@id/title_main"
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        
+        android:background="@drawable/title_bg" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="@color/title_text_black"
+            android:text="@string/wyff_title"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/image_back"
+            android:layout_width="60dip"
+            android:layout_height="30dip"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@id/textView1"
+            android:layout_marginBottom="20dip"
+            android:src="@drawable/drawable_expand_finish" />
+
+ 
+    </RelativeLayout>
+    <ImageView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:id="@+id/slipingImg"
+           android:layout_below="@id/title_main"
+        android:background="@drawable/sliping"
+        
+        />
+      <FrameLayout
+       android:id="@+id/contents"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_below="@id/slipingImg"
+       />
+
+    <!-- <LinearLayout
+        android:id="@id/lx_main"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_main"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@id/vp_no1"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:layout_weight="1"
+            android:background="@drawable/titleselect"
+            android:gravity="center"
+            android:text="@string/wyff_tab_1"
+            android:textColor="@color/title_text_red"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@id/vp_no2"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:layout_weight="1"
+            android:background="@drawable/titleunselect"
+            android:gravity="center"
+            android:text="@string/wyff_tab_2"
+            android:textColor="@color/title_text_black"
+            android:textSize="22sp" />
+    </LinearLayout> -->
+
+
+</RelativeLayout>

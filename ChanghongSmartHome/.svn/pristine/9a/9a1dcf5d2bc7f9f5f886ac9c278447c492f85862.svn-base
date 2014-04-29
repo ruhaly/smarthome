@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 积分兑换主界面 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="48dip"
+        layout="@layout/intergration_top" >
+    </include>
+
+    <ScrollView
+        android:id="@+id/ScrollView_mainright"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/myintergrationtop"
+                android:layout_width="fill_parent"
+                android:layout_height="90dip"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dip"
+                    android:text="当前总分" />
+
+                <TextView
+                    android:id="@+id/myintergrationscore"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dip"
+                    android:text="5999分" />
+
+                <TextView
+                    android:id="@+id/todaytime"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dip"
+                    android:text="2014.4.12" />
+            </LinearLayout>
+
+            <GridView
+                android:id="@+id/gridviews"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/bg"
+                android:horizontalSpacing="5dip"
+                android:numColumns="3"
+                android:verticalSpacing="5dip" >
+            </GridView>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

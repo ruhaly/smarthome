@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="120dip"
+    android:descendantFocusability="blocksDescendants"
+    android:padding="13.3dip" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top" >
+
+        <TextView
+            android:id="@+id/today_tv"
+            android:layout_width="83dip"
+            android:layout_height="@dimen/my_sharing_date_height"
+            android:layout_gravity="top"
+            android:gravity="top"
+            android:text="@string/unit_today"
+            android:textColor="@color/list_content_text_color"
+            android:textSize="@dimen/my_sharing_date_size_small"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/date_tv"
+            android:layout_width="@dimen/my_sharing_date_width"
+            android:layout_height="@dimen/my_sharing_date_height"
+            android:layout_gravity="top"
+            android:gravity="top"
+            android:text="13"
+            android:textColor="@color/list_content_text_color"
+            android:textSize="@dimen/my_sharing_date_size_small" />
+
+        <TextView
+            android:id="@+id/month_tv"
+            android:layout_width="@dimen/my_sharing_month_width"
+            android:layout_height="@dimen/my_sharing_month_height"
+            android:layout_marginLeft="3dip"
+            android:text="12月"
+            android:textColor="@color/list_content_text_color"
+            android:textSize="@dimen/list_content_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/my_sharing_item_bg_color" >
+
+        <ImageView
+            android:id="@+id/pic_iv"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_02"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/content_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="3dip"
+            android:gravity="center"
+            android:minHeight="@dimen/my_sharing_date_height"
+            android:text="下雪啦"
+            android:textColor="@color/list_content_text_color"
+            android:textSize="@dimen/list_content_size" />
+    </LinearLayout>
+
+</LinearLayout>

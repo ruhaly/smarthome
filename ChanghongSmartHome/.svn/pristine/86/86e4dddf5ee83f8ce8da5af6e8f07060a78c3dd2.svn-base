@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/uploadsuccess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+         style="@style/TextViewStyle"
+        android:text="上传成功" />
+
+    <TextView
+        android:layout_marginTop="20dip"
+        android:id="@+id/continueuploading"
+         style="@style/TextViewStyle"
+         android:layout_below="@id/uploadsuccess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/upload_button_bg"
+         android:layout_centerInParent="true"
+        android:text="继续上传" />
+
+    <TextView
+        android:id="@+id/exit"
+         style="@style/TextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/continueuploading"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dip"
+        android:background="@drawable/upload_button_bg"
+        android:text="返回首页" />
+
+</RelativeLayout>

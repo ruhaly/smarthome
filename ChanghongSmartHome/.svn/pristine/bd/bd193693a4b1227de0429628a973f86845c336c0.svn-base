@@ -1,0 +1,231 @@
+package com.changhong.smarthome.phone.store.dialog;
+
+import java.util.ArrayList;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+
+public class CustomSingleChoiceListDialog extends Dialog implements
+        OnItemClickListener
+{
+    
+    private Context context;
+    
+    private ImageView title_icon;
+    
+    private TextView title_tv;
+    
+    private Button cancel_but, ok_but, ignore_but;
+    
+    private ListView listView;
+    
+    private int selectedIndex;
+    
+    private ArrayList<String> arrayList;
+    
+    private SingleChoiceListAdapter singleChoiceListAdapter;
+    
+    private View.OnClickListener innerListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            dismiss();
+        }
+    };
+    
+    public CustomSingleChoiceListDialog(Context context)
+    {
+        super(context);
+        this.context = context;
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.choicelistdialog);
+        initView();
+    }
+    
+    private void initView()
+    {
+        cancel_but = (Button) findViewById(R.id.choicelistdialog_cancel_but);
+        ok_but = (Button) findViewById(R.id.choicelistdialog_ok_but);
+        ignore_but = (Button) findViewById(R.id.choicelistdialog_ignore_but);
+        listView = (ListView) findViewById(R.id.choicelistdialog_message_lv);
+    }
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+    }
+    
+    public void setTitle(CharSequence title)
+    {
+        super.setTitle(title);
+        title_tv.setText(title);
+    }
+    
+    public void setTitle(int titleId)
+    {
+        super.setTitle(titleId);
+        title_tv.setText(context.getResources().getText(titleId));
+    }
+    
+    public void setIcon(Bitmap bitmap)
+    {
+        title_icon.setImageBitmap(bitmap);
+        title_icon.setVisibility(View.VISIBLE);
+    }
+    
+    public void setIcon(Drawable drawable)
+    {
+        title_icon.setImageDrawable(drawable);
+    }
+    
+    public void setIcon(int resId)
+    {
+        title_icon.setImageDrawable(context.getResources().getDrawable(resId));
+    }
+    
+    public void setSingleChoiceItems(String[] items, int checkedItem)
+    {
+        arrayList = new ArrayList<String>();
+        for (int i = 0; i < items.length; i++)
+        {
+            arrayList.add(items[i]);
+        }
+        int[] states = new int[items.length];
+        for (int i = 0; i < states.length; i++)
+        {
+            if (i != checkedItem)
+            {
+                states[i] = 0;
+            }
+            else
+            {
+                states[i] = 1;
+            }
+        }
+        singleChoiceListAdapter = new SingleChoiceListAdapter(context,
+                arrayList, states);
+        listView.setAdapter(singleChoiceListAdapter);
+        listView.setClickable(true);
+        listView.setOnItemClickListener(this);
+    }
+    
+    public int getSelectedIndex()
+    {
+        return singleChoiceListAdapter.getSelectedIndex();
+    }
+    
+    public void setSelectedIndex(int selectedIndex)
+    {
+        this.selectedIndex = selectedIndex;
+    }
+    
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+            long id)
+    {
+        singleChoiceListAdapter.setItemChecked(position);
+    }
+    
+    //确定按钮
+    public void setOnOkButton(String text, View.OnClickListener listener)
+    {
+        ok_but.setText(text);
+        ok_but.setVisibility(View.VISIBLE);
+        ok_but.setOnClickListener(listener);
+    }
+    
+    public void setOnOkButton(String text)
+    {
+        ok_but.setText(text);
+        ok_but.setVisibility(View.VISIBLE);
+        ok_but.setOnClickListener(innerListener);
+    }
+    
+    public void setOnOkButton(int text, View.OnClickListener listener)
+    {
+        ok_but.setText(context.getResources().getText(text));
+        ok_but.setVisibility(View.VISIBLE);
+        ok_but.setOnClickListener(listener);
+    }
+    
+    public void setOnOkButton(int text)
+    {
+        ok_but.setText(context.getResources().getText(text));
+        ok_but.setVisibility(View.VISIBLE);
+        ok_but.setOnClickListener(innerListener);
+    }
+    
+    //取消按钮
+    public void setOnCancelButton(String text, View.OnClickListener listener)
+    {
+        cancel_but.setText(text);
+        cancel_but.setVisibility(View.VISIBLE);
+        cancel_but.setOnClickListener(listener);
+    }
+    
+    public void setOnCancelButton(String text)
+    {
+        cancel_but.setText(text);
+        cancel_but.setVisibility(View.VISIBLE);
+        cancel_but.setOnClickListener(innerListener);
+    }
+    
+    public void setOnCancelButton(int text)
+    {
+        cancel_but.setText(context.getResources().getText(text));
+        cancel_but.setVisibility(View.VISIBLE);
+        cancel_but.setOnClickListener(innerListener);
+    }
+    
+    public void setOnCancelButton(int text, View.OnClickListener listener)
+    {
+        cancel_but.setText(context.getResources().getText(text));
+        cancel_but.setVisibility(View.VISIBLE);
+        cancel_but.setOnClickListener(listener);
+    }
+    
+    //忽略按钮
+    public void setNeutralButton(String text, View.OnClickListener listener)
+    {
+        ignore_but.setText(text);
+        ignore_but.setVisibility(View.VISIBLE);
+        ignore_but.setOnClickListener(listener);
+    }
+    
+    public void setNeutralButton(String text)
+    {
+        ignore_but.setText(text);
+        ignore_but.setVisibility(View.VISIBLE);
+        ignore_but.setOnClickListener(innerListener);
+    }
+    
+    public void setNeutralButton(int text, View.OnClickListener listener)
+    {
+        ignore_but.setText(context.getResources().getText(text));
+        ignore_but.setVisibility(View.VISIBLE);
+        ignore_but.setOnClickListener(listener);
+    }
+    
+    public void setNeutralButton(int text)
+    {
+        ignore_but.setText(context.getResources().getText(text));
+        ignore_but.setVisibility(View.VISIBLE);
+        ignore_but.setOnClickListener(innerListener);
+    }
+    
+}

@@ -1,0 +1,241 @@
+/**
+ * AccountLogic.java
+ * com.pactera.ch_bedframe.logic
+ *
+ * Function： TODO 
+ *
+ *   ver     date      		author
+ * ──────────────────────────────────
+ *   		 2013-12-4 		b
+ *
+ * Copyright (c) 2013, TNT All Rights Reserved.
+ */
+
+package com.changhong.foundation.logic;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.changhong.foundation.baseapi.HttpAction;
+import com.changhong.foundation.baseapi.HttpUrl;
+import com.changhong.foundation.baseapi.JsonParse;
+import com.changhong.foundation.baseapi.MsgWhat;
+import com.changhong.foundation.baseapi.RequestId;
+import com.changhong.foundation.baseapi.ResultCode;
+import com.changhong.foundation.entity.User;
+import com.changhong.sdk.http.HttpSenderUtils;
+import com.changhong.sdk.httpbean.ServiceResponse;
+import com.changhong.sdk.logic.SuperLogic;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
+import com.lidroid.xutils.http.RequestParams;
+
+/**
+ * 
+ * 
+ * 项目名称：CH_foundation 类名称：AccountLogic 类描述： 创建人：b 创建时间：2013年12月24日 下午2:34:36
+ * 修改人：b 修改时间：2013年12月24日 下午2:34:36 修改备注：
+ * 
+ * @version
+ * 
+ */
+public class PersonInfoLogic extends SuperLogic
+{
+    
+    public User user = new User();
+    
+    public HttpHandler<String> httpHanlder;
+    
+    private static PersonInfoLogic ins;
+    
+    // 余额
+    public String amount;
+    
+    public static synchronized PersonInfoLogic getInstance()
+    {
+        if (null == ins)
+        {
+            ins = new PersonInfoLogic();
+        }
+        return ins;
+    }
+    
+    @Override
+    public void handleHttpResponse(ServiceResponse serviceRes, int requestId,
+            InputStream is)
+    {
+        
+        switch (requestId)
+        {
+            case RequestId.PERSON_INFO_REQUESTID:
+            {
+                handlePersonInfoData(serviceRes);
+                break;
+            }
+            case RequestId.UPDATE_PERSON_INFO_REQUESTID:
+            {
+                handleUpdatePersonInfoData(serviceRes);
+                break;
+            }
+            default:
+                break;
+        }
+        
+    }
+    
+    @Override
+    public void clear()
+    {
+        user = new User();
+    }
+    
+    @Override
+    public void stopRequest()
+    {
+        if (null != httpHanlder)
+        {
+            httpHanlder.stop();
+        }
+    }
+    
+    /**
+     * 
+      * requestPayInfos(这里用一句话描述这个方法的作用)  * (这里描述这个方法适用条件 – 可选)  * @param
+     * account  * @param httpUtils  *void  * @exception  * @since  1.0.0
+     */
+    public void requestPersonInfo(String account, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("account", account);
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_PERSON_INFO,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_PERSON_INFO,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.PERSON_INFO_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+        
+    }
+    
+    @Override
+    public void handleHttpException(HttpException error, String msg)
+    {
+        // if (error.getExceptionCode() == 0 || error.getExceptionCode() == 404)
+        // {
+        // }
+        handler.sendEmptyMessage(CONNECT_ERROR_MSGWHAT);
+    }
+    
+    public void handlePersonInfoData(ServiceResponse response)
+    {
+        
+        if (response.getBody().getResult().equals(ResultCode.RESULT_SUCCESS))
+        {
+            user = JsonParse.parsePersonInfoRes(response.getBody()
+                    .getParamsString());
+            if (null != user)
+            {
+                handler.sendEmptyMessage(MsgWhat.MSGWHAT_PERSON_INFO_SUCCESS);
+            }
+            else
+            {
+                handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+            }
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    public void handleUpdatePersonInfoData(ServiceResponse response)
+    {
+        
+        if (response.getBody().getResult().equals(ResultCode.RESULT_SUCCESS))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_UPDATE_PERSON_INFO_SUCCESS);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    /**
+     * 
+     * 
+     * handlePayToServerData(这里用一句话描述这个方法的作用)
+     * 
+     * TODO(这里描述这个方法适用条件 – 可选)
+     * 
+     * @param name
+     * 
+     * @param @return 设定文件
+     * 
+     * @return String DOM对象
+     * 
+     * @Exception 异常对象
+     * 
+     * @since 2013年12月24日
+     */
+    public void handlePayToServerData(ServiceResponse response)
+    {
+        
+        if (response.getBody().getResult().equals(ResultCode.RESULT_SUCCESS))
+        {
+            handler.sendEmptyMessage(MsgWhat.MSGWHAT_PAY_TO_SERVER_SUCCESS);
+        }
+        else
+        {
+            handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+        }
+        
+    }
+    
+    /**
+     * 
+      * requestPayInfos(这里用一句话描述这个方法的作用)  * (这里描述这个方法适用条件 – 可选)  * @param
+     * account  * @param httpUtils  *void  * @exception  * @since  1.0.0
+     */
+    public void requestUpdateInfo(User user, HttpUtils httpUtils)
+    {
+        RequestParams params = new RequestParams();
+        Map<String, Object> serviceInfo = new HashMap<String, Object>();
+        serviceInfo.put("userId", user.getUid());
+        serviceInfo.put("birthday", user.getBirth());
+        serviceInfo.put("sex", user.getSex());
+        serviceInfo.put("nickName", user.getNickName());
+        serviceInfo.put("mobile", user.getMobile());
+        serviceInfo.put("headPic", user.getHeadStr());
+        serviceInfo.put("joinCheck", user.getJoinCheck());
+        serviceInfo.put("friendRefused", user.getJoinFriend());
+        
+        fixRequestParams(params,
+                serviceInfo,
+                HttpAction.ACTION_UPDATE_PERSON_INFO,
+                "sc",
+                "sc",
+                "4100");
+        httpHanlder = HttpSenderUtils.sendMsgImpl(HttpAction.ACTION_UPDATE_PERSON_INFO,
+                params,
+                HttpSenderUtils.METHOD_POST,
+                httpUtils,
+                RequestId.UPDATE_PERSON_INFO_REQUESTID,
+                this,
+                false,
+                HttpUrl.URL_OSS);
+        
+    }
+}

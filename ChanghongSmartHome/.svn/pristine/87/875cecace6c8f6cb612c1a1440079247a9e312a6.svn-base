@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 我积分兑换的物品的 item -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/integration_bg1"
+    android:orientation="horizontal"
+    android:padding="20dip" >
+
+    <ImageView
+        android:id="@+id/goodsImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dip"
+        android:layout_weight="1"
+        android:background="@drawable/changhong" />
+
+    <LinearLayout
+        android:id="@+id/hotRelative"
+        android:layout_width="wrap_content"
+        android:layout_height="150dip"
+        android:layout_marginLeft="20dip"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/goodsName"
+            style="@style/TextViewStyle"
+            android:textSize="20px"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="黄金脆皮级一份" />
+
+        <TextView
+            android:id="@+id/needIntegration"
+            style="@style/TextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="25000积分" />
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="有效期:" />
+
+        <TextView
+            android:id="@+id/validityTimeFrom"
+            style="@style/TextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="2014.5.23" />
+
+        <TextView
+            android:id="@+id/validityTimeTo"
+            style="@style/TextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="2014.6.21" />
+    </LinearLayout>
+
+</LinearLayout>

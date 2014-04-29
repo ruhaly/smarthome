@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:item="http://schemas.android.com/apk/res/com.changhong.smarthome.phone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sub_sub_bg_color" >
+
+    <com.changhong.smarthome.phone.store.activity.StoreTitleItem
+        android:id="@+id/order_new_detail_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        item:titlename="@string/order_detail_title" >
+    </com.changhong.smarthome.phone.store.activity.StoreTitleItem>
+    
+    <!-- RelativeLayout 
+        
+        android:id="@+id/order_new_detail_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        
+        >
+        
+        <TextView
+            android:id="@+id/order_new_detail_title_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/order_detail_title"
+            android:textColor="@color/sub_text_color"
+            android:textSize="24sp" />
+        
+    </RelativeLayout-->
+
+    <RelativeLayout
+        android:id="@+id/order_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/order_new_detail_title"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/order_item_bg" >
+
+        <ImageView
+            android:id="@+id/news_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/changhong"
+        	android:scaleType="fitXY"
+            android:layout_marginLeft="0dip"
+            android:layout_marginRight="0dip"
+            android:layout_marginTop="0dip" />
+
+        <TextView
+            android:id="@+id/news_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/news_item_icon"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@+id/news_item_icon"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/sub_text_color"
+            android:textSize="24sp" />
+
+        <RatingBar
+            android:id="@+id/order_star"
+            style="@style/order_info_rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:numStars="5"
+            android:rating="5"
+            android:stepSize="1" />
+
+        <TextView
+            android:id="@+id/news_item_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/news_item_name"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_toRightOf="@+id/news_item_icon"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/ordermanager_list_item_time_bg"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/news_item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/news_item_price_1"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_toRightOf="@+id/news_item_icon"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/ordermanager_list_item_time_bg"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/news_item_price_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginBottom="8dip"
+            android:layout_toRightOf="@+id/news_item_icon"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/red"
+            android:textSize="18sp" />
+
+       
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/order_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/order_item_layout"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/order_new_detail_number"
+        android:textColor="@color/title_text_color" />
+
+    <TextView
+        android:id="@+id/order_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/order_number"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/order_new_detail_phone"
+        android:textColor="@color/title_text_color" />
+
+    <TextView
+        android:id="@+id/order_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/order_phone"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/order_new_detail_date"
+        android:textColor="@color/title_text_color" />
+
+    <TextView
+        android:id="@+id/order_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/order_date"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/order_new_detail_quantity"
+        android:textColor="@color/title_text_color" />
+
+    <TextView
+        android:id="@+id/order_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/order_quantity"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/order_new_detail_money"
+        android:textColor="@color/title_text_color" />
+
+    <LinearLayout
+        android:id="@+id/order_button_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:background="@drawable/bj3"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/order_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/order_conform_btn_bg"
+            android:text="@string/order_new_detail_conform"
+            android:textColor="@color/white"
+            
+            android:textSize="26sp"/>
+
+        <RatingBar
+            android:id="@+id/end_star"
+            style="@style/order_rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center_horizontal"
+            android:numStars="5"
+            android:rating="5"
+            android:stepSize="1"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/end_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/order_new_detail_end"
+            android:textColor="@color/title_text_color"
+            android:visibility="gone"
+             />
+    </LinearLayout>
+
+</RelativeLayout>

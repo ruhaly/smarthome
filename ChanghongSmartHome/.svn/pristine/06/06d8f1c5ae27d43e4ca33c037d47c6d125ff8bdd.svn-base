@@ -1,0 +1,58 @@
+package com.changhong.smarthome.phone.cinema.activity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+
+/**  
+* @author yang_jun
+* @date 2014-3-19 下午5:28:11 
+*/
+public class UploadFinishedActivity extends Activity implements
+        OnClickListener
+{
+    private static final String TAG = "UploadFinishedActivity";
+    private TextView continueuploading;
+    
+    private TextView exit;
+    
+    @Override
+    public void onCreate(Bundle paramBundle)
+    {
+        super.onCreate(paramBundle);
+        setContentView(R.layout.uploadingsuccess);
+        continueuploading = (TextView) findViewById(R.id.continueuploading);
+        exit = (TextView) findViewById(R.id.exit);
+        
+        continueuploading.setOnClickListener(this);
+        exit.setOnClickListener(this);
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
+            case R.id.continueuploading:
+                Log.i(TAG, "------continueuploading clicked-");
+                finish();
+                break;
+            case R.id.exit:
+                Intent intent = new Intent();
+                intent.setClass(this, MainActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        
+    }
+    
+    
+}

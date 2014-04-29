@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/order_detail_item_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent" >
+
+    <TextView
+        android:id="@+id/key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="26dp"
+        android:gravity="center_vertical"
+        
+        android:textColor="@color/all_choose_color"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/vaule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/key"
+        android:layout_marginBottom="20dip"
+        android:layout_marginLeft="30dp"
+        android:textColor="@color/ordermanager_list_item_time_bg"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/edit_image"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:contentDescription="@string/app_name"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/key"
+        android:layout_marginRight="28dp"
+        android:visibility="gone"
+        android:background="@drawable/change_picture" />
+
+    <TextView
+        android:id="@+id/item_line"
+        android:layout_width="wrap_content"
+        android:layout_height="1dip"
+        android:layout_below="@+id/vaule"
+        android:background="@drawable/line_dark"
+        android:gravity="center_vertical" />
+
+</RelativeLayout>

@@ -1,0 +1,928 @@
+package com.changhong.foundation.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
+
+import com.changhong.foundation.R;
+import com.changhong.foundation.baseapi.Constant;
+import com.changhong.foundation.entity.Address;
+import com.changhong.foundation.entity.RegisterInfo;
+import com.changhong.foundation.logic.RegisterLogic;
+import com.changhong.sdk.baseapi.StringUtils;
+import com.changhong.sdk.baseapi.ViewHolder;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class RegisterActivity extends BaseActivity implements OnClickListener
+{
+    
+    @ViewInject(R.id.frame_huzhu)
+    private LinearLayout frame_huzhu;
+    
+    @ViewInject(R.id.frame_register)
+    private LinearLayout frame_register;
+    
+    @ViewInject(R.id.radio_group)
+    private RadioGroup radio_group;
+    
+    //弹出选择省市框
+    private Dialog provinceDialog;
+    
+    private Dialog communityDialog;
+    
+    private Dialog listDialog;
+    
+    private RegisterLogic logic;
+    
+    //当前选中的地址信息
+    private RegisterInfo registerInfo;
+    
+    private TextView tvProvince;
+    
+    private TextView tvCity;
+    
+    private TextView tvCommunity;
+    
+    private TextView tvZutuan;
+    
+    private TextView tvBuilding;
+    
+    private TextView tvUnit;
+    
+    private TextView tvDoorPlate;
+    
+    @ViewInject(R.id.tvProvinceCityFrame)
+    private TextView tvProvinceCityFrame;
+    
+    @ViewInject(R.id.tvCommunityFrame)
+    private TextView tvCommunityFrame;
+    
+    @ViewInject(R.id.etPhone)
+    private EditText etPhone;
+    
+    @ViewInject(R.id.etValicode)
+    private EditText etValicode;
+    
+    @ViewInject(R.id.etNickName)
+    private EditText etNickName;
+    
+    @ViewInject(R.id.etReallyName)
+    private EditText etReallyName;
+    
+    @ViewInject(R.id.etIdentityCard)
+    private EditText etIdentityCard;
+    
+    @ViewInject(R.id.etHouseholderPhone)
+    private EditText etHouseholderPhone;
+    
+    @ViewInject(R.id.etPwd)
+    private EditText etPwd;
+    
+    private HttpUtils httpUtils;
+    
+    private String role = "0";
+    
+    //当前选中的市列表
+    private List<Address> cityList = new ArrayList<Address>();
+    
+    //    //当前选中的区列表
+    //    private List<Address> communityList = new ArrayList<Address>();
+    //    
+    //    //当前选中的楼栋列表
+    //    private List<Address> buildingList = new ArrayList<Address>();
+    //    
+    //    //当前选中的单元列表
+    //    private List<Address> unitList = new ArrayList<Address>();
+    //    
+    //    //当前选中的门牌列表
+    //    private List<Address> doorPlateList = new ArrayList<Address>();
+    
+    @Override
+    public void initData()
+    {
+        logic = RegisterLogic.getInstance();
+        registerInfo = new RegisterInfo();
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.register_layout);
+        setSlideMenu(SlidingMenu.TOUCHMODE_NONE);
+        ViewUtils.inject(this);
+        radio_group.setOnCheckedChangeListener(new OnCheckedChangeListener()
+        {
+            
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                if (checkedId == R.id.rd_huzhu)
+                {
+                    frame_huzhu.setVisibility(View.GONE);
+                    role = "0";
+                }
+                else
+                {
+                    if (checkedId == R.id.rd_jiatingchengyuan)
+                    {
+                        role = "1";
+                    }
+                    else
+                    {
+                        role = "2";
+                    }
+                    frame_huzhu.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    @OnClick(R.id.img_back)
+    public void imgBackClick(View view)
+    {
+        finish();
+    }
+    
+    @OnClick(R.id.btnRegister)
+    public void btnRegisterClick(View view)
+    {
+        if (checkEditTextIsEmpty())
+        {
+            return;
+        }
+        if (StringUtils.isEmpty(tvProvinceCityFrame.getText().toString()))
+        {
+            showToast(tvProvinceCityFrame.getHint().toString());
+            return;
+        }
+        if (StringUtils.isEmpty(tvCommunityFrame.getText().toString()))
+        {
+            showToast(tvCommunityFrame.getHint().toString());
+            return;
+        }
+        RegisterInfo rInfo = new RegisterInfo();
+        rInfo.setRole(role);
+        rInfo.setPhoneNumber(etPhone.getText().toString());
+        rInfo.setValicode(etValicode.getText().toString());
+        rInfo.setNickName(etNickName.getText().toString());
+        rInfo.setReallyName(etReallyName.getText().toString());
+        rInfo.setIdentityCard(etIdentityCard.getText().toString());
+        rInfo.setHouseholderPhone(etHouseholderPhone.getText().toString());
+        rInfo.setPwd(etPwd.getText().toString());
+        rInfo.setProvinceId(logic.province.getId());
+        rInfo.setCityId(logic.city.getId());
+        rInfo.setCommunityId(logic.community.getId());
+        rInfo.setZutuanId(logic.zutuan.getId());
+        rInfo.setBuildingId(logic.building.getId());
+        rInfo.setUnitId(logic.unit.getId());
+        rInfo.setDoorPlateId(logic.doorPlate.getId());
+        showProcessDialog(dismiss);
+        httpUtils = new HttpUtils();
+        logic.setData(mHandler);
+        logic.requestRegister(rInfo, httpUtils);
+    }
+    
+    @OnClick(R.id.tvProvinceCityFrame)
+    public void tvProvinceCityFrameClick(View view)
+    {
+        
+        View provinceView = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.province_city_layout, null);
+        provinceDialog = getDialog(provinceView, false, R.style.MyDialog);
+        tvProvince = (TextView) provinceView.findViewById(R.id.tvProvince);
+        tvCity = (TextView) provinceView.findViewById(R.id.tvCity);
+        tvProvince.setOnClickListener(this);
+        tvCity.setOnClickListener(this);
+        tvProvince.setText(registerInfo.getProvince());
+        tvCity.setText(registerInfo.getCity());
+        Button btnConfirm = (Button) provinceView.findViewById(R.id.btnConfirm);
+        Button btnCancel = (Button) provinceView.findViewById(R.id.btnCancel);
+        btnConfirm.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                if (checkProvinceCityIsEmpty())
+                {
+                    return;
+                }
+                
+                if (!logic.provinceTemp.getId().equals(logic.province.getId())
+                        || !logic.cityTemp.getId().equals(logic.city.getId()))
+                {
+                    logic.province = logic.provinceTemp;
+                    logic.city = logic.cityTemp;
+                    registerInfo.setProvince(logic.province.getName());
+                    registerInfo.setCity(logic.city.getName());
+                    registerInfo.setCommunity("");
+                    registerInfo.setZutuan("");
+                    registerInfo.setBuilding("");
+                    registerInfo.setUnit("");
+                    registerInfo.setDoorPlate("");
+                    tvProvinceCityFrame.setText(logic.provinceTemp.getName()
+                            + "/" + logic.cityTemp.getName());
+                    tvCommunityFrame.setText("");
+                }
+                
+                provinceDialog.dismiss();
+                provinceDialog = null;
+            }
+        });
+        btnCancel.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                provinceDialog.dismiss();
+                provinceDialog = null;
+            }
+        });
+        provinceDialog.show();
+    }
+    
+    @OnClick(R.id.tvCommunityFrame)
+    public void tvCommunityFrameClick(View view)
+    {
+        if (StringUtils.isEmpty(tvProvinceCityFrame.getText().toString()))
+        {
+            showToast(tvProvinceCityFrame.getHint().toString());
+            return;
+        }
+        
+        View communityView = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.community_layout, null);
+        communityDialog = getDialog(communityView, false, R.style.MyDialog);
+        tvCommunity = (TextView) communityView.findViewById(R.id.tvCommunity);
+        tvZutuan = (TextView) communityView.findViewById(R.id.tvZutuan);
+        tvBuilding = (TextView) communityView.findViewById(R.id.tvBuilding);
+        tvUnit = (TextView) communityView.findViewById(R.id.tvUnit);
+        tvDoorPlate = (TextView) communityView.findViewById(R.id.tvDoorPlate);
+        tvCommunity.setText(registerInfo.getCommunity());
+        tvZutuan.setText(registerInfo.getZutuan());
+        tvBuilding.setText(registerInfo.getBuilding());
+        tvUnit.setText(registerInfo.getUnit());
+        tvDoorPlate.setText(registerInfo.getDoorPlate());
+        tvCommunity.setOnClickListener(this);
+        tvZutuan.setOnClickListener(this);
+        tvBuilding.setOnClickListener(this);
+        tvUnit.setOnClickListener(this);
+        tvDoorPlate.setOnClickListener(this);
+        
+        Button btnConfirm = (Button) communityView.findViewById(R.id.btnConfirm);
+        Button btnCancel = (Button) communityView.findViewById(R.id.btnCancel);
+        btnConfirm.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                if (checkCommunityIsEmpty())
+                {
+                    return;
+                }
+                
+                logic.community = logic.communityTemp;
+                logic.zutuan = logic.zutuanTemp;
+                logic.building = logic.buildingTemp;
+                logic.unit = logic.unitTemp;
+                logic.doorPlate = logic.doorPlateTemp;
+                
+                registerInfo.setCommunity(logic.community.getName());
+                registerInfo.setZutuan(logic.zutuan.getName());
+                registerInfo.setBuilding(logic.building.getName());
+                registerInfo.setUnit(logic.unit.getName());
+                registerInfo.setDoorPlate(logic.doorPlate.getName());
+                
+                tvCommunityFrame.setText(logic.community.getName() + "/"
+                        + logic.zutuan.getName() + "/"
+                        + logic.community.getName() + "/"
+                        + logic.building.getName() + "/"
+                        + logic.doorPlate.getName());
+                communityDialog.dismiss();
+                communityDialog = null;
+            }
+        });
+        btnCancel.setOnClickListener(new OnClickListener()
+        {
+            
+            @Override
+            public void onClick(View v)
+            {
+                communityDialog.dismiss();
+                communityDialog = null;
+            }
+        });
+        communityDialog.show();
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
+            case R.id.tvProvince:
+            {
+                if (null != logic.addressList && logic.addressList.size() > 0)
+                {
+                    showAreaListDialog(Constant.PROVINCE, logic.addressList);
+                    break;
+                }
+                showProcessDialog(dismiss);
+                httpUtils = new HttpUtils();
+                logic.setData(mHandler);
+                logic.requestProvince(httpUtils);
+                break;
+            }
+            case R.id.tvCity:
+            {
+                if (StringUtils.isEmpty(tvProvince.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_province));
+                    break;
+                }
+                
+                if (null != logic.cityMap.get(logic.provinceTemp.getId())
+                        && logic.cityMap.get(logic.provinceTemp.getId()).size() > 0)
+                {
+                    showAreaListDialog(Constant.CITY,
+                            logic.cityMap.get(logic.provinceTemp.getId()));
+                    break;
+                }
+                showProcessDialog(dismiss);
+                httpUtils = new HttpUtils();
+                logic.setData(mHandler);
+                logic.requestCity(logic.provinceTemp.getId(), httpUtils);
+                
+                break;
+            }
+            case R.id.tvCommunity:
+            {
+                
+                if (null != logic.communityMap.get(logic.cityTemp.getId())
+                        && logic.communityMap.get(logic.cityTemp.getId())
+                                .size() > 0)
+                {
+                    showAreaListDialog(Constant.COMMUNITY,
+                            logic.communityMap.get(logic.cityTemp.getId()));
+                    break;
+                }
+                showProcessDialog(dismiss);
+                httpUtils = new HttpUtils();
+                logic.setData(mHandler);
+                logic.requestCommunity(logic.cityTemp.getId(), httpUtils);
+                
+                break;
+            }
+            case R.id.tvZutuan:
+            {
+                if (StringUtils.isEmpty(tvCommunity.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_community));
+                    return;
+                }
+                if (null != logic.zutuanMap.get(logic.communityTemp.getId())
+                        && logic.zutuanMap.get(logic.communityTemp.getId())
+                                .size() > 0)
+                {
+                    showAreaListDialog(Constant.ZUTUAN,
+                            logic.zutuanMap.get(logic.communityTemp.getId()));
+                    break;
+                }
+                showProcessDialog(dismiss);
+                httpUtils = new HttpUtils();
+                logic.setData(mHandler);
+                logic.requestZutuan(logic.communityTemp.getId(), httpUtils);
+                
+                break;
+            }
+            case R.id.tvBuilding:
+            {
+                if (StringUtils.isEmpty(tvCommunity.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_community));
+                    break;
+                }
+                if (StringUtils.isEmpty(tvZutuan.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_zutuan));
+                    break;
+                }
+                if (null != logic.buildingMap.get(logic.zutuanTemp.getId())
+                        && logic.buildingMap.get(logic.zutuanTemp.getId())
+                                .size() > 0)
+                {
+                    showAreaListDialog(Constant.BUILDING,
+                            logic.buildingMap.get(logic.zutuanTemp.getId()));
+                    break;
+                }
+                showProcessDialog(dismiss);
+                httpUtils = new HttpUtils();
+                logic.setData(mHandler);
+                logic.requestBuilding(logic.zutuanTemp.getId(), httpUtils);
+                break;
+            }
+            case R.id.tvUnit:
+            {
+                if (StringUtils.isEmpty(tvCommunity.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_community));
+                    break;
+                }
+                if (StringUtils.isEmpty(tvZutuan.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_zutuan));
+                    break;
+                }
+                if (StringUtils.isEmpty(tvBuilding.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_building));
+                    break;
+                }
+                
+                if (null != logic.unitMap.get(logic.buildingTemp.getId())
+                        && logic.unitMap.get(logic.buildingTemp.getId()).size() > 0)
+                {
+                    showAreaListDialog(Constant.UNIT,
+                            logic.unitMap.get(logic.buildingTemp.getId()));
+                }
+                else
+                {
+                    showToast(getString(R.string.date_empty));
+                }
+                
+                break;
+            }
+            case R.id.tvDoorPlate:
+            {
+                if (StringUtils.isEmpty(tvCommunity.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_community));
+                    break;
+                }
+                if (StringUtils.isEmpty(tvZutuan.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_zutuan));
+                    break;
+                }
+                if (StringUtils.isEmpty(tvBuilding.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_building));
+                    break;
+                }
+                if (StringUtils.isEmpty(tvUnit.getText().toString()))
+                {
+                    showToast(getString(R.string.please_select_unit));
+                    break;
+                }
+                if (null != logic.doorPlateMap.get(logic.buildingTemp.getId()
+                        + RegisterLogic.JOIN_SYMBOL + logic.unitTemp.getId())
+                        && logic.doorPlateMap.get(logic.buildingTemp.getId()
+                                + RegisterLogic.JOIN_SYMBOL
+                                + logic.unitTemp.getId()).size() > 0)
+                {
+                    showAreaListDialog(Constant.DOORPLATE,
+                            logic.doorPlateMap.get(logic.buildingTemp.getId()
+                                    + RegisterLogic.JOIN_SYMBOL
+                                    + logic.unitTemp.getId()));
+                    break;
+                }
+                
+                showProcessDialog(dismiss);
+                httpUtils = new HttpUtils();
+                logic.setData(mHandler);
+                logic.requestDoorplate(logic.buildingTemp.getId(),
+                        logic.unitTemp.getId(),
+                        httpUtils);
+                
+                break;
+            }
+            
+            default:
+                break;
+        }
+    }
+    
+    /**
+     * 
+     * 地方列表
+     * @param type 0省份1市2区3楼栋4单元5门牌
+     */
+    public void showAreaListDialog(final String type, List<Address> list)
+    {
+        if (null == list || list.size() == 0)
+        {
+            showToast(getString(R.string.date_empty));
+            return;
+        }
+        View areaView = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.arealist_layout, null);
+        ListView areaListView = (ListView) areaView.findViewById(R.id.areaListView);
+        listDialog = getDialog(areaView, false, R.style.MyDialog);
+        //        List<Address> list = new ArrayList<Address>();
+        //        for (int i = 0; i < 10; i++)
+        //        {
+        //            Address a = new Address();
+        //            a.setName(i + "1");
+        //            list.add(a);
+        //        }
+        final Adapter adapter = new Adapter(list);
+        areaListView.setAdapter(adapter);
+        areaListView.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                
+                updateView(type, adapter.getItem(position));
+                listDialog.dismiss();
+                listDialog = null;
+            }
+        });
+        listDialog.show();
+    }
+    
+    private void updateView(String type, Address address)
+    {
+        if (Constant.PROVINCE.equals(type))
+        {
+            if (!address.getId().equals(logic.provinceTemp.getId()))
+            {
+                logic.provinceTemp = address;
+                registerInfo.setProvinceId(address.getId());
+                tvProvince.setText(address.getName());
+                tvCity.setText("");
+            }
+        }
+        else if (Constant.CITY.equals(type))
+        {
+            logic.cityTemp = address;
+            registerInfo.setCityId(address.getId());
+            tvCity.setText(address.getName());
+        }
+        else if (Constant.COMMUNITY.equals(type))
+        {
+            if (!address.getId().equals(logic.communityTemp.getId()))
+            {
+                logic.communityTemp = address;
+                tvCommunity.setText(address.getName());
+                tvZutuan.setText("");
+                tvBuilding.setText("");
+                tvUnit.setText("");
+                tvDoorPlate.setText("");
+            }
+            
+        }
+        else if (Constant.ZUTUAN.equals(type))
+        {
+            
+            if (!address.getId().equals(logic.zutuanTemp.getId()))
+            {
+                logic.zutuanTemp = address;
+                tvZutuan.setText(address.getName());
+                tvBuilding.setText("");
+                tvUnit.setText("");
+                tvDoorPlate.setText("");
+            }
+        }
+        else if (Constant.BUILDING.equals(type))
+        {
+            
+            if (!address.getId().equals(logic.buildingTemp.getId()))
+            {
+                logic.buildingTemp = address;
+                tvBuilding.setText(address.getName());
+                tvUnit.setText("");
+                tvDoorPlate.setText("");
+            }
+            
+        }
+        else if (Constant.UNIT.equals(type))
+        {
+            
+            if (!address.getId().equals(logic.unitTemp.getId()))
+            {
+                logic.unitTemp = address;
+                tvUnit.setText(address.getName());
+                tvDoorPlate.setText("");
+            }
+            
+        }
+        else
+        {
+            if (!address.getId().equals(logic.doorPlateTemp.getId()))
+            {
+                logic.doorPlateTemp = address;
+                tvDoorPlate.setText(address.getName());
+            }
+        }
+    }
+    
+    /**
+     * 
+     * 根据省id获取市列表
+     * @param provinceId
+     * @return
+     */
+    public List<Address> getCityList()
+    {
+        //        cityList = city.getCityList();
+        return cityList;
+    }
+    
+    /**
+     * 
+     * 根据省市id获取区列表
+     * @param provinceId
+     * @return
+     */
+    public List<Address> getCommunityList(String provinceId, String cityId)
+    {
+        List<Address> list = new ArrayList<Address>();
+        return list;
+    }
+    
+    /**
+     * 
+     * 根据省市区id获取楼栋列表
+     * @param provinceId
+     * @return
+     */
+    public List<Address> getBuildingList(String provinceId, String cityId,
+            String communityId)
+    {
+        List<Address> list = new ArrayList<Address>();
+        return list;
+    }
+    
+    /**
+     * 
+     * 根据省市区楼栋id获取单元列表
+     * @param provinceId
+     * @return
+     */
+    public List<Address> getUnitList(String provinceId, String cityId,
+            String communityId, String buildingId)
+    {
+        List<Address> list = new ArrayList<Address>();
+        return list;
+    }
+    
+    /**
+     * 
+     * 根据省市区楼栋单元id获取门牌列表
+     * @param provinceId
+     * @return
+     */
+    public List<Address> getDoorPlateList(String provinceId, String cityId,
+            String communityId, String buildingId, String unitId)
+    {
+        List<Address> list = new ArrayList<Address>();
+        return list;
+    }
+    
+    class Adapter extends BaseAdapter
+    {
+        List<Address> list;
+        
+        public Adapter(List<Address> list)
+        {
+            this.list = list;
+        }
+        
+        @Override
+        public int getCount()
+        {
+            return list.size();
+        }
+        
+        @Override
+        public Address getItem(int position)
+        {
+            return list.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            if (convertView == null)
+            {
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.area_item_layout, null);
+            }
+            TextView tvName = ViewHolder.get(convertView, R.id.tvName);
+            tvName.setText(getItem(position).getName());
+            return convertView;
+        }
+    }
+    
+    @OnClick(R.id.btnGetValicode)
+    public void btnGetValicodeClick(View view)
+    {
+        if (StringUtils.isEmpty(etPhone.getText().toString()))
+        {
+            showToast(etPhone.getHint().toString());
+            return;
+        }
+        
+        showProcessDialog(dismiss);
+        httpUtils = new HttpUtils();
+        logic.setData(mHandler);
+        logic.requestGetValicode(etPhone.getText().toString().trim(),
+                Constant.TYPE_REGISTER_VALICEDE,
+                httpUtils);
+    }
+    
+    DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener()
+    {
+        @Override
+        public void onDismiss(DialogInterface dialog)
+        {
+            logic.stopRequest();
+        }
+    };
+    
+    public void handleMsg(Message msg)
+    {
+        switch (msg.what)
+        {
+            case MSGWHAT_LOGIN_SUCCESS:
+            {
+                break;
+            }
+            case MSGWHAT_REGISTER_GETVALICODE_SUCCESS:
+            {
+                showToast(getString(R.string.get_valicode_success));
+                break;
+            }
+            case MSGWHAT_GET_PROVINCE_SUCCESS:
+            {
+                showAreaListDialog(Constant.PROVINCE, logic.addressList);
+                break;
+            }
+            case MSGWHAT_GET_CITY_SUCCESS:
+            {
+                showAreaListDialog(Constant.CITY,
+                        logic.cityMap.get(logic.provinceTemp.getId()));
+                break;
+            }
+            case MSGWHAT_GET_COMMUNITY_SUCCESS:
+            {
+                showAreaListDialog(Constant.COMMUNITY,
+                        logic.communityMap.get(logic.cityTemp.getId()));
+                break;
+            }
+            case MSGWHAT_GET_ZUTUAN_SUCCESS:
+            {
+                showAreaListDialog(Constant.ZUTUAN,
+                        logic.zutuanMap.get(logic.communityTemp.getId()));
+                break;
+            }
+            case MSGWHAT_GET_BUILDING_SUCCESS:
+            {
+                showAreaListDialog(Constant.BUILDING,
+                        logic.buildingMap.get(logic.zutuanTemp.getId()));
+                break;
+            }
+            case MSGWHAT_GET_DOORPLATE_SUCCESS:
+            {
+                showAreaListDialog(Constant.DOORPLATE,
+                        logic.doorPlateMap.get(logic.buildingTemp.getId()
+                                + RegisterLogic.JOIN_SYMBOL
+                                + logic.unitTemp.getId()));
+                break;
+            }
+            case MSGWHAT_DATE_EMPTY:
+            {
+                showToast(getString(R.string.date_empty));
+                break;
+            }
+            case MSGWHAT_REGISTER_SUCCESS:
+            {
+                showToast(getString(R.string.register_success));
+                finish();
+                break;
+            }
+            case MSGWHAT_USER_HAS_EXIST_:
+            {
+                showToast(getString(R.string.USER_HAS_EXIST));
+                break;
+            }
+            case MSGWHAT_REGISTER_AGIAN:
+            {
+                showToast(getString(R.string.register_again));
+                break;
+            }
+            case MSGWHAT_USERINFO_NOT_EXIST:
+            {
+                showToast(getString(R.string.userinfo_not_exist));
+                break;
+            }
+            case MSGWHAT_HOUSEHOLDER_HAS_EXIST_:
+            {
+                showToast(getString(R.string.householder_has_exist));
+                break;
+            }
+            case MSGWHAT_HOUSEHOLDER_PHONE_ERROR:
+            {
+                showToast(getString(R.string.householder_phone_error));
+                break;
+            }
+            case MSGWHAT_HOUSEHOLDER_NOT_EXIST_:
+            {
+                showToast(getString(R.string.householder_not_exist));
+                break;
+            }
+            case MSGWHAT_HOUSEHOLDER_NEED_REGISTER_:
+            {
+                showToast(getString(R.string.householder_need_register));
+                break;
+            }
+            default:
+                break;
+        }
+        super.handleMsg(msg);
+    };
+    
+    public boolean checkProvinceCityIsEmpty()
+    {
+        if (StringUtils.isEmpty(tvProvince.getText().toString()))
+        {
+            showToast(getString(R.string.please_select_province));
+            return true;
+        }
+        if (StringUtils.isEmpty(tvCity.getText().toString()))
+        {
+            showToast(getString(R.string.please_select_city));
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkCommunityIsEmpty()
+    {
+        if (StringUtils.isEmpty(tvCommunity.getText().toString()))
+        {
+            showToast(getString(R.string.please_select_community));
+            return true;
+        }
+        if (StringUtils.isEmpty(tvZutuan.getText().toString()))
+        {
+            showToast(getString(R.string.please_select_zutuan));
+            return true;
+        }
+        if (StringUtils.isEmpty(tvBuilding.getText().toString()))
+        {
+            showToast(getString(R.string.please_select_building));
+            return true;
+        }
+        if (StringUtils.isEmpty(tvUnit.getText().toString()))
+        {
+            showToast(getString(R.string.please_select_unit));
+            return true;
+        }
+        if (StringUtils.isEmpty(tvDoorPlate.getText().toString()))
+        {
+            showToast(getString(R.string.please_select_doorplate));
+            return true;
+        }
+        return false;
+    }
+}

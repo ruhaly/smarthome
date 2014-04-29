@@ -1,0 +1,65 @@
+/**
+ * Plugin.java
+ * com.pactera.ch_bedframe.entity
+ *
+ * Function： TODO 
+ *
+ *   ver     date      		author
+ * ──────────────────────────────────
+ *   		 2013-12-9 		b
+ *
+ * Copyright (c) 2013, TNT All Rights Reserved.
+ */
+
+package com.changhong.sdk.entity;
+
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+
+/**
+ * ClassName:Plugin Function: TODO ADD FUNCTION
+ * 
+ * @author ruhaly
+ * @version
+ * @since Ver 1.1
+ * @Date 2013-12-9 下午3:51:04
+ */
+public class Plugin
+{
+    private String name;
+    
+    private Drawable shorcut;
+    
+    private Intent intent;
+    
+    public Intent getIntent()
+    {
+        return intent;
+    }
+    
+    public void setIntent(Intent intent)
+    {
+        this.intent = intent;
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+    
+    public Drawable getShorcut()
+    {
+        return shorcut;
+    }
+    
+    public void setShorcut(Drawable shorcut)
+    {
+        this.shorcut = shorcut;
+    }
+    
+}

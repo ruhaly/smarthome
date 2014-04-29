@@ -1,0 +1,125 @@
+package com.changhong.foundation.entity;
+
+public class BusinessInfo
+{
+    private String apkId;
+    
+    private String businessCode;
+    
+    private String businessName;
+    
+    private String size;
+    
+    private String businessType;
+    
+    private String isAuthority;
+    
+    private String serialNumber;
+    
+    private String sourceUrl;
+    
+    private String spId;
+    
+    private String versionNo;
+    
+    public String getSize()
+    {
+        return size;
+    }
+    
+    public void setSize(String size)
+    {
+        this.size = size;
+    }
+    
+    public String getApkId()
+    {
+        return apkId;
+    }
+    
+    public void setApkId(String apkId)
+    {
+        this.apkId = apkId;
+    }
+    
+    public String getBusinessCode()
+    {
+        return businessCode;
+    }
+    
+    public void setBusinessCode(String businessCode)
+    {
+        this.businessCode = businessCode;
+    }
+    
+    public String getBusinessName()
+    {
+        return businessName;
+    }
+    
+    public void setBusinessName(String businessName)
+    {
+        this.businessName = businessName;
+    }
+    
+    public String getBusinessType()
+    {
+        return businessType;
+    }
+    
+    public void setBusinessType(String businessType)
+    {
+        this.businessType = businessType;
+    }
+    
+    public String getIsAuthority()
+    {
+        return isAuthority;
+    }
+    
+    public void setIsAuthority(String isAuthority)
+    {
+        this.isAuthority = isAuthority;
+    }
+    
+    public String getSerialNumber()
+    {
+        return serialNumber;
+    }
+    
+    public void setSerialNumber(String serialNumber)
+    {
+        this.serialNumber = serialNumber;
+    }
+    
+    public String getSourceUrl()
+    {
+        return sourceUrl;
+    }
+    
+    public void setSourceUrl(String sourceUrl)
+    {
+        this.sourceUrl = sourceUrl;
+    }
+    
+    public String getSpId()
+    {
+        return spId;
+    }
+    
+    public void setSpId(String spId)
+    {
+        this.spId = spId;
+    }
+    
+    public String getVersionNo()
+    {
+        return versionNo;
+    }
+    
+    public void setVersionNo(String versionNo)
+    {
+        this.versionNo = versionNo;
+    }
+    
+}

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip"
+    android:paddingTop="5dip" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/group_buy_item_bg"
+        android:orientation="horizontal"
+        android:paddingBottom="10dip"
+        android:paddingRight="10dip"
+        android:paddingTop="10dip" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="5"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/group_buy_pic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="307px"
+                    android:layout_marginLeft="5dip"
+                    android:src="@drawable/group_buy_pic_default" />
+
+                <ImageView
+                    android:id="@+id/group_buy_statue_hot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dip"
+                    android:src="@drawable/hot" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/group_buy_num_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="10dip" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_nuy_num_text1"
+                    android:textColor="@color/share_detail_title_color" />
+
+                <TextView
+                    android:id="@+id/group_buy_buy_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24"
+                    android:textColor="@color/red_color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_nuy_num_text2"
+                    android:textColor="@color/share_detail_title_color" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="10dip"
+                android:text="@string/surplus_time"
+                android:textColor="@color/share_detail_title_color" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="10dip" >
+
+                <TextView
+                    android:id="@+id/group_buy_surplus_time_h"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24"
+                    android:textColor="@color/red_color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_buy_time_text1"
+                    android:textColor="@color/share_detail_title_color" />
+
+                <TextView
+                    android:id="@+id/group_buy_surplus_time_m"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="33"
+                    android:textColor="@color/red_color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_buy_time_text2"
+                    android:textColor="@color/share_detail_title_color" />
+
+                <com.changhong.smarthome.phone.sns.view.TimerTextView
+                    android:id="@+id/timerTextView_group_buy_surplus_time_s"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="48"
+                    android:textColor="@color/red_color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_buy_time_text3"
+                    android:textColor="@color/share_detail_title_color" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="5dip"
+            android:layout_weight="3" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip" >
+
+                    <TextView
+                        android:id="@+id/group_buy_price_low"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="￥58"
+                        android:textColor="@color/red_color"
+                        android:textSize="@dimen/list_content_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/group_buy_price_text"
+                        android:textColor="@color/share_detail_title_color" />
+
+                    <TextView
+                        android:id="@+id/group_buy_price_original"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="￥88"
+                        android:textColor="@color/share_detail_title_color" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/group_buy_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginTop="5dip"
+                    android:ellipsize="end"
+                    android:maxLines="4"
+                    android:text="拼单啦！金龙鱼。。。。"
+                    android:textColor="@color/share_detail_title_color" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginTop="5dip"
+                        android:text="@string/activity_time"
+                        android:textColor="@color/share_detail_title_color" />
+
+                    <TextView
+                        android:id="@+id/group_buy_activity_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dip"
+                        android:text="12.25-12.28(3天)"
+                        android:textColor="@color/share_detail_title_color" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginTop="5dip"
+                        android:text="@string/activity_launch_business"
+                        android:textColor="@color/share_detail_title_color" />
+
+                    <TextView
+                        android:id="@+id/group_buy_activity_launch_business"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dip"
+                        android:text="家乐福"
+                        android:textColor="@color/share_detail_title_color" />
+
+                    <ImageView
+                        android:id="@+id/group_buy_map_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginTop="5dip"
+                        android:src="@drawable/map_icon" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:text="@string/activity_contact_tel"
+                        android:textColor="@color/share_detail_title_color" />
+
+                    <TextView
+                        android:id="@+id/group_buy_contact_tel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="18945522"
+                        android:textColor="@color/share_detail_title_color" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/group_buy_go_shop_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:layout_marginLeft="20dip"
+                android:layout_marginTop="10dip"
+                android:background="@drawable/go_shop_btn_selector" />
+
+            <LinearLayout
+                android:id="@+id/group_buy_num_ll_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dip"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_nuy_num_text1"
+                    android:textColor="@color/share_detail_title_color" />
+
+                <TextView
+                    android:id="@+id/group_buy_buy_num_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24"
+                    android:textColor="@color/red_color"
+                    android:textSize="@dimen/list_content_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/group_nuy_num_text2"
+                    android:textColor="@color/share_detail_title_color" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

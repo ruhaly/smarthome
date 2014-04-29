@@ -1,0 +1,30 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import com.changhong.smarthome.phone.R;
+import com.lidroid.xutils.ViewUtils;
+
+import android.os.Bundle;
+
+public class ApplyJoinActivity extends BaseActivity
+{
+    
+    @Override
+    public void initData()
+    {
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.apply_join_layout);
+        ViewUtils.inject(this);
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+}

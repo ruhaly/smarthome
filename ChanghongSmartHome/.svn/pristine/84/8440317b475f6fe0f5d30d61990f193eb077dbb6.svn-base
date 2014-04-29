@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_Trans"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/login_title_bg"
+            android:gravity="center"
+            android:text="@string/please_select_room"
+            android:textColor="@color/gray_5f5f5f"
+            android:textSize="@dimen/font_36" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/login_content_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="50dp" >
+
+            <ListView
+                android:id="@+id/lvRoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@color/cacheColorHint"
+                android:divider="@color/color_Trans"
+                android:dividerHeight="25dp"
+                android:listSelector="@color/color_Trans"
+                android:scrollbars="none" >
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

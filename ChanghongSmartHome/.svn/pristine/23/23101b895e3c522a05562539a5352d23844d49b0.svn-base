@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:item="http://schemas.android.com/apk/res/com.changhong.smarthome.phone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sub_sub_bg_color" >
+
+    <com.changhong.smarthome.phone.store.activity.StoreTitleItem
+                    android:id="@+id/order_detail_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    item:titlename="@string/order_detail_title" >
+                </com.changhong.smarthome.phone.store.activity.StoreTitleItem>
+
+    <ScrollView
+        android:id="@+id/detailScrollView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/order_detail_title"
+        android:layout_marginBottom="12dp" >
+
+        <RelativeLayout
+            android:id="@+id/detail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/detail_1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bj2"
+                android:orientation="vertical" >
+
+                <com.changhong.smarthome.phone.store.activity.OrderDetailItem
+                    android:id="@+id/order_shopping_name"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    item:key="@string/order_detail_name" >
+                </com.changhong.smarthome.phone.store.activity.OrderDetailItem>
+
+                <com.changhong.smarthome.phone.store.activity.OrderDetailItem
+                    android:id="@+id/order_quantity"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    item:key="@string/order_detail_quantity" >
+                </com.changhong.smarthome.phone.store.activity.OrderDetailItem>
+
+                <com.changhong.smarthome.phone.store.activity.OrderDetailItem
+                    android:id="@+id/order_addressee"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    item:key="@string/order_detail_addressee" >
+                </com.changhong.smarthome.phone.store.activity.OrderDetailItem>
+
+                <com.changhong.smarthome.phone.store.activity.OrderDetailItem
+                    android:id="@+id/order_phone"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    item:key="@string/order_detail_phone" >
+                </com.changhong.smarthome.phone.store.activity.OrderDetailItem>
+
+                <com.changhong.smarthome.phone.store.activity.OrderDetailItem
+                    android:id="@+id/order_delivery_address"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    item:key="@string/order_detail_delivery_address"
+                    item:lineVisibility="false" >
+                </com.changhong.smarthome.phone.store.activity.OrderDetailItem>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/detail_2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/detail_1"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bj2"
+                android:orientation="vertical" >
+
+                <com.changhong.smarthome.phone.store.activity.OrderDetailItem
+                    android:id="@+id/order_date"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:visibility="gone"
+                    item:key="@string/order_detail_date" >
+                </com.changhong.smarthome.phone.store.activity.OrderDetailItem>
+
+                <com.changhong.smarthome.phone.store.activity.OrderDetailItem
+                    android:id="@+id/order_remark"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    item:key="@string/order_detail_remark" >
+                </com.changhong.smarthome.phone.store.activity.OrderDetailItem>
+
+                <com.changhong.smarthome.phone.store.activity.OrderDetailItem
+                    android:id="@+id/order_number"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:visibility="gone"
+                    item:key="@string/order_detail_number" >
+                </com.changhong.smarthome.phone.store.activity.OrderDetailItem>
+
+                <com.changhong.smarthome.phone.store.activity.OrderDetailItem
+                    android:id="@+id/order_money"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    item:key="@string/order_detail_money"
+                    item:lineVisibility="false" >
+                </com.changhong.smarthome.phone.store.activity.OrderDetailItem>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/order_button_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/detail_2"
+                android:layout_marginTop="12dip"
+                android:background="@drawable/bj3"
+                android:visibility="gone"
+                android:gravity="center" >
+
+                <Button
+                    android:id="@+id/order_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/order_conform_btn_bg"
+                    android:text="@string/order_detail_conform"
+                    android:textColor="@color/white"
+                    android:textSize="26sp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_Trans"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_top2"
+            android:gravity="center"
+            android:text="@string/forget_pwd"
+            android:textColor="@color/gray_5f5f5f"
+            android:textSize="@dimen/font_36" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gray_bg"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="我是加勒比海盗"
+                android:textColor="@color/gray_5f5f5f"
+                android:textSize="@dimen/font_36" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/etNewPwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/input_forget_pwd"
+                    android:hint="@string/please_input_new_pwd"
+                    android:inputType="phone"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/gray01"
+                    android:textColorHint="@color/gray_a8a8a8"
+                    android:textSize="@dimen/font_28" >
+
+                    <requestFocus />
+                </EditText>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/etPwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/input_forget_pwd"
+                    android:gravity="center_vertical"
+                    android:hint="@string/please_input_new_pwd_again"
+                    android:inputType="textPassword"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="20dp"
+                    android:textColorHint="@color/gray_a8a8a8"
+                    android:textSize="@dimen/font_28" >
+                </EditText>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_bottom"
+            android:gravity="center_vertical" >
+
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_weight="1.00"
+                android:background="@color/color_Trans"
+                android:gravity="center"
+                android:text="@string/confirm"
+                android:textColor="@color/red"
+                android:textSize="@dimen/font_36" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

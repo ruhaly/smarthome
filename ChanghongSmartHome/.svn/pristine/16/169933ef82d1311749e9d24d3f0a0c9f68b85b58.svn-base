@@ -1,0 +1,497 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.changhong.sdk.baseapi.CHUtils;
+import com.changhong.sdk.entity.User;
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.bean.Community;
+import com.changhong.smarthome.phone.foundation.bean.MemberManage;
+import com.changhong.smarthome.phone.foundation.bean.Room;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+public class MemberManageActivity extends BaseActivity
+{
+    
+    private MemberManage memberManage = new MemberManage();
+    
+    private ParentAdapter adapter;
+    
+    private boolean isEdit = false;
+    
+    private int curPosition = -1;
+    
+    private int parentPostion = -1;
+    
+    @ViewInject(R.id.imgHead)
+    private ImageView imgHead;
+    
+    @ViewInject(R.id.listView)
+    private ListView listView;
+    
+    private UserAdapter uAdapter;
+    
+    @ViewInject(R.id.tvCommunity)
+    private TextView tvCommunity;
+    
+    List<Community> list = new ArrayList<Community>();
+    
+    @Override
+    public void initData()
+    {
+        Community c = new Community();
+        c.setName("锦绣家园");
+        c.setSelect(true);
+        list.add(c);
+        Community c2 = new Community();
+        c2.setName("锦绣家园2");
+        c2.setSelect(false);
+        list.add(c2);
+        Community c3 = new Community();
+        c3.setName("锦绣家园锦绣家园3");
+        c3.setSelect(false);
+        list.add(c3);
+        
+        Room r = new Room();
+        r.setNum("1-1-1023");
+        User user1 = new User();
+        user1.setNickName("爸爸1");
+        User user2 = new User();
+        user2.setNickName("爷爷1");
+        User user5 = new User();
+        user5.setNickName("爷爷2");
+        User user6 = new User();
+        user6.setNickName("爸爸3");
+        User user7 = new User();
+        user7.setNickName("爷爷3");
+        r.userList.add(user1);
+        r.userList.add(user2);
+        r.userList.add(user5);
+        r.userList.add(user6);
+        r.userList.add(user7);
+        
+        Room r2 = new Room();
+        r2.setNum("1-2-1024");
+        User user3 = new User();
+        user3.setNickName("婆婆");
+        User user4 = new User();
+        user4.setNickName("儿子");
+        r2.userList.add(user3);
+        r2.userList.add(user4);
+        
+        memberManage.listRoom.add(r);
+        memberManage.listRoom.add(r2);
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.member_manage_layout);
+        ViewUtils.inject(this);
+        initParentAdapter();
+    }
+    
+    public OnClickListener ok = new OnClickListener()
+    {
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            if (-1 != curPosition)
+            {
+                memberManage.listRoom.get(parentPostion).userList.remove(curPosition);
+                initParentAdapter();
+            }
+        }
+    };
+    
+    public void initParentAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new ParentAdapter();
+            listView.setAdapter(adapter);
+            
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            if (isEdit)
+            {
+                isEdit = !isEdit;
+                initParentAdapter();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    
+    @Override
+    public void clearData()
+    {
+        
+    }
+    
+    class ParentAdapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return memberManage.listRoom.size();
+        }
+        
+        @Override
+        public Room getItem(int position)
+        {
+            return memberManage.listRoom.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(final int position, View convertView,
+                ViewGroup parent)
+        {
+            
+            ViewHolder holder = null;
+            
+            if (convertView == null)
+            {
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.member_manage_item_layout,
+                                parent,
+                                false);
+                holder = new ViewHolder();
+                holder.tvRoom = (TextView) convertView.findViewById(R.id.tvRoom);
+                holder.tvSq = (TextView) convertView.findViewById(R.id.tvSq);
+                holder.gridView = (GridView) convertView.findViewById(R.id.gridView);
+                convertView.setTag(holder);
+            }
+            else
+            {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.tvRoom.setText(getItem(position).getNum());
+            CHUtils.addUnderlineTextView(holder.tvSq);
+            holder.tvSq.setOnClickListener(new View.OnClickListener()
+            {
+                
+                @Override
+                public void onClick(View v)
+                {
+                    showAuthorizationDialog(getItem(position).userList);
+                }
+            });
+            final ChildAdapter adapter = new ChildAdapter(
+                    getItem(position).userList, position);
+            holder.gridView.setAdapter(adapter);
+            holder.gridView.setTag(position);
+            holder.gridView.setOnItemLongClickListener(new OnItemLongClickListener()
+            {
+                
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent,
+                        View view, int positionC, long id)
+                {
+                    parentPostion = position;
+                    isEdit = !isEdit;
+                    initParentAdapter();
+                    return true;
+                }
+            });
+            holder.gridView.setOnItemClickListener(new OnItemClickListener()
+            {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                        int positionC, long id)
+                {
+                    if (isEdit)
+                    {
+                        if (position == parentPostion)
+                        {
+                            curPosition = positionC;
+                            showAlertDialog(0,
+                                    getString(R.string.tip),
+                                    "确认删除?",
+                                    null,
+                                    ok,
+                                    DEFAULT_BTN,
+                                    null,
+                                    true,
+                                    true);
+                        }
+                        else
+                        {
+                            showToast(adapter.getItem(positionC).getNickName());
+                            isEdit = !isEdit;
+                            initParentAdapter();
+                        }
+                        
+                    }
+                    else
+                    {
+                        showToast(adapter.getItem(positionC).getNickName());
+                    }
+                    
+                }
+            });
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            
+            private TextView tvRoom;
+            
+            private TextView tvSq;
+            
+            private GridView gridView;
+            
+        }
+    }
+    
+    class ChildAdapter extends BaseAdapter
+    {
+        
+        private List<User> userList;
+        
+        private int parentIndex;
+        
+        public ChildAdapter(List<User> userList, int parentPostion)
+        {
+            super();
+            this.userList = userList;
+            this.parentIndex = parentPostion;
+        }
+        
+        @Override
+        public int getCount()
+        {
+            return userList.size();
+        }
+        
+        @Override
+        public User getItem(int position)
+        {
+            return userList.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            
+            ChildViewHolder holder = null;
+            
+            if (convertView == null)
+            {
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.member_manage_child_item_layout,
+                                parent,
+                                false);
+                holder = new ChildViewHolder();
+                holder.imgAdmin = (ImageView) convertView.findViewById(R.id.imgAdmin);
+                holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+                holder.imgIcon = (ImageView) convertView.findViewById(R.id.imgIcon);
+                holder.imgDelete = (ImageView) convertView.findViewById(R.id.imgDelete);
+                holder.frameItem = (FrameLayout) convertView.findViewById(R.id.frameItem);
+                convertView.setTag(holder);
+            }
+            else
+            {
+                holder = (ChildViewHolder) convertView.getTag();
+            }
+            holder.tvName.setText(getItem(position).getNickName());
+            if (isEdit && parentIndex == parentPostion)
+            {
+                holder.imgDelete.setVisibility(View.VISIBLE);
+                //                holder.frameItem.startAnimation(AnimationUtils.loadAnimation(getBaseContext(),
+                //                        R.anim.item_rotate));
+            }
+            else
+            {
+                holder.imgDelete.setVisibility(View.GONE);
+                //                holder.frameItem.clearAnimation();
+            }
+            if (0 == position)
+            {
+                holder.imgAdmin.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                holder.imgAdmin.setVisibility(View.INVISIBLE);
+            }
+            return convertView;
+        }
+        
+        class ChildViewHolder
+        {
+            private ImageView imgAdmin;
+            
+            private ImageView imgIcon;
+            
+            private TextView tvName;
+            
+            private ImageView imgDelete;
+            
+            private FrameLayout frameItem;
+            
+        }
+    }
+    
+    @OnClick(R.id.tvMoreGroup)
+    public void tvMoreGroupClick(View view)
+    {
+        startActivity(new Intent(getBaseContext(), MoreGroupActivity.class),
+                false);
+    }
+    
+    @OnClick(R.id.frameNewMember)
+    public void frameNewMemberClick(View view)
+    {
+        startActivity(new Intent(getBaseContext(), NewMemberActivity.class));
+    }
+    
+    /**
+     * 
+     * 选择房间
+     * [功能详细描述]
+     */
+    public void showAuthorizationDialog(List<User> userList)
+    {
+        View view = LayoutInflater.from(getBaseContext())
+                .inflate(R.layout.authorization_layout, null);
+        final Dialog dialog = getDialog(view, false, R.style.MyDialog);
+        
+        GridView gvUser = (GridView) view.findViewById(R.id.gvUser);
+        uAdapter = new UserAdapter(userList);
+        gvUser.setAdapter(uAdapter);
+        gvUser.setOnItemClickListener(new OnItemClickListener()
+        {
+            
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id)
+            {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+    
+    class UserAdapter extends BaseAdapter
+    {
+        
+        private List<User> userList;
+        
+        public UserAdapter(List<User> userList)
+        {
+            super();
+            this.userList = userList;
+        }
+        
+        @Override
+        public int getCount()
+        {
+            return userList.size();
+        }
+        
+        @Override
+        public User getItem(int position)
+        {
+            return userList.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            final ViewHolder viewHolder;
+            if (null == convertView)
+            {
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.authorization_item_layout, null);
+                viewHolder = new ViewHolder();
+                viewHolder.imgHead = (ImageView) convertView.findViewById(R.id.imgHead);
+                convertView.setTag(viewHolder);
+            }
+            else
+            {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            public ImageView imgHead;
+        }
+    }
+    
+    @OnClick(R.id.btnApplyJoin)
+    public void btnApplyJoinClick(View view)
+    {
+        startActivity(new Intent(getBaseContext(), ApplyJoinActivity.class));
+    }
+    
+    @OnClick(R.id.frameCommunitySelect)
+    public void frameCommunitySelectClick(View view)
+    {
+        
+        showChangeCommunityDialog(list, new CallBack()
+        {
+            
+            @Override
+            public void update(Object object)
+            {
+                tvCommunity.setText(((Community) object).getName());
+            }
+        }, findViewById(R.id.imgXiala));
+    }
+}

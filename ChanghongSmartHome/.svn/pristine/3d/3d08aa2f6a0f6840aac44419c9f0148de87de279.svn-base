@@ -1,0 +1,193 @@
+package com.changhong.smarthome.phone.foundation.activity;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.foundation.bean.CallBack;
+import com.changhong.smarthome.phone.foundation.bean.PrivateLetter;
+import com.changhong.smarthome.phone.foundation.logic.PrivateLetterLogic;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+
+/**
+ * 
+ * 私信列表界面
+ * [功能详细描述]
+ * @author hanliangru
+ * @version [智慧社区-终端底座, 2014年4月18日]
+ */
+public class PrivateLetterActivity extends BaseActivity
+
+{
+    public PrivateLetterLogic logic;
+    
+    @ViewInject(R.id.listView)
+    public ListView listView;
+    
+    public Adapter adapter;
+    
+    @Override
+    public void initData()
+    {
+        logic = PrivateLetterLogic.getInstance();
+        PrivateLetter pl = new PrivateLetter();
+        pl.setTitle("团购拼单");
+        pl.setContent("各位亲，草莓预计下午六点到大，请预定了的业主到小区东门领取~");
+        pl.setDate("2014年3月24 12:30");
+        
+        PrivateLetter pl2 = new PrivateLetter();
+        pl2.setTitle("交换空间");
+        pl2.setContent("\"换出轮滑鞋\"有一条新留言");
+        pl2.setDate("现在");
+        
+        PrivateLetter pl3 = new PrivateLetter();
+        pl3.setTitle("晒生活");
+        pl3.setContent("\"三圣乡......\"有一条新评论");
+        pl3.setDate("1天前");
+        
+        logic.list.add(pl);
+        logic.list.add(pl2);
+        logic.list.add(pl3);
+        
+    }
+    
+    @Override
+    public void initLayout(Bundle paramBundle)
+    {
+        setContentView(R.layout.private_letter_layout);
+        ViewUtils.inject(this);
+        initAdapter();
+    }
+    
+    @Override
+    public void clearData()
+    {
+        logic.clear();
+    }
+    
+    public void initAdapter()
+    {
+        if (null == adapter)
+        {
+            adapter = new Adapter();
+            listView.setAdapter(adapter);
+            listView.setOnItemLongClickListener(new OnItemLongClickListener()
+            {
+                
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent,
+                        View view, final int position, long id)
+                {
+                    showTipDialog(getString(R.string.sure_to_clear_this_privateletter),
+                            new CallBack()
+                            {
+                                @Override
+                                public void update(Object object)
+                                {
+                                    logic.list.remove(position);
+                                    initAdapter();
+                                }
+                            },
+                            true,
+                            null);
+                    return false;
+                }
+            });
+            
+        }
+        else
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+    
+    class Adapter extends BaseAdapter
+    {
+        
+        @Override
+        public int getCount()
+        {
+            return logic.list.size();
+        }
+        
+        @Override
+        public PrivateLetter getItem(int position)
+        {
+            return logic.list.get(position);
+        }
+        
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            final ViewHolder viewHolder;
+            if (null == convertView)
+            {
+                convertView = LayoutInflater.from(getBaseContext())
+                        .inflate(R.layout.private_letter_item_layout, null);
+                viewHolder = new ViewHolder();
+                viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+                viewHolder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
+                viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tvContent);
+                convertView.setTag(viewHolder);
+            }
+            else
+            {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.tvTitle.setText(getItem(position).getTitle());
+            viewHolder.tvDate.setText(getItem(position).getDate());
+            viewHolder.tvContent.setText(getItem(position).getContent());
+            return convertView;
+        }
+        
+        class ViewHolder
+        {
+            public TextView tvTitle;
+            
+            public TextView tvDate;
+            
+            public TextView tvContent;
+        }
+    }
+    
+    @OnClick(R.id.tvMsgClear)
+    public void tvMsgClearClick(View view)
+    {
+        
+        showTipDialog(getString(R.string.sure_to_clear_all_content),
+                new CallBack()
+                {
+                    
+                    @Override
+                    public void update(Object object)
+                    {
+                        clearData();
+                        initAdapter();
+                    }
+                },
+                true,
+                null);
+        
+    }
+    
+    @OnClick(R.id.imgBack)
+    public void imgBackClick(View view)
+    {
+        finish();
+    }
+}

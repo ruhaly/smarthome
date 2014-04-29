@@ -1,0 +1,114 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:gravity="center_horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/tsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/tsfw_text"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:paddingLeft="20dip"
+            android:background="@drawable/iconbg_select"
+            android:gravity="center_vertical"
+            android:text="@string/wyff_tab_2_group_1"
+            android:textColor="@color/title_text_black"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/ts_expand1"
+            android:layout_width="25dip"
+            android:layout_height="25dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/drawable_expand_open" />
+
+        <com.changhong.smarthome.phone.property.view.SwipeListView
+            android:id="@+id/tsfwlist"
+            android:layout_width="fill_parent"
+            android:layout_height="400dip"
+            android:layout_below="@id/tsfw_text"
+             android:cacheColorHint="#00000000"
+            android:listSelector="#00000000" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ts_layoutbt"
+        android:layout_width="fill_parent"
+        android:layout_height="70dip"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/iconbg" >
+
+        <Button
+            android:id="@+id/ts_button"
+            android:layout_width="fill_parent"
+            android:layout_height="55dip"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="5dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:background="@drawable/bxtscommitbg"
+            android:gravity="center"
+            android:text="@string/wyff_tab_2_bnt"
+            android:textColor="@color/title_text_white"
+            android:textSize="24sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tsLayout_w"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/ts_layoutbt"
+        android:layout_below="@id/tsLayout" >
+
+        <TextView
+            android:id="@+id/tsfw_text_w"
+            android:layout_width="wrap_content"
+            android:layout_height="50dip"
+            android:paddingLeft="20dip"
+            android:background="@drawable/iconbg_unselect"
+            android:gravity="center_vertical"
+            android:text="@string/wyff_tab_2_group_2"
+            android:textColor="@color/title_text_black"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/ts_expand2"
+            android:layout_width="25dip"
+            android:layout_height="25dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/drawable_expand_close" />
+
+        <TextView
+            android:id="@+id/ts_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="10dip"
+            android:layout_toLeftOf="@id/ts_expand2"
+            android:text="@string/wyff_tab_1_group_2_clear"
+            android:textColor="@color/title_text_black"
+            android:textSize="20sp" />
+
+        <com.changhong.smarthome.phone.property.view.SwipeListView
+            android:id="@+id/tsfwlist_w"
+            android:layout_width="fill_parent"
+            android:layout_height="400dip"
+            android:layout_below="@id/tsfw_text_w"
+             android:cacheColorHint="#00000000"
+            android:listSelector="#00000000" />
+    </RelativeLayout>
+
+</RelativeLayout>

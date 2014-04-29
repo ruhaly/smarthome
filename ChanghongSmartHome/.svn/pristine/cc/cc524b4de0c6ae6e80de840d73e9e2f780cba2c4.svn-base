@@ -1,0 +1,294 @@
+package com.changhong.smarthome.phone.property.adapter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.changhong.smarthome.phone.R;
+import com.changhong.smarthome.phone.property.entry.ServicesItem;
+import com.changhong.smarthome.phone.property.logic.GetBxItemListLogic;
+import com.changhong.smarthome.phone.property.logic.GetTsItemListLogic;
+import com.lidroid.xutils.BitmapUtils;
+
+public class BxlistAdapter extends BaseAdapter
+{
+    private Context context;
+    
+    private LayoutInflater m_inflater;
+    
+    private ArrayList<ServicesItem> dt;
+    
+    public Map<Integer, Boolean> dataMap;
+    
+    GetBxItemListLogic ins1;
+    
+    GetTsItemListLogic ins2;
+    
+    int fwzt;
+    
+//    int z;
+    
+    public BxlistAdapter(Context context, List<ServicesItem> services_bx)
+    {
+        
+        m_inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.dt = (ArrayList<ServicesItem>) services_bx;
+//        this.z = z;
+        // init();
+    }
+    
+//    private void init()
+//    {
+//        dataMap = new HashMap<Integer, Boolean>();
+//        for (int j = 0; j < dt.size(); j++)
+//        {
+//            dataMap.put(j, true);
+//        }
+//        
+//    }
+    
+    public BxlistAdapter()
+    {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+    
+    public int getCount()
+    {
+        // TODO Auto-generated method stub
+        return dt.size();
+    }
+    
+    @Override
+    public Object getItem(int arg0)
+    {
+        // TODO Auto-generated method stub
+        return dt.get(arg0);
+    }
+    
+    @Override
+    public long getItemId(int arg0)
+    {
+        // TODO Auto-generated method stub
+        return dt.get(arg0).getFwid();
+    }
+    
+    public void refish()
+    {
+        this.notifyDataSetChanged();
+    }
+    
+    public void updateData(ArrayList<ServicesItem> data)
+    {
+        this.dt = data;
+        notifyDataSetChanged();
+    }
+    
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent)
+    {
+        
+        fwzt = dt.get(position).getFwzt();
+        //SlideView slideView = (SlideView) convertView;
+        BxViewHolder viewholder;
+        BitmapUtils bitmapUtilsHead = new BitmapUtils(context);
+        bitmapUtilsHead.configDefaultLoadingImage(R.drawable.add_image);
+        bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.add_image);
+        bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+        
+        int progressbar = 0;
+//        String text = "";
+        if (convertView == null)
+        {
+            //slideView = new SlideView(context);
+            viewholder = new BxViewHolder();
+            TextView textView1 = null;
+            TextView textview = null;
+            convertView = m_inflater.inflate(R.layout.propertylist_item,
+                    parent,
+                    false);
+            //slideView.setContentView(itemView);
+            
+            viewholder.addImg = (ImageView) convertView.findViewById(R.id.addImg);
+            viewholder.content = (TextView) convertView.findViewById(R.id.bx_text);
+            viewholder.imageview = (ImageView) convertView.findViewById(R.id.imgview);
+            // viewholder.bx_fwztl=(TextView) convertView.findViewById(R.id.bx_fwztl);
+            
+            if (fwzt == 1)
+            {
+                
+                textView1 = (TextView) convertView.findViewById(R.id.time1);
+                
+                textview = (TextView) convertView.findViewById(R.id.text1);
+                
+                /*
+                 * viewholder.deleteItem.setBackgroundDrawable(context
+                 * .getResources().getDrawable(R.drawable.footmenusbg3));
+                 */
+            }
+            else if (fwzt == 2)
+            {
+                
+                textView1 = (TextView) convertView.findViewById(R.id.time2);
+                
+                textview = (TextView) convertView.findViewById(R.id.text2);
+                /*
+                 * viewholder.deleteItem.setBackgroundDrawable(context
+                 * .getResources().getDrawable(R.drawable.footmenusbg3));
+                 */
+            }
+            else if (fwzt == 3)
+            {
+                
+                textView1 = (TextView) convertView.findViewById(R.id.time3);
+                
+                textview = (TextView) convertView.findViewById(R.id.text3);
+            }
+            else
+            {
+                
+                textView1 = (TextView) convertView.findViewById(R.id.time4);
+                
+                textview = (TextView) convertView.findViewById(R.id.text4);
+            }
+            viewholder.timeText = textView1;
+            viewholder.textview = textview;
+            
+            convertView.setTag(viewholder);
+        }
+        else
+        {
+            viewholder = (BxViewHolder) convertView.getTag();
+        }
+        if (fwzt == 1)
+        {
+            
+            progressbar = R.drawable.progressbar1;
+            //text="已登记...";
+            
+            /*
+             * viewholder.deleteItem.setBackgroundDrawable(context
+             * .getResources().getDrawable(R.drawable.footmenusbg3));
+             */
+        }
+        else if (fwzt == 2)
+        {
+            
+            progressbar = R.drawable.progressbar2;
+            // text="已受理...";
+            
+            /*
+             * viewholder.deleteItem.setBackgroundDrawable(context
+             * .getResources().getDrawable(R.drawable.footmenusbg3));
+             */
+        }
+        else if (fwzt == 3)
+        {
+            
+            progressbar = R.drawable.progressbar3;
+            //text="已完成 ...";
+            
+        }
+        else
+        {
+            
+            progressbar = R.drawable.progressbar4;
+            //text="已评价...";
+            
+        }
+        
+        ServicesItem item = dt.get(position);
+        /*item.slideView = slideView;
+        item.slideView.shrink();*/
+        // ((SwipeListView) parent).recycle(convertView, position);
+        viewholder.content.setText((String) item.getContent());
+        //viewholder.bx_fwztl.setText(text);
+        viewholder.imageview.setBackgroundResource(progressbar);
+        viewholder.timeText.setVisibility(View.VISIBLE);
+        String time = item.getStateTimeStr().substring(0, 10);
+        String[] temp = time.split("-");
+        String month = temp[1];
+        if(month.startsWith("0"))
+        {
+            month = month.substring(1);
+        }
+        viewholder.timeText.setText(temp[0] + "-"+ month + "-"+ temp[2]);
+//        viewholder.timeText.setText(item.getStateTimeStr().subSequence(0, 10));
+        viewholder.timeText.setTextSize(TypedValue.COMPLEX_UNIT_PX,16);
+        
+        viewholder.textview.setTextColor(context.getResources()
+                .getColor(R.color.title_text_black));
+        if (null != item.getPicStrList())
+        {
+            if (item.getPicStrList().size() > 0)
+            {
+                bitmapUtilsHead.display(viewholder.addImg,
+                        (String) item.getPicStrList().get(0));
+            }
+        }
+        
+        return convertView;
+    }
+    
+//    private void removeItemView(View v, final int position)
+//    {
+//        // TODO Auto-generated method stub
+//        // ��ȡ����
+//        Animation animation = AnimationUtils.loadAnimation(v.getContext(),
+//                android.R.anim.slide_out_right);
+//        animation.setAnimationListener(new AnimationListener()
+//        {
+//            @Override
+//            public void onAnimationStart(Animation animation)
+//            {
+//            }
+//            
+//            public void onAnimationRepeat(Animation animation)
+//            {
+//            }
+//            
+//            public void onAnimationEnd(Animation animation)
+//            {
+//                // TODO Auto-generated method stub
+//                // ��������ʱ�Ƴ����
+//                dt.remove(position);
+//                // ����ListView
+//                // dataMap.put(position, false);
+//                refish();
+//            }
+//        });
+//        v.startAnimation(animation);
+//    }
+    
+}
+
+class BxViewHolder
+{
+    public TextView content;
+    
+    public ImageView imagebutton;
+    
+    public TextView fwid;
+    
+    public TextView fwzt;
+    
+    public TextView timeText;
+    
+    public ImageView imageview;
+    
+    public TextView textview;
+    
+    public ImageView addImg;
+    //public TextView bx_fwztl;
+}

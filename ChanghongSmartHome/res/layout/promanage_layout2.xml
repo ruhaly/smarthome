@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadingEdge="none"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/frame_gallery"
+                android:layout_width="match_parent"
+                android:layout_height="500px"
+                android:orientation="vertical" >
+
+                <FrameLayout
+                    android:id="@+id/frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <com.changhong.sdk.widget.CustomGallery
+                        android:id="@+id/gallery"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <LinearLayout
+                        android:id="@+id/frame_dian"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/frameTodayRecommend"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:background="@drawable/tuangou_transparent_bg" >
+
+                        <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="18dp"
+                            android:layout_marginRight="18dp"
+                            android:text="【惠民】红星路迷澳门尚豆捞开张八折优惠!"
+                            android:textColor="@color/color_f2f2f2"
+                            android:textSize="@dimen/font_size_content_common" />
+                    </FrameLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/frameProNotice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/view_promanage_msg_margin_left"
+                android:layout_marginRight="@dimen/view_promanage_msg_margin_left"
+                android:layout_marginTop="@dimen/view_promanage_msg_margin_top"
+                android:background="@drawable/btn_wg"
+                android:clickable="true"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="2014.3.4 停水通知：因管道检修，明天停水一天"
+                android:textColor="@color/color_5f5f5f"
+                android:textSize="@dimen/font_size_content_common" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/view_promanage_plugin_margin_left"
+                android:layout_marginRight="@dimen/view_promanage_plugin_margin_left"
+                android:layout_marginTop="@dimen/view_promanage_plugin_margin_top"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <com.changhong.sdk.widget.CustomGridView
+                    android:id="@+id/gvPlugin"
+                    style="@style/gridview_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:horizontalSpacing="@dimen/view_promanage_plugin_gridview_horizontalspacing"
+                    android:numColumns="4"
+                    android:verticalSpacing="@dimen/view_promanage_plugin_gridview_verticalspacing" >
+                </com.changhong.sdk.widget.CustomGridView>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
